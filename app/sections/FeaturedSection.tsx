@@ -4,7 +4,7 @@ export default function FeaturedSection() {
   return (
     <section
       id="featured"
-      className="pb-16"
+      className="pb-16 max-w-3xl mx-auto"
       style={{
         background:
           "radial-gradient(ellipse at center, #1a2744 0%, #0a0a0a 70%)",
