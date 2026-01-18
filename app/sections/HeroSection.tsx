@@ -2,36 +2,22 @@ import { LiveBadge, Button } from "../components";
 
 export default function HeroSection() {
   return (
-    <section
-      className="relative py-16 md:py-24"
-      style={{
-        background:
-          "linear-gradient(180deg, #0A0A0A 0%, #111827 50%, #0A0A0A 100%)",
-      }}
-    >
+    <section className="section-gradient relative pt-24 pb-16 md:pt-32 md:pb-20">
       <div className="container flex flex-col items-center text-center">
         {/* Live Badge */}
-        <LiveBadge date="December 20, 2025" className="mb-6" />
+        <LiveBadge date="December 20, 2025" className="mb-8" />
 
         {/* Main Logo */}
-        <h1
-          className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 text-white"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
+        <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 text-white font-heading">
           RADAR
-          <span className="text-[var(--color-primary)]">.</span>
+          <span className="text-primary">.</span>
         </h1>
 
-        {/* Tagline */}
-        <p
-          className="text-lg md:text-xl text-[var(--color-text-muted)] max-w-md mb-8"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
+        {/* Tagline - Merriweather (serif) */}
+        <p className="text-xl md:text-2xl text-gray-300 max-w-lg mb-10 font-serif leading-relaxed">
           Your signal to{" "}
-          <span className="text-[var(--color-primary)] font-medium">
-            what&apos;s next
-          </span>{" "}
-          in the Babcock tech ecosystem.
+          <span className="text-primary font-medium">what&apos;s next</span> in
+          the Babcock tech ecosystem.
         </p>
 
         {/* CTA Buttons */}

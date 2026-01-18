@@ -2,7 +2,7 @@ import { ArticleCard } from "../components";
 
 export default function FeaturedSection() {
   return (
-    <section id="featured" className="section-dark pb-8">
+    <section id="featured" className="section-gradient pb-16">
       <div className="container">
         <ArticleCard
           variant="featured"

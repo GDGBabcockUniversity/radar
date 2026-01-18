@@ -5,14 +5,14 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="section-dark border-t border-[var(--color-border-dark)]">
+    <footer className="bg-black border-t border-white/10">
       <div className="container py-16">
         <div className="grid gap-12 md:grid-cols-3">
           {/* Column 1: Logo & Description */}
           <div className="space-y-4">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-primary)]">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                 <svg
                   width="16"
                   height="16"
@@ -30,15 +30,12 @@ export default function Footer() {
                   />
                 </svg>
               </div>
-              <span
-                className="text-lg font-bold text-white"
-                style={{ fontFamily: "var(--font-heading)" }}
-              >
+              <span className="text-lg font-bold text-white font-heading">
                 RADAR
               </span>
             </Link>
 
-            <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            <p className="text-sm text-gray-400 leading-relaxed font-body">
               Your Signal to What&apos;s Next. Documenting the journey of
               Babcock&apos;s tech ecosystem, one edition at a time.
             </p>
@@ -49,12 +46,12 @@ export default function Footer() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--color-text-muted)] hover:text-white transition-colors"
+                className="text-gray-500 hover:text-white transition-colors"
                 aria-label="Twitter"
               >
                 <svg
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -65,12 +62,12 @@ export default function Footer() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--color-text-muted)] hover:text-white transition-colors"
+                className="text-gray-500 hover:text-white transition-colors"
                 aria-label="LinkedIn"
               >
                 <svg
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -81,12 +78,12 @@ export default function Footer() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--color-text-muted)] hover:text-white transition-colors"
+                className="text-gray-500 hover:text-white transition-colors"
                 aria-label="GitHub"
               >
                 <svg
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -98,14 +95,14 @@ export default function Footer() {
 
           {/* Column 2: Navigation */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">
+            <h4 className="mb-4 text-sm font-semibold text-white font-heading">
               Navigation
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-3 font-body">
               <li>
                 <Link
                   href="/"
-                  className="text-sm text-[var(--color-text-muted)] hover:text-white transition-colors"
+                  className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
                   Home
                 </Link>
@@ -113,7 +110,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/editions"
-                  className="text-sm text-[var(--color-text-muted)] hover:text-white transition-colors"
+                  className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
                   Past Editions
                 </Link>
@@ -121,17 +118,17 @@ export default function Footer() {
               <li>
                 <Link
                   href="/spotlight"
-                  className="text-sm text-[var(--color-text-muted)] hover:text-white transition-colors"
+                  className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
                   Student Spotlight
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/about"
-                  className="text-sm text-[var(--color-text-muted)] hover:text-white transition-colors"
+                  href="/submit"
+                  className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
-                  About Us
+                  Submit a Story
                 </Link>
               </li>
             </ul>
@@ -139,20 +136,23 @@ export default function Footer() {
 
           {/* Column 3: Newsletter */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">
+            <h4 className="mb-4 text-sm font-semibold text-white font-heading">
               Stay in the Loop
             </h4>
-            <p className="mb-4 text-sm text-[var(--color-text-muted)]">
-              Get the latest edition delivered to your inbox every month.
+            <p className="mb-4 text-sm text-gray-400 font-body">
+              Get the latest edition delivered to your inbox monthly.
             </p>
             <NewsletterForm variant="footer" />
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-[var(--color-border-dark)]">
-          <p className="text-center text-xs text-[var(--color-text-muted)]">
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-gray-500 font-body">
             © {currentYear} GDG Babcock. All rights reserved.
+          </p>
+          <p className="text-xs text-gray-500 font-body">
+            Designed by <span className="text-gray-400">Daddy B.</span>
           </p>
         </div>
       </div>

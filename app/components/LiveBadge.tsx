@@ -6,7 +6,7 @@ interface LiveBadgeProps {
 export default function LiveBadge({ date, className = "" }: LiveBadgeProps) {
   return (
     <div
-      className={`inline-flex items-center gap-2 text-sm font-medium ${className}`}
+      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-heading ${className}`}
     >
       {/* Pulsing live dot */}
       <span className="relative flex h-2 w-2">
@@ -14,11 +14,11 @@ export default function LiveBadge({ date, className = "" }: LiveBadgeProps) {
         <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
       </span>
 
-      <span className="text-green-500 uppercase tracking-wide">Live</span>
-      <span className="text-[var(--color-text-muted)]">•</span>
-      <span className="text-[var(--color-text-muted)] uppercase tracking-wide">
-        {date}
+      <span className="text-green-500 uppercase tracking-wider font-medium">
+        Live
       </span>
+      <span className="text-gray-500">•</span>
+      <span className="text-gray-400 uppercase tracking-wider">{date}</span>
     </div>
   );
 }

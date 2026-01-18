@@ -27,19 +27,14 @@ export default function ArticleCard({
 }: ArticleCardProps) {
   const isFeatured = variant === "featured";
 
-  const tagStyles = {
-    blue: "bg-[var(--color-primary)] text-white",
-    default: "bg-[var(--color-primary)] text-white",
-  };
-
   return (
     <a
       href={href}
       className={`
-        group relative block overflow-hidden rounded-xl
+        group relative block overflow-hidden rounded-2xl
         transition-all duration-300 ease-out
-        hover:scale-[1.02] hover:shadow-[var(--shadow-card)]
-        ${isFeatured ? "aspect-[16/9]" : "aspect-[4/3]"}
+        hover:scale-[1.01]
+        ${isFeatured ? "aspect-video" : "aspect-4/3"}
         ${className}
       `}
     >
@@ -52,41 +47,60 @@ export default function ArticleCard({
       />
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent" />
 
       {/* Content */}
       <div className="absolute inset-0 flex flex-col justify-end p-6">
         {/* Tags Row */}
-        <div className="mb-3 flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3 font-body">
           {tag && (
-            <span
-              className={`px-2 py-1 text-xs font-semibold uppercase tracking-wide rounded ${tagStyles[tagColor]}`}
-            >
+            <span className="px-2 py-1 text-xs font-semibold uppercase tracking-wide rounded bg-primary text-white">
               {tag}
             </span>
           )}
           {editionNumber && (
-            <span className="px-2 py-1 text-xs font-medium uppercase tracking-wide rounded bg-[var(--color-primary)] text-white">
+            <span className="px-2 py-1 text-xs font-medium uppercase tracking-wide rounded bg-primary text-white">
               {editionNumber}
             </span>
           )}
-          <span className="text-xs text-white/70">{date}</span>
+          <span className="text-xs text-white/60 flex items-center gap-1">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              className="opacity-60"
+            >
+              <rect
+                x="3"
+                y="4"
+                width="18"
+                height="18"
+                rx="2"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <path d="M3 10H21" stroke="currentColor" strokeWidth="2" />
+              <path d="M8 2V6" stroke="currentColor" strokeWidth="2" />
+              <path d="M16 2V6" stroke="currentColor" strokeWidth="2" />
+            </svg>
+            {date}
+          </span>
         </div>
 
-        {/* Title */}
+        {/* Title - Space Grotesk */}
         <h3
           className={`
             font-heading font-semibold text-white leading-tight
             ${isFeatured ? "text-2xl md:text-3xl" : "text-lg md:text-xl"}
           `}
-          style={{ fontFamily: "var(--font-heading)" }}
         >
           {title}
         </h3>
 
-        {/* Description */}
+        {/* Description - Inter */}
         {description && (
-          <p className="mt-2 text-sm text-white/70 line-clamp-2">
+          <p className="mt-2 text-sm text-white/60 line-clamp-2 font-body">
             {description}
           </p>
         )}

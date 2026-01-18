@@ -3,12 +3,12 @@ import Button from "./Button";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--color-border-dark)] bg-[#0A0A0A]/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-transparent backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           {/* Signal Icon */}
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-primary)]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <svg
               width="16"
               height="16"
@@ -27,29 +27,26 @@ export default function Header() {
             </svg>
           </div>
           <div className="flex flex-col">
-            <span
-              className="text-lg font-bold tracking-tight text-white"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
+            <span className="text-sm font-bold tracking-tight text-white font-heading">
               RADAR
             </span>
-            <span className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">
+            <span className="text-[9px] uppercase tracking-wider text-gray-400 font-heading">
               By GDG Babcock
             </span>
           </div>
         </Link>
 
         {/* Navigation */}
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-8 md:flex font-body">
           <Link
             href="/latest"
-            className="text-sm font-medium text-white hover:text-[var(--color-primary)] transition-colors"
+            className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
             Latest
           </Link>
           <Link
             href="/archive"
-            className="text-sm font-medium text-white hover:text-[var(--color-primary)] transition-colors"
+            className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
             Archive
           </Link>

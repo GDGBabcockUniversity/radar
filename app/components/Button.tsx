@@ -19,24 +19,24 @@ export default function Button({
 }: ButtonProps) {
   const baseStyles = `
     inline-flex items-center justify-center gap-2
-    font-medium rounded-full
+    font-medium rounded-full font-body
     transition-all duration-200 ease-out
-    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)]
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary
   `;
 
   const variants = {
     primary: `
-      bg-white text-[var(--color-text-dark)]
+      bg-white text-gray-900
       hover:bg-gray-100 hover:scale-[1.02]
       active:scale-[0.98]
     `,
     outlined: `
       border-2 border-white text-white
-      hover:bg-white hover:text-[var(--color-text-dark)]
+      hover:bg-white hover:text-gray-900
       active:scale-[0.98]
     `,
     ghost: `
-      text-[var(--color-text-muted)] uppercase tracking-wider text-sm
+      text-gray-400 uppercase tracking-wider text-sm
       hover:text-white
     `,
   };
