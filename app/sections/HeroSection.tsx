@@ -11,7 +11,7 @@ export default function HeroSection() {
     >
       <div className="container flex flex-col items-center text-center">
         {/* Live Badge */}
-        <LiveBadge date="December 20, 2025" className="mb-8" />
+        <LiveBadge date="December 26, 2025" className="mb-8" />
 
         {/* Main Logo - Space Grotesk */}
         <h1
@@ -34,10 +34,10 @@ export default function HeroSection() {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <Button variant="outlined" size="md" href="#featured" showArrow>
+          <Button variant="primary" size="sm" href="#featured" showArrow>
             Read Latest Edition
           </Button>
-          <Button variant="ghost" size="md" href="#editions">
+          <Button variant="ghost" size="sm" href="#editions">
             Browse Archives
           </Button>
         </div>
