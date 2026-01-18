@@ -6,9 +6,9 @@ import { IMAGES } from "../lib/constants";
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-transparent backdrop-blur-md">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between gap-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-2 group mr-auto">
           {/* Signal Icon */}
           {/* <div className="flex h-10 w-10 items-center justify-center rounded-lg"> */}
           <Image
@@ -55,7 +55,12 @@ export default function Header() {
         </nav>
 
         {/* Subscribe Button */}
-        <Button variant="outlined" size="sm" href="#subscribe">
+        <Button
+          variant="primary"
+          size="sm"
+          href="#subscribe"
+          className="text-black"
+        >
           Subscribe
         </Button>
       </div>

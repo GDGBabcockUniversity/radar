@@ -1,3 +1,5 @@
+import { cn } from "../lib/utils";
+
 interface ButtonProps {
   children: React.ReactNode;
   variant?: "primary" | "outlined" | "ghost";
@@ -26,7 +28,7 @@ export default function Button({
 
   const variants = {
     primary: `
-      bg-white text-gray-900
+      bg-white text-black
       hover:bg-gray-100 hover:scale-[1.02]
       active:scale-[0.98]
     `,
@@ -47,8 +49,7 @@ export default function Button({
     lg: "px-8 py-4 text-lg",
   };
 
-  const classes =
-    `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`.trim();
+  const classes = cn(baseStyles, variants[variant], sizes[size], className);
 
   const content = (
     <>
