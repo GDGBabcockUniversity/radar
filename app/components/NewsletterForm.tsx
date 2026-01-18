@@ -32,19 +32,23 @@ export default function NewsletterForm({
   if (isFooter) {
     // Footer variant: stacked layout with rectangular button
     return (
-      <form onSubmit={handleSubmit} className={`w-full ${className}`}>
+      <form
+        onSubmit={handleSubmit}
+        className={`w-full ${className}`}
+        style={{ fontFamily: "var(--font-body)" }}
+      >
         <div className="space-y-3">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="student@babcock.edu.ng"
-            className="w-full px-4 py-3 bg-white/5 text-white border border-white/10 rounded-lg placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors font-body text-sm"
+            className="w-full px-4 py-3 bg-white/5 text-white border border-white/10 rounded-lg placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors text-sm"
           />
           <button
             type="submit"
             disabled={status === "loading"}
-            className="w-full px-4 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover focus:outline-none disabled:opacity-50 transition-colors font-body text-sm inline-flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover focus:outline-none disabled:opacity-50 transition-colors text-sm inline-flex items-center justify-center gap-2"
           >
             {status === "success" ? "Subscribed!" : "Subscribe Now"}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -67,6 +71,7 @@ export default function NewsletterForm({
     <form
       onSubmit={handleSubmit}
       className={`w-full max-w-md mx-auto ${className}`}
+      style={{ fontFamily: "var(--font-body)" }}
     >
       <div className="flex items-center rounded-full bg-white/5 border border-white/10 p-1.5">
         {/* Email Icon */}
@@ -88,14 +93,14 @@ export default function NewsletterForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="student@babcock.edu.ng"
-          className="flex-1 px-3 py-2 bg-transparent text-white placeholder:text-gray-500 focus:outline-none font-body text-sm"
+          className="flex-1 px-3 py-2 bg-transparent text-white placeholder:text-gray-500 focus:outline-none text-sm"
         />
 
         {/* Submit Button */}
         <button
           type="submit"
           disabled={status === "loading"}
-          className="px-5 py-2 bg-primary text-white font-medium text-sm rounded-full hover:bg-primary-hover focus:outline-none disabled:opacity-50 transition-colors font-body inline-flex items-center gap-2"
+          className="px-5 py-2 bg-primary text-white font-medium text-sm rounded-full hover:bg-primary-hover focus:outline-none disabled:opacity-50 transition-colors inline-flex items-center gap-2"
         >
           {status === "success" ? "Subscribed" : "Subscribe"}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">

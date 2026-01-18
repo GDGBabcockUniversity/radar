@@ -16,7 +16,6 @@ interface ArticleCardProps {
 export default function ArticleCard({
   image,
   tag,
-  tagColor = "default",
   editionNumber,
   date,
   title,
@@ -52,7 +51,10 @@ export default function ArticleCard({
       {/* Content */}
       <div className="absolute inset-0 flex flex-col justify-end p-6">
         {/* Tags Row */}
-        <div className="mb-3 flex items-center gap-3 font-body">
+        <div
+          className="mb-3 flex items-center gap-3"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
           {tag && (
             <span className="px-2 py-1 text-xs font-semibold uppercase tracking-wide rounded bg-primary text-white">
               {tag}
@@ -91,16 +93,20 @@ export default function ArticleCard({
         {/* Title - Space Grotesk */}
         <h3
           className={`
-            font-heading font-semibold text-white leading-tight
+            font-semibold text-white leading-tight
             ${isFeatured ? "text-2xl md:text-3xl" : "text-lg md:text-xl"}
           `}
+          style={{ fontFamily: "var(--font-heading)" }}
         >
           {title}
         </h3>
 
         {/* Description - Inter */}
         {description && (
-          <p className="mt-2 text-sm text-white/60 line-clamp-2 font-body">
+          <p
+            className="mt-2 text-sm text-white/60 line-clamp-2"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
             {description}
           </p>
         )}

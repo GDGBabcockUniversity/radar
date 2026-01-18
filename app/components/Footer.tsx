@@ -5,7 +5,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-black border-t border-white/10">
+    <footer className="bg-black border-t border-white/10 py-8">
       <div className="container py-16">
         <div className="grid gap-12 md:grid-cols-3">
           {/* Column 1: Logo & Description */}
@@ -30,12 +30,18 @@ export default function Footer() {
                   />
                 </svg>
               </div>
-              <span className="text-lg font-bold text-white font-heading">
+              <span
+                className="text-lg font-bold text-white"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
                 RADAR
               </span>
             </Link>
 
-            <p className="text-sm text-gray-400 leading-relaxed font-body">
+            <p
+              className="text-sm text-gray-400 leading-relaxed"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
               Your Signal to What&apos;s Next. Documenting the journey of
               Babcock&apos;s tech ecosystem, one edition at a time.
             </p>
@@ -95,10 +101,16 @@ export default function Footer() {
 
           {/* Column 2: Navigation */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-white font-heading">
+            <h4
+              className="mb-4 text-sm font-semibold text-white"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
               Navigation
             </h4>
-            <ul className="space-y-3 font-body">
+            <ul
+              className="space-y-3"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
               <li>
                 <Link
                   href="/"
@@ -136,10 +148,16 @@ export default function Footer() {
 
           {/* Column 3: Newsletter */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-white font-heading">
+            <h4
+              className="mb-4 text-sm font-semibold text-white"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
               Stay in the Loop
             </h4>
-            <p className="mb-4 text-sm text-gray-400 font-body">
+            <p
+              className="mb-4 text-sm text-gray-400"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
               Get the latest edition delivered to your inbox monthly.
             </p>
             <NewsletterForm variant="footer" />
@@ -147,11 +165,14 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-gray-500 font-body">
+        <div
+          className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          <p className="text-xs text-gray-500">
             © {currentYear} GDG Babcock. All rights reserved.
           </p>
-          <p className="text-xs text-gray-500 font-body">
+          <p className="text-xs text-gray-500">
             Designed by <span className="text-gray-400">Daddy B.</span>
           </p>
         </div>

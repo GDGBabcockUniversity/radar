@@ -19,7 +19,7 @@ export default function Button({
 }: ButtonProps) {
   const baseStyles = `
     inline-flex items-center justify-center gap-2
-    font-medium rounded-full font-body
+    font-medium rounded-full
     transition-all duration-200 ease-out
     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary
   `;
@@ -76,14 +76,22 @@ export default function Button({
 
   if (href) {
     return (
-      <a href={href} className={`group ${classes}`}>
+      <a
+        href={href}
+        className={`group ${classes}`}
+        style={{ fontFamily: "var(--font-body)" }}
+      >
         {content}
       </a>
     );
   }
 
   return (
-    <button onClick={onClick} className={`group ${classes}`}>
+    <button
+      onClick={onClick}
+      className={`group ${classes}`}
+      style={{ fontFamily: "var(--font-body)" }}
+    >
       {content}
     </button>
   );

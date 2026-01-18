@@ -6,7 +6,8 @@ interface LiveBadgeProps {
 export default function LiveBadge({ date, className = "" }: LiveBadgeProps) {
   return (
     <div
-      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-heading ${className}`}
+      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs ${className}`}
+      style={{ fontFamily: "var(--font-heading)" }}
     >
       {/* Pulsing live dot */}
       <span className="relative flex h-2 w-2">

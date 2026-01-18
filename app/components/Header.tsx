@@ -27,17 +27,26 @@ export default function Header() {
             </svg>
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold tracking-tight text-white font-heading">
+            <span
+              className="text-sm font-bold tracking-tight text-white"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
               RADAR
             </span>
-            <span className="text-[9px] uppercase tracking-wider text-gray-400 font-heading">
+            <span
+              className="text-[9px] uppercase tracking-wider text-gray-400"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
               By GDG Babcock
             </span>
           </div>
         </Link>
 
         {/* Navigation */}
-        <nav className="hidden items-center gap-8 md:flex font-body">
+        <nav
+          className="hidden items-center gap-8 md:flex"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
           <Link
             href="/latest"
             className="text-sm font-medium text-white hover:text-primary transition-colors"

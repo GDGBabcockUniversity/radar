@@ -2,7 +2,14 @@ import { ArticleCard } from "../components";
 
 export default function FeaturedSection() {
   return (
-    <section id="featured" className="section-gradient pb-16">
+    <section
+      id="featured"
+      className="pb-16"
+      style={{
+        background:
+          "radial-gradient(ellipse at center top, #1a2744 0%, #0a0a0a 70%)",
+      }}
+    >
       <div className="container">
         <ArticleCard
           variant="featured"
