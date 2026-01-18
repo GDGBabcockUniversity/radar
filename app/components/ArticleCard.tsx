@@ -47,7 +47,7 @@ export default function ArticleCard({
         />
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent" />
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col justify-end p-6">
@@ -97,7 +97,7 @@ export default function ArticleCard({
       `}
     >
       {/* Image Section */}
-      <div className="relative aspect-[4/3]">
+      <div className="relative aspect-4/3">
         <Image
           src={image}
           alt={title}
