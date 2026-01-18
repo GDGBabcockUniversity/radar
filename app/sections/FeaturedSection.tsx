@@ -7,7 +7,7 @@ export default function FeaturedSection() {
       className="pb-16"
       style={{
         background:
-          "radial-gradient(ellipse at center top, #1a2744 0%, #0a0a0a 70%)",
+          "radial-gradient(ellipse at center, #1a2744 0%, #0a0a0a 70%)",
       }}
     >
       <div className="container">

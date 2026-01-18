@@ -6,7 +6,7 @@ export default function HeroSection() {
       className="relative pt-24 pb-16 md:pt-32 md:pb-20"
       style={{
         background:
-          "radial-gradient(ellipse at center top, #1a2744 0%, #0a0a0a 70%)",
+          "radial-gradient(ellipse at center, #1a2744 0%, #0a0a0a 70%)",
       }}
     >
       <div className="container flex flex-col items-center text-center">

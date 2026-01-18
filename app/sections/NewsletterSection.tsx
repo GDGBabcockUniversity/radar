@@ -7,7 +7,7 @@ export default function NewsletterSection() {
       className="relative py-24 md:py-32"
       style={{
         background:
-          "radial-gradient(ellipse at center top, #1a2744 0%, #0a0a0a 70%)",
+          "radial-gradient(ellipse at center, #1a2744 0%, #0a0a0a 70%)",
       }}
     >
       <div className="container max-w-2xl mx-auto text-center">
