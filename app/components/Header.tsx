@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Button from "./Button";
+import Image from "next/image";
+import { IMAGES } from "../lib/constants";
 
 export default function Header() {
   return (
@@ -8,24 +10,15 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           {/* Signal Icon */}
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="text-white"
-            >
-              <path
-                d="M12 12V12.01M8.5 8.5C9.39 7.61 10.63 7 12 7C13.37 7 14.61 7.61 15.5 8.5M5.5 5.5C7.21 3.79 9.47 2.75 12 2.75C14.53 2.75 16.79 3.79 18.5 5.5M12 17V21M8 21H16"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
+          {/* <div className="flex h-10 w-10 items-center justify-center rounded-lg"> */}
+          <Image
+            src={IMAGES.logo.src}
+            width={IMAGES.logo.w}
+            height={IMAGES.logo.h}
+            alt="Logo"
+            className="w-10 h-10"
+          />
+          {/* </div> */}
           <div className="flex flex-col">
             <span
               className="text-sm font-bold tracking-tight text-white"
