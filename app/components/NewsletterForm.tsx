@@ -43,12 +43,12 @@ export default function NewsletterForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="student@babcock.edu.ng"
-            className="w-full px-4 py-3 bg-white/5 text-white border border-white/10 rounded-lg placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors text-sm"
+            className="w-full px-4 py-3 bg-white/5 text-white border border-white/10 rounded-md placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors text-sm"
           />
           <button
             type="submit"
             disabled={status === "loading"}
-            className="w-full px-4 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover focus:outline-none disabled:opacity-50 transition-colors text-sm inline-flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 bg-primary text-white font-medium rounded-md hover:bg-primary-hover focus:outline-none disabled:opacity-50 transition-colors text-sm inline-flex items-center justify-center gap-2"
           >
             {status === "success" ? "Subscribed!" : "Subscribe Now"}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
