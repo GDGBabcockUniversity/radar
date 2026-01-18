@@ -40,7 +40,7 @@ export default function Footer() {
             {/* Social Links */}
             <div className="flex items-center gap-4 pt-2">
               <a
-                href="https://twitter.com"
+                href="https://twitter.com/gdgbabcock"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-500 hover:text-white transition-colors"
@@ -56,7 +56,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/company/gdgbabcock"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-500 hover:text-white transition-colors"
@@ -72,7 +72,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/GDGBabcockUniversity"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-500 hover:text-white transition-colors"
@@ -164,7 +164,7 @@ export default function Footer() {
             © {currentYear} GDG Babcock. All rights reserved.
           </p>
           <p className="text-xs text-gray-500">
-            Designed by <span className="text-gray-400">Daddy B.</span>
+            Designed by <span className="text-gray-400">Daddy D.</span>
           </p>
         </div>
       </div>
