@@ -19,11 +19,6 @@
   --color-border-light: rgba(0, 0, 0, 0.1);
   --color-border-dark: rgba(255, 255, 255, 0.1);
 
-  /* Typography - These reference Next.js font variables set on body */
-  --font-heading: var(--font-space-grotesk);
-  --font-body: var(--font-inter);
-  --font-serif: var(--font-merriweather);
-
   /* Spacing */
   --section-padding: 5rem;
   --container-max: 1200px;
@@ -54,11 +49,6 @@
   --color-primary-hover: var(--color-primary-hover);
   --color-background: var(--color-bg-dark);
   --color-foreground: var(--color-text-light);
-
-  /* Font families for Tailwind usage */
-  --font-family-heading: var(--font-space-grotesk), system-ui, sans-serif;
-  --font-family-body: var(--font-inter), system-ui, sans-serif;
-  --font-family-serif: var(--font-merriweather), Georgia, serif;
 }
 
 /* ===== Base Styles ===== */
@@ -71,6 +61,11 @@ html {
 }
 
 body {
+  /* Font aliases - must be in body scope where Next.js font variables are available */
+  --font-heading: var(--font-space-grotesk);
+  --font-body: var(--font-inter);
+  --font-serif: var(--font-merriweather);
+
   font-family: var(--font-body);
   background: var(--color-bg-dark);
   color: var(--color-text-light);
