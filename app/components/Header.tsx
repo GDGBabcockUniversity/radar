@@ -3,7 +3,7 @@ import Button from "./Button";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--color-border-light)] bg-white/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-[var(--color-border-dark)] bg-[#0A0A0A]/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
@@ -28,7 +28,7 @@ export default function Header() {
           </div>
           <div className="flex flex-col">
             <span
-              className="text-lg font-bold tracking-tight"
+              className="text-lg font-bold tracking-tight text-white"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               RADAR
@@ -43,13 +43,13 @@ export default function Header() {
         <nav className="hidden items-center gap-8 md:flex">
           <Link
             href="/latest"
-            className="text-sm font-medium text-[var(--color-text-dark)] hover:text-[var(--color-primary)] transition-colors"
+            className="text-sm font-medium text-white hover:text-[var(--color-primary)] transition-colors"
           >
             Latest
           </Link>
           <Link
             href="/archive"
-            className="text-sm font-medium text-[var(--color-text-dark)] hover:text-[var(--color-primary)] transition-colors"
+            className="text-sm font-medium text-white hover:text-[var(--color-primary)] transition-colors"
           >
             Archive
           </Link>

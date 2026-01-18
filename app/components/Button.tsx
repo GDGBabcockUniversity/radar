@@ -26,18 +26,18 @@ export default function Button({
 
   const variants = {
     primary: `
-      bg-[var(--color-text-dark)] text-white
-      hover:bg-[#333] hover:scale-[1.02]
+      bg-white text-[var(--color-text-dark)]
+      hover:bg-gray-100 hover:scale-[1.02]
       active:scale-[0.98]
     `,
     outlined: `
-      border-2 border-[var(--color-text-dark)] text-[var(--color-text-dark)]
-      hover:bg-[var(--color-text-dark)] hover:text-white
+      border-2 border-white text-white
+      hover:bg-white hover:text-[var(--color-text-dark)]
       active:scale-[0.98]
     `,
     ghost: `
       text-[var(--color-text-muted)] uppercase tracking-wider text-sm
-      hover:text-[var(--color-text-dark)]
+      hover:text-white
     `,
   };
 

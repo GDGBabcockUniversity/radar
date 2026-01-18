@@ -70,8 +70,8 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--color-bg-light);
-  color: var(--color-text-dark);
+  background: var(--color-bg-dark);
+  color: var(--color-text-light);
   line-height: 1.6;
 }
 
