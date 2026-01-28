@@ -150,14 +150,14 @@ const components: PortableTextComponents = {
       if (!value?.asset) return null;
       return (
         <figure className="my-6 w-[60%] mx-auto">
-          <div className="relative aspect-video rounded-lg overflow-hidden">
-            <Image
-              src={urlFor(value).width(1200).height(675).url()}
-              alt={value.alt || "Article image"}
-              fill
-              className="object-cover"
-            />
-          </div>
+          <Image
+            src={urlFor(value).width(1200).url()}
+            alt={value.alt || "Article image"}
+            width={0}
+            height={0}
+            sizes="100%"
+            className="w-full h-auto rounded-lg"
+          />
           {value.caption && (
             <figcaption
               className="text-gray-500 text-sm mt-2 text-center"
