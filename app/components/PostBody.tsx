@@ -11,34 +11,86 @@ interface PostBodyProps {
 
 const components: PortableTextComponents = {
   block: {
+    h1: ({ children }) => (
+      <h1
+        className="font-bold text-white mt-12 mb-4"
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
+          lineHeight: 1.2,
+        }}
+      >
+        {children}
+      </h1>
+    ),
     h2: ({ children }) => (
       <h2
-        className="text-xl md:text-2xl font-bold text-white mt-10 mb-3"
-        style={{ fontFamily: "var(--font-heading)" }}
+        className="font-bold text-white mt-10 mb-3"
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: "clamp(1.5rem, 3vw, 2rem)",
+          lineHeight: 1.3,
+        }}
       >
         {children}
       </h2>
     ),
     h3: ({ children }) => (
       <h3
-        className="text-lg md:text-xl font-semibold text-white mt-8 mb-3"
-        style={{ fontFamily: "var(--font-heading)" }}
+        className="font-semibold text-white mt-8 mb-3"
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: "clamp(1.25rem, 2.5vw, 1.5rem)",
+          lineHeight: 1.3,
+        }}
       >
         {children}
       </h3>
     ),
     h4: ({ children }) => (
       <h4
-        className="text-base md:text-lg font-semibold text-white mt-6 mb-2"
-        style={{ fontFamily: "var(--font-heading)" }}
+        className="font-semibold text-white mt-6 mb-2"
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: "clamp(1.125rem, 2vw, 1.25rem)",
+          lineHeight: 1.4,
+        }}
       >
         {children}
       </h4>
     ),
+    h5: ({ children }) => (
+      <h5
+        className="font-semibold text-white mt-5 mb-2"
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: "1.125rem",
+          lineHeight: 1.4,
+        }}
+      >
+        {children}
+      </h5>
+    ),
+    h6: ({ children }) => (
+      <h6
+        className="font-semibold text-gray-300 mt-4 mb-2 uppercase tracking-wide"
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: "0.875rem",
+          lineHeight: 1.5,
+        }}
+      >
+        {children}
+      </h6>
+    ),
     normal: ({ children }) => (
       <p
-        className="text-gray-300 text-base leading-relaxed mb-5"
-        style={{ fontFamily: "var(--font-body)" }}
+        className="text-gray-300 leading-relaxed mb-5"
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "1rem",
+          lineHeight: 1.75,
+        }}
       >
         {children}
       </p>
@@ -46,7 +98,11 @@ const components: PortableTextComponents = {
     blockquote: ({ children }) => (
       <blockquote
         className="border-l-4 border-primary pl-5 my-6 italic text-gray-400"
-        style={{ fontFamily: "var(--font-serif)" }}
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: "1.125rem",
+          lineHeight: 1.6,
+        }}
       >
         {children}
       </blockquote>
@@ -123,6 +179,28 @@ const components: PortableTextComponents = {
         </code>
       </pre>
     ),
+    divider: ({ value }) => {
+      const style = value?.style || "line";
+
+      if (style === "dotted") {
+        return (
+          <hr className="my-10 border-0 border-t-2 border-dotted border-white/20" />
+        );
+      }
+
+      if (style === "spaced") {
+        return (
+          <div className="my-10 flex items-center justify-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-white/30" />
+            <span className="w-2 h-2 rounded-full bg-white/30" />
+            <span className="w-2 h-2 rounded-full bg-white/30" />
+          </div>
+        );
+      }
+
+      // Default: simple line
+      return <hr className="my-10 border-0 border-t border-white/20" />;
+    },
   },
 };
 

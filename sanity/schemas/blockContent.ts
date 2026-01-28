@@ -85,5 +85,32 @@ export default defineType({
         },
       ],
     }),
+    defineArrayMember({
+      name: "divider",
+      title: "Divider",
+      type: "object",
+      fields: [
+        {
+          name: "style",
+          title: "Style",
+          type: "string",
+          options: {
+            list: [
+              { title: "Simple Line", value: "line" },
+              { title: "Dotted", value: "dotted" },
+              { title: "Spaced", value: "spaced" },
+            ],
+          },
+          initialValue: "line",
+        },
+      ],
+      preview: {
+        prepare() {
+          return {
+            title: "─────────────── Divider ───────────────",
+          };
+        },
+      },
+    }),
   ],
 });
