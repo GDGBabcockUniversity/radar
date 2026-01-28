@@ -13,7 +13,7 @@ const components: PortableTextComponents = {
   block: {
     h2: ({ children }) => (
       <h2
-        className="text-2xl md:text-3xl font-bold text-white mt-12 mb-4"
+        className="text-xl md:text-2xl font-bold text-white mt-10 mb-3"
         style={{ fontFamily: "var(--font-heading)" }}
       >
         {children}
@@ -21,7 +21,7 @@ const components: PortableTextComponents = {
     ),
     h3: ({ children }) => (
       <h3
-        className="text-xl md:text-2xl font-semibold text-white mt-10 mb-3"
+        className="text-lg md:text-xl font-semibold text-white mt-8 mb-3"
         style={{ fontFamily: "var(--font-heading)" }}
       >
         {children}
@@ -29,7 +29,7 @@ const components: PortableTextComponents = {
     ),
     h4: ({ children }) => (
       <h4
-        className="text-lg md:text-xl font-semibold text-white mt-8 mb-3"
+        className="text-base md:text-lg font-semibold text-white mt-6 mb-2"
         style={{ fontFamily: "var(--font-heading)" }}
       >
         {children}
@@ -37,7 +37,7 @@ const components: PortableTextComponents = {
     ),
     normal: ({ children }) => (
       <p
-        className="text-gray-300 text-lg leading-relaxed mb-6"
+        className="text-gray-300 text-base leading-relaxed mb-5"
         style={{ fontFamily: "var(--font-body)" }}
       >
         {children}
@@ -45,7 +45,7 @@ const components: PortableTextComponents = {
     ),
     blockquote: ({ children }) => (
       <blockquote
-        className="border-l-4 border-primary pl-6 my-8 italic text-gray-400 text-lg"
+        className="border-l-4 border-primary pl-5 my-6 italic text-gray-400"
         style={{ fontFamily: "var(--font-serif)" }}
       >
         {children}
@@ -54,12 +54,12 @@ const components: PortableTextComponents = {
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="list-disc list-inside text-gray-300 text-lg mb-6 space-y-2 ml-4">
+      <ul className="list-disc list-inside text-gray-300 mb-5 space-y-1.5 ml-2">
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="list-decimal list-inside text-gray-300 text-lg mb-6 space-y-2 ml-4">
+      <ol className="list-decimal list-inside text-gray-300 mb-5 space-y-1.5 ml-2">
         {children}
       </ol>
     ),
@@ -93,8 +93,8 @@ const components: PortableTextComponents = {
     image: ({ value }) => {
       if (!value?.asset) return null;
       return (
-        <figure className="my-8">
-          <div className="relative aspect-video rounded-xl overflow-hidden">
+        <figure className="my-6 w-[60%] mx-auto">
+          <div className="relative aspect-video rounded-lg overflow-hidden">
             <Image
               src={urlFor(value).width(1200).height(675).url()}
               alt={value.alt || "Article image"}
@@ -104,7 +104,7 @@ const components: PortableTextComponents = {
           </div>
           {value.caption && (
             <figcaption
-              className="text-center text-gray-500 text-sm mt-3"
+              className="text-gray-500 text-sm mt-2 text-center"
               style={{ fontFamily: "var(--font-body)" }}
             >
               {value.caption}
@@ -114,7 +114,7 @@ const components: PortableTextComponents = {
       );
     },
     code: ({ value }) => (
-      <pre className="bg-[#1a1a1a] border border-white/10 rounded-xl p-6 overflow-x-auto my-8">
+      <pre className="bg-[#1a1a1a] border border-white/10 rounded-lg p-4 overflow-x-auto my-6">
         <code
           className="text-sm text-gray-300 font-mono"
           data-language={value.language}
@@ -128,7 +128,7 @@ const components: PortableTextComponents = {
 
 export default function PostBody({ body }: PostBodyProps) {
   return (
-    <article className="max-w-3xl mx-auto py-10">
+    <article className="max-w-4xl py-8">
       <PortableText value={body} components={components} />
     </article>
   );
