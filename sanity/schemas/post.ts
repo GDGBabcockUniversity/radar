@@ -49,12 +49,6 @@ export default defineType({
       of: [{ type: "reference", to: { type: "category" } }],
     }),
     defineField({
-      name: "editionNumber",
-      title: "Edition Number",
-      type: "string",
-      description: 'e.g., "RADAR 001"',
-    }),
-    defineField({
       name: "description",
       title: "Description",
       type: "text",
