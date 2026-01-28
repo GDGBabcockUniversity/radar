@@ -8,7 +8,6 @@ interface PostHeaderProps {
     asset: { _ref: string };
     alt?: string;
   };
-  editionNumber?: string;
   categories?: { title: string }[];
 }
 
@@ -16,7 +15,6 @@ export default function PostHeader({
   title,
   description,
   mainImage,
-  editionNumber,
   categories,
 }: PostHeaderProps) {
   return (
@@ -46,11 +44,6 @@ export default function PostHeader({
               className="mb-4 flex items-center gap-3"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              {editionNumber && (
-                <span className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide rounded-full bg-primary text-white">
-                  {editionNumber}
-                </span>
-              )}
               {categories?.map((cat) => (
                 <span
                   key={cat.title}

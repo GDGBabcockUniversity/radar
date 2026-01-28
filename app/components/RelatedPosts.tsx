@@ -6,7 +6,6 @@ interface RelatedPostsProps {
     title: string;
     slug: { current: string };
     description?: string;
-    editionNumber?: string;
     publishedAt?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mainImage?: any;
@@ -44,7 +43,6 @@ export default function RelatedPosts({ posts }: RelatedPostsProps) {
                   ? `https://cdn.sanity.io/images/${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}/${process.env.NEXT_PUBLIC_SANITY_DATASET}/${post.mainImage.asset._ref.replace("image-", "").replace("-jpg", ".jpg").replace("-png", ".png").replace("-webp", ".webp")}`
                   : "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=450&fit=crop"
               }
-              editionNumber={post.editionNumber}
               date={post.publishedAt ? formatDate(post.publishedAt) : ""}
               title={post.title}
               description={post.description}

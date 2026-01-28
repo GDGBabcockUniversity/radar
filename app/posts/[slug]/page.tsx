@@ -54,7 +54,6 @@ export default async function PostPage({ params }: PostPageProps) {
           title={post.title}
           description={post.description}
           mainImage={post.mainImage}
-          editionNumber={post.editionNumber}
           categories={post.categories}
         />
 
