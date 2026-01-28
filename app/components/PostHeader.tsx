@@ -20,7 +20,7 @@ export default function PostHeader({
   // If no image, use a compact header layout
   if (!mainImage) {
     return (
-      <header className="pb-8 md:pb-10">
+      <header className="pb-8 md:pb-10 pt-8 md:pt-12">
         <div className="container">
           {/* Tags Row */}
           {categories && categories.length > 0 && (
