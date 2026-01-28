@@ -100,7 +100,7 @@ const components: PortableTextComponents = {
         className="border-l-4 border-primary pl-5 my-6 italic text-gray-400"
         style={{
           fontFamily: "var(--font-serif)",
-          fontSize: "1.125rem",
+          fontSize: "1rem",
           lineHeight: 1.6,
         }}
       >
@@ -149,7 +149,7 @@ const components: PortableTextComponents = {
     image: ({ value }) => {
       if (!value?.asset) return null;
       return (
-        <figure className="my-6 w-[60%] mx-auto">
+        <figure className="my-6 w-full md:w-[75%] mx-auto">
           <Image
             src={urlFor(value).width(1200).url()}
             alt={value.alt || "Article image"}
