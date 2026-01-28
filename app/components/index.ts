@@ -4,3 +4,7 @@ export { default as ArticleCard } from "./ArticleCard";
 export { default as NewsletterForm } from "./NewsletterForm";
 export { default as Header } from "./Header";
 export { default as Footer } from "./Footer";
+export { default as PostHeader } from "./PostHeader";
+export { default as PostBody } from "./PostBody";
+export { default as AuthorCard } from "./AuthorCard";
+export { default as RelatedPosts } from "./RelatedPosts";
