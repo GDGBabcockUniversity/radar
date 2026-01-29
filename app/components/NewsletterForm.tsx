@@ -42,7 +42,7 @@ export default function NewsletterForm({
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="student@babcock.edu.ng"
+            placeholder="john.doe@gmail.com"
             className="w-full px-4 py-3 bg-white/5 text-white border border-white/10 rounded-md placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors text-sm"
           />
           <button
