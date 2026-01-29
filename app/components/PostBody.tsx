@@ -9,6 +9,36 @@ interface PostBodyProps {
   body: PortableTextBlock[];
 }
 
+// Helper to create URL-friendly slugs from heading text
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/[^\w-]+/g, "") // Remove non-word chars
+    .replace(/--+/g, "-"); // Replace multiple - with single -
+}
+
+// Extract text content from React children
+function getTextContent(children: React.ReactNode): string {
+  if (typeof children === "string") return children;
+  if (Array.isArray(children)) {
+    return children.map(getTextContent).join("");
+  }
+  if (
+    children &&
+    typeof children === "object" &&
+    "props" in children &&
+    (children as { props?: { children?: React.ReactNode } }).props?.children
+  ) {
+    return getTextContent(
+      (children as { props: { children: React.ReactNode } }).props.children,
+    );
+  }
+  return "";
+}
+
 const components: PortableTextComponents = {
   block: {
     h1: ({ children }) => (
@@ -23,18 +53,30 @@ const components: PortableTextComponents = {
         {children}
       </h1>
     ),
-    h2: ({ children }) => (
-      <h2
-        className="font-bold text-white mt-10 mb-3"
-        style={{
-          fontFamily: "var(--font-heading)",
-          fontSize: "clamp(1.5rem, 3vw, 2rem)",
-          lineHeight: 1.3,
-        }}
-      >
-        {children}
-      </h2>
-    ),
+    h2: ({ children }) => {
+      const text = getTextContent(children);
+      const id = slugify(text);
+      return (
+        <h2
+          id={id}
+          className="font-bold text-white mt-10 mb-3 group relative"
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontSize: "clamp(1.5rem, 3vw, 2rem)",
+            lineHeight: 1.3,
+          }}
+        >
+          <a
+            href={`#${id}`}
+            className="absolute -left-6 opacity-0 group-hover:opacity-100 transition-opacity text-gray-500 hover:text-primary"
+            aria-label={`Link to ${text}`}
+          >
+            #
+          </a>
+          {children}
+        </h2>
+      );
+    },
     h3: ({ children }) => (
       <h3
         className="font-semibold text-white mt-8 mb-3"
