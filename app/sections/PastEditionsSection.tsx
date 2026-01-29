@@ -1,30 +1,34 @@
 import { ArticleCard } from "../components";
+import { urlFor } from "../lib/sanity";
 
-const pastEditions = [
-  {
-    id: 1,
-    image:
-      "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=450&fit=crop",
-    editionNumber: "RADAR 001",
-    date: "December 26, 2025",
-    title: "The Launch Edition",
-    description:
-      "Welcome to RADAR. In this inaugural edition, we look back at a transformative year for GDG Babcock, spotlight campus innovators, and...",
-    href: "/editions/001",
-  },
-  {
-    id: 2,
-    image:
-      "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600&h=450&fit=crop",
-    editionNumber: "RADAR 000",
-    date: "November 28, 2025",
-    title: "The Beta Test",
-    description: "A look back at the semester's beginning.",
-    href: "/editions/000",
-  },
-];
+interface Post {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  description?: string;
+  publishedAt?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mainImage?: any;
+  categories?: { title: string }[];
+}
 
-export default function PastEditionsSection() {
+interface PastEditionsSectionProps {
+  posts: Post[];
+}
+
+export default function PastEditionsSection({
+  posts,
+}: PastEditionsSectionProps) {
+  if (!posts || posts.length === 0) return null;
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
     <section id="editions" className="bg-black py-20 md:py-28">
       <div className="container">
@@ -46,18 +50,23 @@ export default function PastEditionsSection() {
 
         {/* Editions Grid */}
         <div className="grid gap-6 sm:grid-cols-2 max-w-3xl">
-          {pastEditions.map((edition) => (
-            <ArticleCard
-              key={edition.id}
-              variant="default"
-              image={edition.image}
-              editionNumber={edition.editionNumber}
-              date={edition.date}
-              title={edition.title}
-              description={edition.description}
-              href={edition.href}
-            />
-          ))}
+          {posts.map((post) => {
+            const imageUrl = post.mainImage
+              ? urlFor(post.mainImage).width(600).height(450).url()
+              : "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=450&fit=crop";
+
+            return (
+              <ArticleCard
+                key={post._id}
+                variant="default"
+                image={imageUrl}
+                date={post.publishedAt ? formatDate(post.publishedAt) : ""}
+                title={post.title}
+                description={post.description}
+                href={`/posts/${post.slug.current}`}
+              />
+            );
+          })}
         </div>
       </div>
     </section>

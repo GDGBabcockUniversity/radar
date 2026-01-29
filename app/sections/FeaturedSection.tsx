@@ -1,6 +1,36 @@
 import { ArticleCard } from "../components";
+import { urlFor } from "../lib/sanity";
 
-export default function FeaturedSection() {
+interface FeaturedPost {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  description?: string;
+  publishedAt?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mainImage?: any;
+  categories?: { title: string }[];
+}
+
+interface FeaturedSectionProps {
+  post: FeaturedPost | null;
+}
+
+export default function FeaturedSection({ post }: FeaturedSectionProps) {
+  if (!post) return null;
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const imageUrl = post.mainImage
+    ? urlFor(post.mainImage).width(1200).height(675).url()
+    : "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=675&fit=crop";
+
   return (
     <section
       id="featured"
@@ -13,13 +43,13 @@ export default function FeaturedSection() {
       <div className="container">
         <ArticleCard
           variant="featured"
-          image="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=675&fit=crop"
+          image={imageUrl}
           tag="Featured"
           tagColor="blue"
-          date="December 20, 2025"
-          title="The Launch Edition"
-          description="Welcome to RADAR. In this inaugural edition, we look back at a transformative year for GDG Babcock, spotlight campus innovators, and preview what's next."
-          href="/editions/launch"
+          date={post.publishedAt ? formatDate(post.publishedAt) : ""}
+          title={post.title}
+          description={post.description}
+          href={`/posts/${post.slug.current}`}
         />
       </div>
     </section>

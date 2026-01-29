@@ -5,15 +5,19 @@ import {
   PastEditionsSection,
   NewsletterSection,
 } from "./sections";
+import { getFeaturedPost, getRecentPosts } from "./lib/sanity";
 
-export default function Home() {
+export default async function Home() {
+  const featuredPost = await getFeaturedPost();
+  const recentPosts = await getRecentPosts(4);
+
   return (
     <>
       <Header />
       <main>
         <HeroSection />
-        <FeaturedSection />
-        <PastEditionsSection />
+        <FeaturedSection post={featuredPost} />
+        <PastEditionsSection posts={recentPosts} />
         <NewsletterSection />
       </main>
       <Footer />
