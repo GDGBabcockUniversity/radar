@@ -11,7 +11,7 @@ export default function HeroSection() {
     >
       <div className="container flex flex-col items-center text-center">
         {/* Live Badge */}
-        <LiveBadge date="December 26, 2025" className="mb-8" />
+        <LiveBadge date="December 24, 2025" className="mb-8" />
 
         {/* Main Logo - Space Grotesk */}
         <h1
