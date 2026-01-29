@@ -112,13 +112,13 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/editions"
+                  href="#editions"
                   className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
                   Past Editions
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/spotlight"
                   className="text-sm text-gray-400 hover:text-white transition-colors"
@@ -133,7 +133,7 @@ export default function Footer() {
                 >
                   Submit a Story
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
