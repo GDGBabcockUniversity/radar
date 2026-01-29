@@ -73,7 +73,7 @@ export default function NewsletterForm({
       className={`w-full max-w-md mx-auto ${className}`}
       style={{ fontFamily: "var(--font-body)" }}
     >
-      <div className="flex items-center rounded-full bg-white/5 border border-white/10 p-1.5">
+      <div className="flex items-center rounded-md sm:rounded-full bg-white/5 border border-white/10 p-1.5">
         {/* Email Icon */}
         <div className="pl-3 text-gray-500">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -92,7 +92,7 @@ export default function NewsletterForm({
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="student@babcock.edu.ng"
+          placeholder="john.doe@gmail.com"
           className="flex-1 px-3 py-2 bg-transparent text-white placeholder:text-gray-500 focus:outline-none text-sm"
         />
 
@@ -100,7 +100,7 @@ export default function NewsletterForm({
         <button
           type="submit"
           disabled={status === "loading"}
-          className="px-5 py-2 bg-primary text-white font-medium text-sm rounded-full hover:bg-primary-hover focus:outline-none disabled:opacity-50 transition-colors inline-flex items-center gap-2"
+          className="hidden sm:inline-flex px-5 py-2 bg-primary text-white font-medium text-sm rounded-full hover:bg-primary-hover focus:outline-none disabled:opacity-50 transition-colors items-center gap-2"
         >
           {status === "success" ? "Subscribed" : "Subscribe"}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -114,6 +114,23 @@ export default function NewsletterForm({
           </svg>
         </button>
       </div>
+
+      <button
+        type="submit"
+        disabled={status === "loading"}
+        className="w-full sm:hidden px-5 py-3 bg-primary text-white font-medium text-sm rounded-md hover:bg-primary-hover focus:outline-none disabled:opacity-50 transition-colors items-center gap-2 flex justify-center mt-3"
+      >
+        {status === "success" ? "Subscribed" : "Subscribe"}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
     </form>
   );
 }
