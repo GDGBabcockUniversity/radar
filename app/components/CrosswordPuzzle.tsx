@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 // Puzzle data for "new-year-new-lies"
 // Grid: 25 columns × 19 rows (converted to 0-based indexing)
@@ -123,19 +123,10 @@ interface CrosswordPuzzleProps {
 }
 
 export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
-  const [grid, setGrid] = useState<CellData[][]>([]);
-  const [selectedCell, setSelectedCell] = useState<{
-    row: number;
-    col: number;
-  } | null>(null);
-  const [selectedDirection, setSelectedDirection] = useState<"across" | "down">(
-    "across",
-  );
-  const [isComplete, setIsComplete] = useState(false);
-
   const storageKey = `crossword-${puzzleId}`;
 
-  const initializeGrid = useCallback(() => {
+  // Initialize grid with saved progress using lazy initializer
+  const [grid, setGrid] = useState<CellData[][]>(() => {
     const newGrid: CellData[][] = [];
 
     // Create empty blocked grid
@@ -170,29 +161,69 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
       }
     });
 
-    return newGrid;
-  }, []);
-
-  useEffect(() => {
-    const newGrid = initializeGrid();
-    try {
-      const saved = localStorage.getItem(storageKey);
-      if (saved) {
-        const savedInputs = JSON.parse(saved);
-        for (let row = 0; row < newGrid.length; row++) {
-          for (let col = 0; col < newGrid[row].length; col++) {
-            if (savedInputs[row]?.[col] && !newGrid[row][col].isBlocked) {
-              newGrid[row][col].userInput = savedInputs[row][col];
+    // Load saved progress
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem(`crossword-${puzzleId}`);
+        if (saved) {
+          const savedInputs = JSON.parse(saved);
+          for (let row = 0; row < newGrid.length; row++) {
+            for (let col = 0; col < newGrid[row].length; col++) {
+              if (savedInputs[row]?.[col] && !newGrid[row][col].isBlocked) {
+                newGrid[row][col].userInput = savedInputs[row][col];
+              }
             }
           }
         }
+      } catch {
+        /* ignore */
       }
-    } catch {
-      /* ignore */
     }
-    setGrid(newGrid);
-  }, [initializeGrid, storageKey]);
 
+    return newGrid;
+  });
+
+  const [selectedCell, setSelectedCell] = useState<{
+    row: number;
+    col: number;
+  } | null>(null);
+  const [selectedDirection, setSelectedDirection] = useState<"across" | "down">(
+    "across",
+  );
+
+  const initializeGrid = useCallback(() => {
+    const newGrid: CellData[][] = [];
+    for (let row = 0; row < GRID_ROWS; row++) {
+      newGrid[row] = [];
+      for (let col = 0; col < GRID_COLS; col++) {
+        newGrid[row][col] = {
+          letter: "",
+          userInput: "",
+          wordIds: [],
+          isBlocked: true,
+        };
+      }
+    }
+    PUZZLE_DATA.words.forEach((word) => {
+      for (let i = 0; i < word.answer.length; i++) {
+        const row = word.direction === "down" ? word.row + i : word.row;
+        const col = word.direction === "across" ? word.col + i : word.col;
+        if (newGrid[row] && newGrid[row][col]) {
+          newGrid[row][col].letter = word.answer[i];
+          newGrid[row][col].isBlocked = false;
+          if (!newGrid[row][col].wordIds.includes(word.id)) {
+            newGrid[row][col].wordIds.push(word.id);
+          }
+          if (i === 0) {
+            newGrid[row][col].number = word.id;
+          }
+        }
+      }
+    });
+    return newGrid;
+  }, []);
+
+  // Save progress to localStorage
   useEffect(() => {
     if (grid.length === 0) return;
     const inputs: Record<number, Record<number, string>> = {};
@@ -209,21 +240,23 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
     } catch {
       /* ignore */
     }
+  }, [grid, storageKey]);
 
-    let complete = true;
+  // Compute completion status as derived state
+  const isComplete = useMemo(() => {
+    if (grid.length === 0) return false;
     for (let row = 0; row < grid.length; row++) {
       for (let col = 0; col < grid[row].length; col++) {
         if (
           !grid[row][col].isBlocked &&
           grid[row][col].userInput.toUpperCase() !== grid[row][col].letter
         ) {
-          complete = false;
-          break;
+          return false;
         }
       }
     }
-    setIsComplete(complete);
-  }, [grid, storageKey]);
+    return true;
+  }, [grid]);
 
   const handleCellInput = (row: number, col: number, value: string) => {
     if (grid[row][col].isBlocked) return;
@@ -306,7 +339,6 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
     setGrid(initializeGrid());
     localStorage.removeItem(storageKey);
     setSelectedCell(null);
-    setIsComplete(false);
   };
 
   const getHighlightedCells = () => {
