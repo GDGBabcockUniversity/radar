@@ -1,6 +1,7 @@
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import Image from "next/image";
 import { urlFor } from "../lib/sanity";
+import CrosswordPuzzle from "./CrosswordPuzzle";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PortableTextBlock = any;
@@ -244,18 +245,15 @@ const components: PortableTextComponents = {
       return <hr className="my-10 border-0 border-t border-white/20" />;
     },
     crossword: ({ value }) => {
-      // TODO: Replace with actual crossword component
-      return (
-        <div className="my-8 p-8 bg-[#1a1a1a] border border-white/10 rounded-xl text-center">
-          <span className="text-4xl mb-4 block">🧩</span>
-          <p className="text-white font-semibold mb-2">Crossword Puzzle</p>
-          <p className="text-gray-400 text-sm">
-            {value?.puzzleId
-              ? `Puzzle ID: ${value.puzzleId}`
-              : "Interactive puzzle coming soon!"}
-          </p>
-        </div>
-      );
+      if (!value?.puzzleId) {
+        return (
+          <div className="my-8 p-8 bg-[#1a1a1a] border border-white/10 rounded-xl text-center">
+            <span className="text-4xl mb-4 block">🧩</span>
+            <p className="text-gray-400 text-sm">Puzzle ID not configured</p>
+          </div>
+        );
+      }
+      return <CrosswordPuzzle puzzleId={value.puzzleId} />;
     },
   },
 };

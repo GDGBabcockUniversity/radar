@@ -8,3 +8,4 @@ export { default as PostHeader } from "./PostHeader";
 export { default as PostBody } from "./PostBody";
 export { default as AuthorCard } from "./AuthorCard";
 export { default as RelatedPosts } from "./RelatedPosts";
+export { default as CrosswordPuzzle } from "./CrosswordPuzzle";
