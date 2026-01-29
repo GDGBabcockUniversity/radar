@@ -112,5 +112,28 @@ export default defineType({
         },
       },
     }),
+    defineArrayMember({
+      name: "crossword",
+      title: "Crossword Puzzle",
+      type: "object",
+      fields: [
+        {
+          name: "puzzleId",
+          title: "Puzzle ID",
+          type: "string",
+          description: "Unique identifier for the crossword puzzle",
+        },
+      ],
+      preview: {
+        select: {
+          puzzleId: "puzzleId",
+        },
+        prepare({ puzzleId }) {
+          return {
+            title: `🧩 Crossword Puzzle${puzzleId ? `: ${puzzleId}` : ""}`,
+          };
+        },
+      },
+    }),
   ],
 });
