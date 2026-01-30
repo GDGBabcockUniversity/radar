@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isValidEmail } from "../lib/utils";
 
 interface NewsletterFormProps {
   variant?: "default" | "footer";
@@ -16,15 +17,43 @@ export default function NewsletterForm({
     "idle" | "loading" | "success" | "error"
   >("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
+    if (!isValidEmail(email)) {
+      alert("Invalid email.");
+      return;
+    }
+
     setStatus("loading");
-    setTimeout(() => {
-      setStatus("success");
-      setEmail("");
-    }, 1000);
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) {
+        if (res.status === 409)
+          throw new Error("You are already subscribed to RADAR.");
+        else throw new Error("Internal server error.");
+      }
+
+      setTimeout(() => {
+        setStatus("success");
+        setEmail("");
+      }, 1000);
+
+      alert("You are subscribed to RADAR!");
+    } catch (e) {
+      setTimeout(() => {
+        setStatus("error");
+        setEmail("");
+      }, 1000);
+
+      alert(e ? e : "An error occured.");
+    }
   };
 
   const isFooter = variant === "footer";
