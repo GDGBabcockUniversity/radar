@@ -1,13 +1,21 @@
 import Image from "next/image";
 import { Header, Footer } from "../components";
 
+interface SocialLinks {
+  medium?: string;
+  snapchat?: string;
+  substack?: string;
+  x?: string;
+  instagram?: string;
+}
+
 interface TeamMember {
   name: string;
   role: string;
   course: string;
   image: string;
   quote: string;
-  socialLinks?: string;
+  socialLinks?: SocialLinks;
   songObsession: string;
   favoriteBook: string;
   favoriteColor: string;
@@ -21,7 +29,10 @@ const teamMembers: TeamMember[] = [
     course: "COMPUTER SCIENCE",
     image: "/team/itamah.jpg",
     quote: "Younger me was interested in law. Now, I'm building what matters.",
-    socialLinks: "@",
+    socialLinks: {
+      snapchat: "https://snapchat.com/add/itamah",
+      substack: "https://itamah.substack.com",
+    },
     songObsession: "D.T.M.M.B by Indi",
     favoriteBook: "Harry Potter (J.K. Rowling)",
     favoriteColor: "Red, Black, Brown",
@@ -34,7 +45,10 @@ const teamMembers: TeamMember[] = [
     image: "/team/oghenebrorie.jpg",
     quote:
       "Passionate about documenting the journey and the human stories behind it.",
-    socialLinks: "@",
+    socialLinks: {
+      medium: "https://medium.com/@oghenetejiri",
+      x: "https://x.com/oghenetejiri",
+    },
     songObsession: "ONLY WHAT GOD CAN GIVE",
     favoriteBook: "Burn for Burn (Jenny Han)",
     favoriteColor: "White is peace, Black is intriguing, Pink is warmth.",
@@ -46,7 +60,9 @@ const teamMembers: TeamMember[] = [
     course: "COMPUTER SCIENCE",
     image: "/team/habeeb.jpg",
     quote: "Ensuring the community stays vibrant, connected, and curious.",
-    socialLinks: "@",
+    socialLinks: {
+      x: "https://x.com/ycent003",
+    },
     songObsession: "Can’t Fake this by 255",
     favoriteBook: "Art of Seduction",
     favoriteColor: "White (Peace)",
@@ -58,7 +74,9 @@ const teamMembers: TeamMember[] = [
     course: "ACCOUNTING",
     image: "/team/dosunmu.jpg",
     quote: "A storyteller focusing on human experiences in a digital world.",
-    socialLinks: "@",
+    socialLinks: {
+      medium: "https://medium.com/@dosunmuhafeez",
+    },
     songObsession: "Sacrifice by Mariah",
     favoriteBook: "Nearly All Men In Lagos... Mad",
     favoriteColor: "Blue (Peace & Control)",
@@ -70,7 +88,10 @@ const teamMembers: TeamMember[] = [
     course: "INFORMATION TECH",
     image: "/team/frede.jpg",
     quote: "They make me feel special, unique, and full of wisdom and self-worth.",
-    socialLinks: "@",
+    socialLinks: {
+      x: "https://x.com/freda",
+      instagram: "https://instagram.com/freda",
+    },
     songObsession: "Davido’s songs",
     favoriteBook: "Comedic & Tech related",
     favoriteColor: "Black, White and Gold",
@@ -82,7 +103,9 @@ const teamMembers: TeamMember[] = [
     course: "COMPUTER SCIENCE",
     image: "/team/toju.jpg",
     quote: "Finding beauty in everything, one line at a time.",
-    socialLinks: "@",
+    socialLinks: {
+      substack: "https://tayoadefila.substack.com",
+    },
     songObsession: "So Easy by Olivia Dean",
     favoriteBook: "Pride and Prejudice",
     favoriteColor: "Every color (Beauty in all)",
@@ -94,7 +117,10 @@ const teamMembers: TeamMember[] = [
     course: "SOFTWARE ENGINEERING",
     image: "/team/agunbiade.jpg",
     quote: "Always wanted to be the golden power ranger. Impact is key.",
-    socialLinks: "@",
+    socialLinks: {
+      snapchat: "https://snapchat.com/add/agunbiade",
+      x: "https://x.com/agunbiadeayomide",
+    },
     songObsession: "May I Have This Dance",
     favoriteBook: "Darkest Minds",
     favoriteColor: "Gold",
@@ -106,7 +132,10 @@ const teamMembers: TeamMember[] = [
     course: "SOFTWARE ENGINEERING",
     image: "/team/andrea.jpg",
     quote: "Black is expressive. If daring, it's safe. It literally screams to me.",
-    socialLinks: "@",
+    socialLinks: {
+      instagram: "https://instagram.com/andreaandy",
+      medium: "https://medium.com/@andreaandy",
+    },
     songObsession: "1sa l0t by Zaylevelten",
     favoriteBook: "How to sell to Nigerians",
     favoriteColor: "Black",
@@ -202,9 +231,58 @@ export default function TeamPage() {
                       {member.course}
                     </p>
                     {member.socialLinks && (
-                      <p className="text-[#6b7280] text-xs">
-                        {member.socialLinks}
-                      </p>
+                      <div className="flex gap-2 flex-wrap font-bold text-[10px] leading-3.75 underline decoration-[#FFFFFF1A] decoration-0 underline-offset-4">
+                        {member.socialLinks.medium && (
+                          <a
+                            href={member.socialLinks.medium}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#94A3B8] hover:text-primary transition-colors"
+                          >
+                            Medium
+                          </a>
+                        )}
+                        {member.socialLinks.snapchat && (
+                          <a
+                            href={member.socialLinks.snapchat}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#94A3B8] hover:text-primary transition-colors"
+                          >
+                            Snapchat
+                          </a>
+                        )}
+                        {member.socialLinks.substack && (
+                          <a
+                            href={member.socialLinks.substack}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#94A3B8] hover:text-primary transition-colors"
+                          >
+                            Substack
+                          </a>
+                        )}
+                        {member.socialLinks.x && (
+                          <a
+                            href={member.socialLinks.x}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#94A3B8] hover:text-primary transition-colors"
+                          >
+                            X
+                          </a>
+                        )}
+                        {member.socialLinks.instagram && (
+                          <a
+                            href={member.socialLinks.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#94A3B8] hover:text-primary transition-colors"
+                          >
+                            Instagram
+                          </a>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
