@@ -40,7 +40,7 @@ export default function Header() {
           className="hidden items-center gap-8 md:flex"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          <Link
+          {/* <Link
             href="/latest"
             className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
@@ -51,7 +51,7 @@ export default function Header() {
             className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
             Archive
-          </Link>
+          </Link> */}
         </nav>
 
         {/* Subscribe Button */}
