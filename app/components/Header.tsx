@@ -41,7 +41,7 @@ export default function Header() {
           style={{ fontFamily: "var(--font-body)" }}
         >
           <Link
-            href="/latest"
+            href="/"
             className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
             Latest
@@ -51,6 +51,12 @@ export default function Header() {
             className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
             Archive
+          </Link>
+          <Link
+            href="/team"
+            className="text-sm font-medium text-white hover:text-primary transition-colors"
+          >
+            Team
           </Link>
         </nav>
 
