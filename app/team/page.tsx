@@ -139,7 +139,10 @@ export default function TeamPage() {
         <div className="container max-w-275 mx-auto">
           <div className="mb-16">
             <p className="text-[#9CA3AF] text-[10px] font-bold uppercase leading-3.75 tracking-[4px] mb-6 flex items-center justify-center gap-3 bg-[#FFFFFF0D] border border-[#FFFFFF1A] rounded-[9999px] w-[291.5px] h-9.25 text-center">
-              <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
+            <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-hover opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+            </span>
               THE CREATIVE COLLECTIVE
             </p>
             <h1
@@ -193,7 +196,7 @@ export default function TeamPage() {
                       {member.role}
                     </p>
                     <p
-                      className="text-[#94A3B8] text-[8px] md:text-[10px] leading-[15px] tracking-[1.4px] font-semibold uppercase mb-2"
+                      className="text-[#94A3B8] text-[8px] md:text-[10px] leading-3.75 tracking-[1.4px] font-semibold uppercase mb-2"
                       style={{ fontFamily: "var(--font-body)" }}
                     >
                       {member.course}
