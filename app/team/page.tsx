@@ -140,8 +140,8 @@ export default function TeamPage() {
           <div className="mb-16">
             <p className="text-[#9CA3AF] text-[10px] font-bold uppercase leading-3.75 tracking-[4px] mb-6 flex items-center justify-center gap-3 bg-[#FFFFFF0D] border border-[#FFFFFF1A] rounded-[9999px] w-[291.5px] h-9.25 text-center">
             <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-hover opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-hover opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
             </span>
               THE CREATIVE COLLECTIVE
             </p>
@@ -250,19 +250,13 @@ export default function TeamPage() {
               </div>
             ))}
           </div>
-
-          <div className="bg-[#16181D] border border-[#FFFFFF0D] rounded-3xl p-12 mb-12">
+        </div>
+          <div className="bg-[#16181D] border border-[#FFFFFF0D] rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
             <p
-              className="text-[#94A3B8] text-lg md:text-[48px] leading-[48.75px] text-center max-w-346 mx-auto italic mb-12"
+              className="text-[#94A3B8] text-lg md:text-[48px] leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
               style={{ fontFamily: "var(--font-serif)" }}
             >
-              "What stands out isn't just what we study or what we build, but
-              who we are while doing it. We manage pressure differently. We find
-              meaning in different things. We recharge in our own ways. And yet,
-              we come together just fine, bringing our own thing to the table as
-              a community driven by curiosity, growth, and the desire to build
-              something meaningful and we hope that you enjoy this RADAR issue
-              as much as we do!"
+              "What stands out isn’t just what we study or what we build, but who we are while doing it. We manage pressure differently. We find meaning in different things. We recharge in our own ways. And yet, we come together as a community driven by curiosity, growth, and the desire to build something meaningful and we hope that you enjoy this RADAR issue as much as we do!."
             </p>
 
             <span className="flex justify-center my-3"><hr className="w-16 text-primary" /></span>
@@ -283,7 +277,6 @@ export default function TeamPage() {
               </p>
             </div>
           </div>
-        </div>
       </section>
 
       <Footer />
