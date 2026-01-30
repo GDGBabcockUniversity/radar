@@ -6,6 +6,10 @@
   --color-primary: #4285f4;
   --color-primary-hover: #3367d6;
 
+  --color-gdg-green: #34a853;
+  --color-gdg-red: #ea4335;
+  --color-gdg-yellow: #f9ab00;
+
   --color-bg-light: #ffffff;
   --color-bg-dark: #0a0a0a;
   --color-bg-dark-secondary: #111111;
@@ -47,6 +51,11 @@
 @theme inline {
   --color-primary: var(--color-primary);
   --color-primary-hover: var(--color-primary-hover);
+
+  --color-gdg-green: var(--color-gdg-green);
+  --color-gdg-red: var(--color-gdg-red);
+  --color-gdg-yellow: var(--color-gdg-yellow);
+
   --color-background: var(--color-bg-dark);
   --color-foreground: var(--color-text-light);
 }

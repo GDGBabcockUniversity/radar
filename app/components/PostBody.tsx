@@ -2,6 +2,7 @@ import { PortableText, PortableTextComponents } from "@portabletext/react";
 import Image from "next/image";
 import { urlFor } from "../lib/sanity";
 import CrosswordPuzzle from "./CrosswordPuzzle";
+import { getRandomElement } from "../lib/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PortableTextBlock = any;
@@ -138,18 +139,28 @@ const components: PortableTextComponents = {
         {children}
       </p>
     ),
-    blockquote: ({ children }) => (
-      <blockquote
-        className="border-l-4 border-primary pl-5 my-6 italic text-gray-400"
-        style={{
-          fontFamily: "var(--font-serif)",
-          fontSize: "1rem",
-          lineHeight: 1.6,
-        }}
-      >
-        {children}
-      </blockquote>
-    ),
+    blockquote: ({ children }) => {
+      const borderColor = getRandomElement([
+        "#4285f4", // Blue
+        "#34a853", // Green
+        "#ea4335", // Red
+        "#f9ab00", // Yellow
+      ]);
+
+      return (
+        <blockquote
+          className="border-l-4 pl-5 my-6 italic text-gray-400"
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "1rem",
+            lineHeight: 1.6,
+            borderColor,
+          }}
+        >
+          {children}
+        </blockquote>
+      );
+    },
   },
   list: {
     bullet: ({ children }) => (
