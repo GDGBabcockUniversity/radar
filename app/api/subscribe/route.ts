@@ -1,63 +1,32 @@
-import { resend } from "@/app/lib/resend";
+import { BASE_URL, CREDENTIALS } from "@/app/lib/constants";
+import { Client } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
+
+const qstash = new Client({ token: CREDENTIALS.qstash_token });
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { email } = body;
+    const { email } = await request.json();
 
-    // Check if the email address exists
-    const { data, error: contactFetchError } = await resend.contacts.get({
-      email,
+    if (!email)
+      return NextResponse.json({ error: "Email required" }, { status: 400 });
+
+    // Publish to QStash
+    await qstash.publishJSON({
+      url: BASE_URL + "/api/worker/subscribe",
+      body: { email },
+      retries: 3, // QStash will try up to 3 times if it fails
+      flowControl: {
+        key: "resend-limit", // Global key for all subscribe requests
+        parallelism: 1, // Process one job at a time
+      },
     });
-
-    if (
-      contactFetchError &&
-      contactFetchError.message !== "Contact not found"
-    ) {
-      return NextResponse.json(
-        { error: "Failed to subcribe to RADAR" },
-        { status: 500 },
-      );
-    }
-
-    if (data?.id) {
-      return NextResponse.json({ error: "Email exists" }, { status: 409 });
-    }
-
-    const segmentId = "9154cc72-f7b8-4ce1-b148-6771be86c6e8";
-
-    const { error: contactCreationError } = await resend.contacts.create({
-      email,
-      unsubscribed: false,
-    });
-
-    if (contactCreationError) {
-      return NextResponse.json(
-        { error: "Failed to subcribe to RADAR" },
-        { status: 500 },
-      );
-    }
-
-    const { error: addToSegmentError } = await resend.contacts.segments.add({
-      email,
-      segmentId,
-    });
-
-    if (addToSegmentError) {
-      return NextResponse.json(
-        { error: "Failed to subcribe to RADAR" },
-        { status: 500 },
-      );
-    }
-
-    return NextResponse.json({ status: "success" }, { status: 200 });
-  } catch (error: unknown) {
-    console.error("Failed to subscribe to RADAR:", error);
 
     return NextResponse.json(
-      { error: "Failed to subcribe to RADAR" },
-      { status: 500 },
+      { message: "Subscription pending" },
+      { status: 202 },
     );
+  } catch (error) {
+    return NextResponse.json({ error: "Queue failed" }, { status: 500 });
   }
 }
