@@ -40,8 +40,8 @@ export default function Header() {
           className="hidden items-center gap-8 md:flex"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          {/* <Link
-            href="/latest"
+          <Link
+            href="/"
             className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
             Latest
@@ -51,7 +51,13 @@ export default function Header() {
             className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
             Archive
-          </Link> */}
+          </Link>
+          <Link
+            href="/team"
+            className="text-sm font-medium text-white hover:text-primary transition-colors"
+          >
+            Team
+          </Link>
         </nav>
 
         {/* Subscribe Button */}
