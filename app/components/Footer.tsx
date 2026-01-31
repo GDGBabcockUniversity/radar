@@ -118,6 +118,14 @@ export default function Footer() {
                   Past Editions
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/team"
+                  className="text-sm text-gray-400 hover:text-white transition-colors"
+                >
+                  Team
+                </Link>
+              </li>
               {/* <li>
                 <Link
                   href="/spotlight"
