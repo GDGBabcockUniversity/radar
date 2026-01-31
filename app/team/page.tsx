@@ -16,7 +16,6 @@ interface TeamMember {
   name: string;
   role: string;
   department: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   image?: any;
   quote?: string;
   socialLinks?: SocialLinks;
@@ -79,7 +78,7 @@ export default async function TeamPage() {
               THE CREATIVE COLLECTIVE
             </p>
             <h1
-              className="text-6xl md:text-9xl font-bold mb-8 leading-[108.8px] tracking-[-6.4px]"
+              className="text-6xl md:text-8xl font-bold mb-8 leading-[108.8px] tracking-[-6.4px]"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               The Faces
@@ -96,7 +95,7 @@ export default async function TeamPage() {
             </h1>
             <div className="border-l-4 border-primary pl-6 max-w-2xl">
               <p
-                className="text-[#CBD5E1] text-base md:text-3xl leading-[48.75px] italic"
+                className="text-[#CBD5E1] text-base md:text-2xl leading-[48.75px] italic"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 "Behind every word, line of statement and piece, there's a voice
@@ -263,7 +262,7 @@ export default async function TeamPage() {
         </div>
         <div className="bg-[#16181D] border border-[#FFFFFF0D] rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
           <p
-            className="text-[#94A3B8] text-lg md:text-[48px] leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
+            className="text-[#94A3B8] text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             "What stands out isn't just what we study or what we build, but who
@@ -280,7 +279,7 @@ export default async function TeamPage() {
 
           <div className="text-center">
             <h2
-              className="text-5xl md:text-[96px] leading-24 text-primary mb-2 -rotate-2"
+              className="text-5xl md:text-6xl leading-24 text-primary mb-2 -rotate-2"
               style={{
                 fontFamily: "var(--font-caveat)",
               }}
