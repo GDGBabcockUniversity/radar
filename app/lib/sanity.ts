@@ -92,3 +92,24 @@ export async function getRecentPosts(limit: number = 4) {
     { limit: limit - 1 },
   );
 }
+
+// Fetch all team members
+export async function getTeamMembers() {
+  return client.fetch(`
+    *[_type == "teamMember"] | order(order asc, name asc) {
+      _id,
+      name,
+      slug,
+      role,
+      department,
+      image,
+      quote,
+      songObsession,
+      favoriteBook,
+      favoriteColor,
+      colorMeaning,
+      howIManagePressure,
+      socialLinks
+    }
+  `);
+}
