@@ -18,8 +18,13 @@ export default function HeroSection() {
           className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 text-white"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          RADAR
-          <span className="text-primary">.</span>
+          <span>
+            <span style={{ color: "var(--color-primary)" }}>R</span>
+            <span style={{ color: "var(--color-gdg-red)" }}>A</span>
+            <span style={{ color: "var(--color-gdg-yellow)" }}>D</span>
+            <span style={{ color: "var(--color-gdg-green)" }}>A</span>
+            <span style={{ color: "var(--color-primary)" }}>R.</span>
+          </span>
         </h1>
 
         {/* Tagline - Merriweather (serif) */}
