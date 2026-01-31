@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, Merriweather } from "next/font/google";
+import { Space_Grotesk, Inter, Merriweather, Caveat } from "next/font/google";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -20,6 +20,12 @@ const merriweather = Merriweather({
   weight: ["400", "700"],
 });
 
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
 export const metadata: Metadata = {
   title: "RADAR | GDG Babcock",
   description: "Your signal to what's next in the Babcock tech ecosystem.",
@@ -33,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${merriweather.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${inter.variable} ${merriweather.variable} ${caveat.variable} antialiased`}
       >
         {children}
       </body>

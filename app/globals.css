@@ -74,6 +74,7 @@ body {
   --font-heading: var(--font-space-grotesk);
   --font-body: var(--font-inter);
   --font-serif: var(--font-merriweather);
+  --font-caveat: var(--font-caveat);
 
   font-family: var(--font-body);
   background: var(--color-bg-dark);

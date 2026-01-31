@@ -87,7 +87,8 @@ const teamMembers: TeamMember[] = [
     role: "WRITER",
     course: "INFORMATION TECH",
     image: "/team/frede.jpg",
-    quote: "They make me feel special, unique, and full of wisdom and self-worth.",
+    quote:
+      "They make me feel special, unique, and full of wisdom and self-worth.",
     socialLinks: {
       x: "https://x.com/freda",
       instagram: "https://instagram.com/freda",
@@ -109,7 +110,7 @@ const teamMembers: TeamMember[] = [
     songObsession: "So Easy by Olivia Dean",
     favoriteBook: "Pride and Prejudice",
     favoriteColor: "Every color (Beauty in all)",
-    howIUnwind: "\"I do not\"",
+    howIUnwind: '"I do not"',
   },
   {
     name: "Agunbiade Ayomide",
@@ -131,7 +132,8 @@ const teamMembers: TeamMember[] = [
     role: "WRITER",
     course: "SOFTWARE ENGINEERING",
     image: "/team/andrea.jpg",
-    quote: "Black is expressive. If daring, it's safe. It literally screams to me.",
+    quote:
+      "Black is expressive. If daring, it's safe. It literally screams to me.",
     socialLinks: {
       instagram: "https://instagram.com/andreaandy",
       medium: "https://medium.com/@andreaandy",
@@ -168,10 +170,10 @@ export default function TeamPage() {
         <div className="container max-w-275 mx-auto">
           <div className="mb-16">
             <p className="text-[#9CA3AF] text-[10px] font-bold uppercase leading-3.75 tracking-[4px] mb-6 flex items-center justify-center gap-3 bg-[#FFFFFF0D] border border-[#FFFFFF1A] rounded-[9999px] w-[291.5px] h-9.25 text-center">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-hover opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
-            </span>
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-hover opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+              </span>
               THE CREATIVE COLLECTIVE
             </p>
             <h1
@@ -301,60 +303,73 @@ export default function TeamPage() {
                     <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
                       SONG OBSESSION
                     </p>
-                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">{member.songObsession}</p>
+                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                      {member.songObsession}
+                    </p>
                   </div>
 
                   <div>
                     <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
                       FAVORITE BOOK
                     </p>
-                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">{member.favoriteBook}</p>
+                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                      {member.favoriteBook}
+                    </p>
                   </div>
 
                   <div>
                     <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
                       FAVORITE COLOR
                     </p>
-                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">{member.favoriteColor}</p>
+                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                      {member.favoriteColor}
+                    </p>
                   </div>
 
                   <div>
                     <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
                       HOW I MANAGE SCHOOL PRESSURE
                     </p>
-                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">{member.howIUnwind}</p>
+                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                      {member.howIUnwind}
+                    </p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-          <div className="bg-[#16181D] border border-[#FFFFFF0D] rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
-            <p
-              className="text-[#94A3B8] text-lg md:text-[48px] leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
-              style={{ fontFamily: "var(--font-serif)" }}
+        <div className="bg-[#16181D] border border-[#FFFFFF0D] rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
+          <p
+            className="text-[#94A3B8] text-lg md:text-[48px] leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
+            "What stands out isn’t just what we study or what we build, but who
+            we are while doing it. We manage pressure differently. We find
+            meaning in different things. We recharge in our own ways. And yet,
+            we come together as a community driven by curiosity, growth, and the
+            desire to build something meaningful and we hope that you enjoy this
+            RADAR issue as much as we do!."
+          </p>
+
+          <span className="flex justify-center my-3">
+            <hr className="w-16 text-primary" />
+          </span>
+
+          <div className="text-center">
+            <h2
+              className="text-5xl md:text-[96px] leading-24 text-primary mb-2 -rotate-2"
+              style={{
+                fontFamily: "var(--font-caveat)",
+              }}
             >
-              "What stands out isn’t just what we study or what we build, but who we are while doing it. We manage pressure differently. We find meaning in different things. We recharge in our own ways. And yet, we come together as a community driven by curiosity, growth, and the desire to build something meaningful and we hope that you enjoy this RADAR issue as much as we do!."
+              Commit & Push
+            </h2>
+            <p className="text-[#6b7280] font-bold text-xs leading-4.5 uppercase tracking-[7.2px]">
+              THE GDG CREATIVE WRITING TEAM
             </p>
-
-            <span className="flex justify-center my-3"><hr className="w-16 text-primary" /></span>
-
-            <div className="text-center">
-              <h2
-                className="text-5xl md:text-[96px] leading-24 text-primary mb-2 -rotate-2"
-                style={{
-                  fontFamily: "cursive",
-                  fontWeight: "400",
-                  fontStyle: "italic",
-                }}
-              >
-                Commit & Push
-              </h2>
-              <p className="text-[#6b7280] font-bold text-xs leading-4.5 uppercase tracking-[7.2px]">
-                THE GDG CREATIVE WRITING TEAM
-              </p>
-            </div>
           </div>
+        </div>
       </section>
 
       <Footer />
