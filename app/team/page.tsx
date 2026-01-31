@@ -16,6 +16,7 @@ interface TeamMember {
   name: string;
   role: string;
   department: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   image?: any;
   quote?: string;
   socialLinks?: SocialLinks;
@@ -98,9 +99,9 @@ export default async function TeamPage() {
                 className="text-[#CBD5E1] text-base md:text-2xl leading-[48.75px] italic"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
-                "Behind every word, line of statement and piece, there's a voice
-                — a person. This is us — unfiltered, human, and learning as we
-                go."
+                &quot;Behind every word, line of statement and piece,
+                there&apos;s a voice — a person. This is us — unfiltered, human,
+                and learning as we go.&quot;
               </p>
             </div>
           </div>
@@ -205,7 +206,7 @@ export default async function TeamPage() {
                     className="text-[#CBD5E1] italic text-sm md:text-[18px] leading-7 mb-6 md:mb-8"
                     style={{ fontFamily: "var(--font-body)" }}
                   >
-                    "{member.quote}"
+                    &quot;{member.quote}&quot;
                   </p>
                 )}
 
@@ -265,12 +266,12 @@ export default async function TeamPage() {
             className="text-[#94A3B8] text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            "What stands out isn't just what we study or what we build, but who
-            we are while doing it. We manage pressure differently. We find
-            meaning in different things. We recharge in our own ways. And yet,
-            we come together as a community driven by curiosity, growth, and the
-            desire to build something meaningful and we hope that you enjoy this
-            RADAR issue as much as we do!."
+            &quot;What stands out isn&apos;t just what we study or what we
+            build, but who we are while doing it. We manage pressure
+            differently. We find meaning in different things. We recharge in our
+            own ways. And yet, we come together as a community driven by
+            curiosity, growth, and the desire to build something meaningful and
+            we hope that you enjoy this RADAR issue as much as we do!.&quot;
           </p>
 
           <span className="flex justify-center my-3">

@@ -27,6 +27,8 @@ export async function POST(request: NextRequest) {
       { status: 202 },
     );
   } catch (error) {
+    console.log(error);
+
     return NextResponse.json({ error: "Queue failed" }, { status: 500 });
   }
 }
