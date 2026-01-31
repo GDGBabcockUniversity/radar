@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { Header, Footer } from "../components";
+import { getTeamMembers, urlFor } from "../lib/sanity";
 
 interface SocialLinks {
+  email?: string;
   medium?: string;
   snapchat?: string;
   substack?: string;
@@ -10,147 +12,45 @@ interface SocialLinks {
 }
 
 interface TeamMember {
+  _id: string;
   name: string;
   role: string;
-  course: string;
-  image: string;
-  quote: string;
+  department: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  image?: any;
+  quote?: string;
   socialLinks?: SocialLinks;
-  songObsession: string;
-  favoriteBook: string;
-  favoriteColor: string;
-  howIUnwind: string;
+  songObsession?: string;
+  favoriteBook?: string;
+  favoriteColor?: string;
+  howIManagePressure?: string;
 }
 
-const teamMembers: TeamMember[] = [
-  {
-    name: "Itamah Osedebame",
-    role: "RADAR TEAM LEAD",
-    course: "COMPUTER SCIENCE",
-    image: "/team/itamah.jpg",
-    quote: "Younger me was interested in law. Now, I'm building what matters.",
-    socialLinks: {
-      snapchat: "https://snapchat.com/add/itamah",
-      substack: "https://itamah.substack.com",
-    },
-    songObsession: "D.T.M.M.B by Indi",
-    favoriteBook: "Harry Potter (J.K. Rowling)",
-    favoriteColor: "Red, Black, Brown",
-    howIUnwind: "Music and sleep",
-  },
-  {
-    name: "E. Oghenetejiri",
-    role: "EDITOR, GDG BABCOCK MEDIA & MARKETING LEAD",
-    course: "SOFTWARE ENGINEERING",
-    image: "/team/oghenebrorie.jpg",
-    quote:
-      "Passionate about documenting the journey and the human stories behind it.",
-    socialLinks: {
-      medium: "https://medium.com/@oghenetejiri",
-      x: "https://x.com/oghenetejiri",
-    },
-    songObsession: "ONLY WHAT GOD CAN GIVE",
-    favoriteBook: "Burn for Burn (Jenny Han)",
-    favoriteColor: "White is peace, Black is intriguing, Pink is warmth.",
-    howIUnwind: "Worship music and prayer",
-  },
-  {
-    name: "Habeeb",
-    role: "COMMUNITY MANAGER",
-    course: "COMPUTER SCIENCE",
-    image: "/team/habeeb.jpg",
-    quote: "Ensuring the community stays vibrant, connected, and curious.",
-    socialLinks: {
-      x: "https://x.com/ycent003",
-    },
-    songObsession: "Can’t Fake this by 255",
-    favoriteBook: "Art of Seduction",
-    favoriteColor: "White (Peace)",
-    howIUnwind: "Sleep",
-  },
-  {
-    name: "Dosunmu Hafeez",
-    role: "WRITER",
-    course: "ACCOUNTING",
-    image: "/team/dosunmu.jpg",
-    quote: "A storyteller focusing on human experiences in a digital world.",
-    socialLinks: {
-      medium: "https://medium.com/@dosunmuhafeez",
-    },
-    songObsession: "Sacrifice by Mariah",
-    favoriteBook: "Nearly All Men In Lagos... Mad",
-    favoriteColor: "Blue (Peace & Control)",
-    howIUnwind: "Sleep",
-  },
-  {
-    name: "Freda",
-    role: "WRITER",
-    course: "INFORMATION TECH",
-    image: "/team/frede.jpg",
-    quote:
-      "They make me feel special, unique, and full of wisdom and self-worth.",
-    socialLinks: {
-      x: "https://x.com/freda",
-      instagram: "https://instagram.com/freda",
-    },
-    songObsession: "Davido’s songs",
-    favoriteBook: "Comedic & Tech related",
-    favoriteColor: "Black, White and Gold",
-    howIUnwind: "Calm & Relaxation",
-  },
-  {
-    name: "Tayo Adefila",
-    role: "WRITER",
-    course: "COMPUTER SCIENCE",
-    image: "/team/toju.jpg",
-    quote: "Finding beauty in everything, one line at a time.",
-    socialLinks: {
-      substack: "https://tayoadefila.substack.com",
-    },
-    songObsession: "So Easy by Olivia Dean",
-    favoriteBook: "Pride and Prejudice",
-    favoriteColor: "Every color (Beauty in all)",
-    howIUnwind: '"I do not"',
-  },
-  {
-    name: "Agunbiade Ayomide",
-    role: "WRITER",
-    course: "SOFTWARE ENGINEERING",
-    image: "/team/agunbiade.jpg",
-    quote: "Always wanted to be the golden power ranger. Impact is key.",
-    socialLinks: {
-      snapchat: "https://snapchat.com/add/agunbiade",
-      x: "https://x.com/agunbiadeayomide",
-    },
-    songObsession: "May I Have This Dance",
-    favoriteBook: "Darkest Minds",
-    favoriteColor: "Gold",
-    howIUnwind: "Music & Gaming",
-  },
-  {
-    name: "Andrea Andy",
-    role: "WRITER",
-    course: "SOFTWARE ENGINEERING",
-    image: "/team/andrea.jpg",
-    quote:
-      "Black is expressive. If daring, it's safe. It literally screams to me.",
-    socialLinks: {
-      instagram: "https://instagram.com/andreaandy",
-      medium: "https://medium.com/@andreaandy",
-    },
-    songObsession: "1sa l0t by Zaylevelten",
-    favoriteBook: "How to sell to Nigerians",
-    favoriteColor: "Black",
-    howIUnwind: "Music & TikTok",
-  },
-];
-
-function MemberAvatar({ name }: { name: string }) {
+function MemberAvatar({
+  name,
+  image,
+}: {
+  name: string;
+  image?: TeamMember["image"];
+}) {
   const initials = name
     .split(" ")
     .map((n) => n[0])
     .join("")
     .substring(0, 2);
+
+  if (image) {
+    return (
+      <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-white/5 relative">
+        <Image
+          src={urlFor(image).width(140).height(140).url()}
+          alt={name}
+          fill
+          className="object-cover"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-white/5 relative">
@@ -161,7 +61,9 @@ function MemberAvatar({ name }: { name: string }) {
   );
 }
 
-export default function TeamPage() {
+export default async function TeamPage() {
+  const teamMembers: TeamMember[] = await getTeamMembers();
+
   return (
     <main className="min-h-screen bg-[#0B0D0F]">
       <Header />
@@ -205,13 +107,13 @@ export default function TeamPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-20">
-            {teamMembers.map((member, index) => (
+            {teamMembers.map((member) => (
               <div
-                key={index}
+                key={member._id}
                 className="bg-[#16181D] rounded-2xl md:rounded-[48px] p-6 md:p-8 border border-[#FFFFFF0F]"
               >
                 <div className="flex items-start gap-4 md:gap-6 mb-4">
-                  <MemberAvatar name={member.name} />
+                  <MemberAvatar name={member.name} image={member.image} />
 
                   <div className="flex-1">
                     <h3
@@ -230,10 +132,20 @@ export default function TeamPage() {
                       className="text-[#94A3B8] text-[8px] md:text-[10px] leading-3.75 tracking-[1.4px] font-semibold uppercase mb-2"
                       style={{ fontFamily: "var(--font-body)" }}
                     >
-                      {member.course}
+                      {member.department}
                     </p>
                     {member.socialLinks && (
                       <div className="flex gap-2 flex-wrap font-bold text-[10px] leading-3.75 underline decoration-[#FFFFFF1A] decoration-0 underline-offset-4">
+                        {member.socialLinks.email && (
+                          <a
+                            href={member.socialLinks.email}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#94A3B8] hover:text-primary transition-colors"
+                          >
+                            Email
+                          </a>
+                        )}
                         {member.socialLinks.medium && (
                           <a
                             href={member.socialLinks.medium}
@@ -289,51 +201,61 @@ export default function TeamPage() {
                   </div>
                 </div>
 
-                <p
-                  className="text-[#CBD5E1] italic text-sm md:text-[18px] leading-7 mb-6 md:mb-8"
-                  style={{ fontFamily: "var(--font-body)" }}
-                >
-                  "{member.quote}"
-                </p>
+                {member.quote && (
+                  <p
+                    className="text-[#CBD5E1] italic text-sm md:text-[18px] leading-7 mb-6 md:mb-8"
+                    style={{ fontFamily: "var(--font-body)" }}
+                  >
+                    "{member.quote}"
+                  </p>
+                )}
 
                 <hr className="mb-6 md:mb-8 text-[#FFFFFF0D]" />
 
                 <div className="grid grid-cols-2 gap-4 md:gap-6 text-xs">
-                  <div>
-                    <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                      SONG OBSESSION
-                    </p>
-                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                      {member.songObsession}
-                    </p>
-                  </div>
+                  {member.songObsession && (
+                    <div>
+                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        SONG OBSESSION
+                      </p>
+                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        {member.songObsession}
+                      </p>
+                    </div>
+                  )}
 
-                  <div>
-                    <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                      FAVORITE BOOK
-                    </p>
-                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                      {member.favoriteBook}
-                    </p>
-                  </div>
+                  {member.favoriteBook && (
+                    <div>
+                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        FAVORITE BOOK
+                      </p>
+                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        {member.favoriteBook}
+                      </p>
+                    </div>
+                  )}
 
-                  <div>
-                    <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                      FAVORITE COLOR
-                    </p>
-                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                      {member.favoriteColor}
-                    </p>
-                  </div>
+                  {member.favoriteColor && (
+                    <div>
+                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        FAVORITE COLOR
+                      </p>
+                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        {member.favoriteColor}
+                      </p>
+                    </div>
+                  )}
 
-                  <div>
-                    <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                      HOW I MANAGE SCHOOL PRESSURE
-                    </p>
-                    <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                      {member.howIUnwind}
-                    </p>
-                  </div>
+                  {member.howIManagePressure && (
+                    <div>
+                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        HOW I MANAGE SCHOOL PRESSURE
+                      </p>
+                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        {member.howIManagePressure}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -344,7 +266,7 @@ export default function TeamPage() {
             className="text-[#94A3B8] text-lg md:text-[48px] leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            "What stands out isn’t just what we study or what we build, but who
+            "What stands out isn't just what we study or what we build, but who
             we are while doing it. We manage pressure differently. We find
             meaning in different things. We recharge in our own ways. And yet,
             we come together as a community driven by curiosity, growth, and the
