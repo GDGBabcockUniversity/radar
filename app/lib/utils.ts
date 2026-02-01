@@ -14,3 +14,13 @@ export function getRandomElement(arr: string[]) {
 export function isValidEmail(email: string) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
 }
+
+export function getTodaysDate() {
+  const today = new Date();
+
+  return today.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}

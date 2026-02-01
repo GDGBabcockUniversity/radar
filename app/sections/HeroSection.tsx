@@ -1,6 +1,9 @@
 import { LiveBadge, Button } from "../components";
+import { getTodaysDate } from "../lib/utils";
 
 export default function HeroSection() {
+  const date = getTodaysDate();
+
   return (
     <section
       className="relative pt-24 pb-16 md:pt-32 md:pb-20"
@@ -11,7 +14,7 @@ export default function HeroSection() {
     >
       <div className="container flex flex-col items-center text-center">
         {/* Live Badge */}
-        <LiveBadge date="December 24, 2025" className="mb-8" />
+        <LiveBadge date={date} className="mb-8" />
 
         {/* Main Logo - Space Grotesk */}
         <h1
