@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { isValidEmail } from "../lib/utils";
+import { toast } from "sonner";
 
 interface NewsletterFormProps {
   variant?: "default" | "footer";
@@ -22,7 +23,7 @@ export default function NewsletterForm({
     if (!email) return;
 
     if (!isValidEmail(email)) {
-      alert("Invalid email.");
+      toast.error("Invalid email.");
       return;
     }
 
@@ -45,7 +46,7 @@ export default function NewsletterForm({
         setEmail("");
       }, 1000);
 
-      alert("You are subscribed to RADAR!");
+      toast.success("You are subscribed to RADAR!");
     } catch (e) {
       setTimeout(() => {
         setStatus("error");
