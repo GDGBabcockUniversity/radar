@@ -10,7 +10,7 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true,
+  useCdn: process.env.NODE_ENV === "production", // CDN in production, fresh data in dev
 });
 
 const builder = imageUrlBuilder(client);
@@ -95,7 +95,8 @@ export async function getRecentPosts(limit: number = 4) {
 
 // Fetch all team members
 export async function getTeamMembers() {
-  return client.fetch(`
+  return client.fetch(
+    `
     *[_type == "teamMember"] | order(order asc, name asc) {
       _id,
       name,
@@ -111,5 +112,8 @@ export async function getTeamMembers() {
       howIManagePressure,
       socialLinks
     }
-  `);
+  `,
+    {},
+    { next: { revalidate: 60 } }, // Revalidate every 60 seconds
+  );
 }
