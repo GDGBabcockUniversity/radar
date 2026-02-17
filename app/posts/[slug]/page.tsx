@@ -5,6 +5,7 @@ import PostHeader from "@/app/components/PostHeader";
 import AuthorCard from "@/app/components/AuthorCard";
 import PostBody from "@/app/components/PostBody";
 import RelatedPosts from "@/app/components/RelatedPosts";
+import ViewCounter from "@/app/components/ViewCounter";
 import { NewsletterSection } from "@/app/sections";
 
 interface PostPageProps {
@@ -63,6 +64,8 @@ export default async function PostPage({ params }: PostPageProps) {
             publishedAt={post.publishedAt}
             readingTime={readingTime}
           />
+
+          <ViewCounter slug={post.slug.current} />
 
           <PostBody body={post.body || []} />
         </div>
