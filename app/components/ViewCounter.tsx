@@ -34,7 +34,7 @@ export default function ViewCounter({ slug }: ViewCounterProps) {
   if (views === null) return null;
 
   return (
-    <span className="text-gray-400 text-sm flex items-center gap-1.5">
+    <span className="text-gray-400 text-sm flex items-center gap-1.5 mt-8">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"
