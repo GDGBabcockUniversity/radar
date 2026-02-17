@@ -14,4 +14,7 @@ export const CREDENTIALS = {
   qstash_token: process.env.QSTASH_TOKEN!,
   qstash_current_signing_key: process.env.QSTASH_CURRENT_SIGNING_KEY!,
   qstash_next_signing_key: process.env.QSTASH_NEXT_SIGNING_KEY!,
+
+  upstash_redis_rest_url: process.env.UPSTASH_REDIS_REST_URL!,
+  upstash_redis_rest_token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 };
