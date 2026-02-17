@@ -9,3 +9,4 @@ export { default as PostBody } from "./PostBody";
 export { default as AuthorCard } from "./AuthorCard";
 export { default as RelatedPosts } from "./RelatedPosts";
 export { default as CrosswordPuzzle } from "./CrosswordPuzzle";
+export { default as ViewCounter } from "./ViewCounter";
