@@ -39,6 +39,7 @@ export default async function PostPage({ params }: PostPageProps) {
     notFound();
   }
 
+  const isHidden = post.hidden === true;
   const readingTime = calculateReadingTime(post.body);
   const relatedPosts = await getRecentPosts(3);
 
@@ -65,7 +66,14 @@ export default async function PostPage({ params }: PostPageProps) {
             readingTime={readingTime}
           />
 
-          <ViewCounter slug={post.slug.current} />
+          {!isHidden && <ViewCounter slug={post.slug.current} />}
+
+          {isHidden && (
+            <div className="mt-6 rounded-md border border-yellow-500/40 bg-yellow-500/5 px-4 py-3 text-sm text-yellow-200">
+              This issue is currently hidden from the main site but visible here
+              for preview.
+            </div>
+          )}
 
           <PostBody body={post.body || []} />
         </div>
