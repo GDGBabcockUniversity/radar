@@ -23,7 +23,7 @@ export function urlFor(source: any) {
 // Fetch all posts
 export async function getPosts() {
   return client.fetch(`
-    *[_type == "post"] | order(publishedAt desc) {
+    *[_type == "post" && hidden != true] | order(publishedAt desc) {
       _id,
       title,
       slug,
@@ -47,6 +47,7 @@ export async function getPost(slug: string) {
       slug,
       description,
       featured,
+      hidden,
       publishedAt,
       mainImage,
       body,
@@ -61,7 +62,7 @@ export async function getPost(slug: string) {
 // Fetch featured post
 export async function getFeaturedPost() {
   return client.fetch(`
-    *[_type == "post" && featured == true] | order(publishedAt desc)[0] {
+    *[_type == "post" && featured == true && hidden != true] | order(publishedAt desc)[0] {
       _id,
       title,
       slug,
@@ -78,7 +79,7 @@ export async function getFeaturedPost() {
 export async function getRecentPosts(limit: number = 4) {
   return client.fetch(
     `
-    *[_type == "post" && featured != true] | order(publishedAt desc)[0...$limit] {
+    *[_type == "post" && featured != true && hidden != true] | order(publishedAt desc)[0...$limit] {
       _id,
       title,
       slug,
