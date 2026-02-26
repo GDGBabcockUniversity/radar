@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { PreviewUrlField } from "../components/PreviewUrlField";
 
 export default defineType({
   name: "post",
@@ -66,6 +67,25 @@ export default defineType({
       type: "boolean",
       description: "Show this post in the featured section",
       initialValue: false,
+    }),
+    defineField({
+      name: "hidden",
+      title: "Hide from site",
+      type: "boolean",
+      description:
+        "If checked, this post is hidden from listings and view counts but can be previewed via direct URL.",
+      initialValue: false,
+    }),
+    defineField({
+      name: "previewUrl",
+      title: "Preview URL",
+      type: "string",
+      readOnly: true,
+      components: {
+        field: PreviewUrlField,
+      },
+      description:
+        "Relative preview link based on the slug. Use this to copy the URL for sharing.",
     }),
     defineField({
       name: "body",
