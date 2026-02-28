@@ -268,7 +268,9 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
       <div className="my-10 p-8 bg-[#1a1a1a] border border-white/10 rounded-xl text-center">
         <span className="text-4xl mb-4 block">💝</span>
         <p className="text-white font-semibold mb-2">Personality Quiz</p>
-        <p className="text-gray-400 text-sm">Quiz ID "{quizId}" not found.</p>
+        <p className="text-gray-400 text-sm">
+          Quiz ID &quot;{quizId}&quot; not found.
+        </p>
       </div>
     );
   }
@@ -276,15 +278,15 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
   return (
     <div className="my-12 bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
       {/* Header */}
-      <div className="bg-gradient-to-r from-pink-950 to-rose-950 p-6 sm:p-8 text-center border-b border-white/10">
+      <div className="bg-linear-to-r from-pink-950 to-rose-950 p-6 sm:p-8 text-center border-b border-white/10">
         <h2
           className="text-2xl sm:text-3xl font-bold text-white mb-2"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          What's Your Valentine's Vibe? 💘
+          What&apos;s Your Valentine&apos;s Vibe? 💘
         </h2>
         <p className="text-pink-200/80 text-sm sm:text-base">
-          Answer honestly. We won't judge. Much.
+          Answer honestly. We won&apos;t judge. Much.
         </p>
       </div>
 
@@ -356,7 +358,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
                   px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300
                   ${
                     isComplete
-                      ? "bg-gradient-to-r from-pink-600 to-rose-600 text-white hover:shadow-[0_0_30px_rgba(225,29,72,0.4)] hover:-translate-y-1 cursor-pointer"
+                      ? "bg-linear-to-r from-pink-600 to-rose-600 text-white hover:shadow-[0_0_30px_rgba(225,29,72,0.4)] hover:-translate-y-1 cursor-pointer"
                       : "bg-white/10 text-gray-400 cursor-not-allowed"
                   }
                 `}
@@ -381,7 +383,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
               {result.title}
             </h3>
             <div className="bg-white/5 p-6 sm:p-8 rounded-2xl border border-white/10 max-w-2xl mx-auto mb-8 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-pink-500 to-rose-500" />
+              <div className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-pink-500 to-rose-500" />
               <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
                 {result.description}
               </p>
