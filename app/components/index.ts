@@ -10,3 +10,4 @@ export { default as AuthorCard } from "./AuthorCard";
 export { default as RelatedPosts } from "./RelatedPosts";
 export { default as CrosswordPuzzle } from "./CrosswordPuzzle";
 export { default as ViewCounter } from "./ViewCounter";
+export { default as PersonalityQuiz } from "./PersonalityQuiz";
