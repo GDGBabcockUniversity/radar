@@ -135,5 +135,29 @@ export default defineType({
         },
       },
     }),
+    defineArrayMember({
+      name: "quiz",
+      title: "Personality Quiz",
+      type: "object",
+      fields: [
+        {
+          name: "quizId",
+          title: "Quiz ID",
+          type: "string",
+          description: "Identifier for the quiz (e.g., valentines-2026)",
+          initialValue: "valentines-2026",
+        },
+      ],
+      preview: {
+        select: {
+          quizId: "quizId",
+        },
+        prepare({ quizId }) {
+          return {
+            title: `💝 Personality Quiz${quizId ? `: ${quizId}` : ""}`,
+          };
+        },
+      },
+    }),
   ],
 });
