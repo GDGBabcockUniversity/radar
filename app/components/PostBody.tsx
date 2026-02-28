@@ -2,6 +2,7 @@ import { PortableText, PortableTextComponents } from "@portabletext/react";
 import Image from "next/image";
 import { urlFor } from "../lib/sanity";
 import CrosswordPuzzle from "./CrosswordPuzzle";
+import PersonalityQuiz from "./PersonalityQuiz";
 import { getRandomElement } from "../lib/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -265,6 +266,17 @@ const components: PortableTextComponents = {
         );
       }
       return <CrosswordPuzzle puzzleId={value.puzzleId} />;
+    },
+    quiz: ({ value }) => {
+      if (!value?.quizId) {
+        return (
+          <div className="my-8 p-8 bg-[#1a1a1a] border border-white/10 rounded-xl text-center">
+            <span className="text-4xl mb-4 block">💝</span>
+            <p className="text-gray-400 text-sm">Quiz ID not configured</p>
+          </div>
+        );
+      }
+      return <PersonalityQuiz quizId={value.quizId} />;
     },
   },
 };
