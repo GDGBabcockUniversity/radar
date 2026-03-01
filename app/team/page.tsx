@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Image from "next/image";
 import { Header, Footer } from "../components";
 import { getTeamMembers, urlFor } from "../lib/sanity";
