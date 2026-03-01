@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import { getPost, getRecentPosts } from "@/app/lib/sanity";
 import { Header, Footer } from "@/app/components";
