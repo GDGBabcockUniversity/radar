@@ -49,7 +49,7 @@ export default function PastEditionsSection({
         </div>
 
         {/* Editions Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 max-w-3xl">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-3xl">
           {posts.map((post) => {
             const imageUrl = post.mainImage
               ? urlFor(post.mainImage).width(600).height(450).url()
