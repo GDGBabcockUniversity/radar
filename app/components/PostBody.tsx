@@ -42,6 +42,38 @@ function getTextContent(children: React.ReactNode): string {
   return "";
 }
 
+/** Returns the YouTube video id for watch, embed, shorts, and youtu.be URLs. */
+function getYouTubeVideoId(href: string | undefined): string | null {
+  if (!href?.trim()) return null;
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return null;
+  }
+  const host = url.hostname.replace(/^www\./, "");
+  if (host === "youtu.be") {
+    const id = url.pathname.split("/").filter(Boolean)[0];
+    return id || null;
+  }
+  if (
+    host === "youtube.com" ||
+    host === "m.youtube.com" ||
+    host === "music.youtube.com"
+  ) {
+    if (url.pathname.startsWith("/embed/")) {
+      return url.pathname.split("/")[2] || null;
+    }
+    if (url.pathname.startsWith("/shorts/")) {
+      return url.pathname.split("/")[2] || null;
+    }
+    if (url.pathname === "/watch" || url.pathname.startsWith("/watch")) {
+      return url.searchParams.get("v");
+    }
+  }
+  return null;
+}
+
 const components: PortableTextComponents = {
   block: {
     h1: ({ children }) => (
@@ -189,16 +221,35 @@ const components: PortableTextComponents = {
         {children}
       </code>
     ),
-    link: ({ children, value }) => (
-      <a
-        href={value?.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary hover:text-primary-hover underline transition-colors"
-      >
-        {children}
-      </a>
-    ),
+    link: ({ children, value }) => {
+      const href = value?.href as string | undefined;
+      const videoId = getYouTubeVideoId(href);
+      if (videoId) {
+        const title = getTextContent(children) || "YouTube video";
+        return (
+          <div className="my-6 w-full max-w-4xl mx-auto aspect-video rounded-lg overflow-hidden bg-black">
+            <iframe
+              className="w-full h-full"
+              src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`}
+              title={title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+        );
+      }
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:text-primary-hover underline transition-colors"
+        >
+          {children}
+        </a>
+      );
+    },
   },
   types: {
     image: ({ value }) => {
