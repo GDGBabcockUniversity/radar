@@ -17,15 +17,15 @@ interface TeamMember {
   _id: string;
   name: string;
   role: string;
-  department: string;
+  course: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   image?: any;
-  quote?: string;
   socialLinks?: SocialLinks;
   songObsession?: string;
-  favoriteBook?: string;
-  favoriteColor?: string;
-  howIManagePressure?: string;
+  tabsCurrentlyOpen?: string;
+  currentlyLearning?: string;
+  unpopularOpinion?: string;
+  techPhilosophy?: string;
 }
 
 function MemberAvatar({
@@ -134,7 +134,7 @@ export default async function TeamPage() {
                       className="text-[#94A3B8] text-[8px] md:text-[10px] leading-3.75 tracking-[1.4px] font-semibold uppercase mb-2"
                       style={{ fontFamily: "var(--font-body)" }}
                     >
-                      {member.department}
+                      {member.course}
                     </p>
                     {member.socialLinks && (
                       <div className="flex gap-2 flex-wrap font-bold text-[10px] leading-3.75 underline decoration-[#FFFFFF1A] decoration-0 underline-offset-4">
@@ -203,22 +203,13 @@ export default async function TeamPage() {
                   </div>
                 </div>
 
-                {member.quote && (
-                  <p
-                    className="text-[#CBD5E1] italic text-sm md:text-[18px] leading-7 mb-6 md:mb-8"
-                    style={{ fontFamily: "var(--font-body)" }}
-                  >
-                    &quot;{member.quote}&quot;
-                  </p>
-                )}
-
                 <hr className="mb-6 md:mb-8 text-[#FFFFFF0D]" />
 
                 <div className="grid grid-cols-2 gap-4 md:gap-6 text-xs">
                   {member.songObsession && (
                     <div>
                       <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                        SONG OBSESSION
+                        NEW SONG OBSESSION
                       </p>
                       <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
                         {member.songObsession}
@@ -226,35 +217,46 @@ export default async function TeamPage() {
                     </div>
                   )}
 
-                  {member.favoriteBook && (
+                  {member.tabsCurrentlyOpen && (
                     <div>
                       <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                        FAVORITE BOOK
+                        TABS CURRENTLY OPEN
                       </p>
                       <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                        {member.favoriteBook}
+                        {member.tabsCurrentlyOpen}
                       </p>
                     </div>
                   )}
 
-                  {member.favoriteColor && (
+                  {member.currentlyLearning && (
                     <div>
                       <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                        FAVORITE COLOR
+                        WHAT I&apos;M LEARNING RIGHT NOW
                       </p>
                       <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                        {member.favoriteColor}
+                        {member.currentlyLearning}
                       </p>
                     </div>
                   )}
 
-                  {member.howIManagePressure && (
+                  {member.unpopularOpinion && (
                     <div>
                       <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                        HOW I MANAGE SCHOOL PRESSURE
+                        UNPOPULAR DEV OPINION / HOT TAKE
                       </p>
                       <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                        {member.howIManagePressure}
+                        {member.unpopularOpinion}
+                      </p>
+                    </div>
+                  )}
+
+                  {member.techPhilosophy && (
+                    <div>
+                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        TECH PHILOSOPHY
+                      </p>
+                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        {member.techPhilosophy}
                       </p>
                     </div>
                   )}
