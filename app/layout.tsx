@@ -43,7 +43,7 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${merriweather.variable} ${caveat.variable} antialiased`}
       >
-      <Toaster
+        <Toaster
           theme="dark"
           position="top-right"
           toastOptions={{
