@@ -144,8 +144,8 @@ export default defineType({
           name: "quizId",
           title: "Quiz ID",
           type: "string",
-          description: "Identifier for the quiz (e.g., valentines-2026)",
-          initialValue: "valentines-2026",
+          description:
+            "Identifier for the quiz (e.g., valentines-2026, track-finder-2026)",
         },
       ],
       preview: {
