@@ -11,7 +11,59 @@ interface Question {
   }[];
 }
 
-const QUESTIONS: Question[] = [
+interface QuizResult {
+  title: string;
+  emojis: string;
+  description: string;
+}
+
+interface QuizTheme {
+  headerGradient: string;
+  accentClass: string;
+  accentBgClass: string;
+  accentBorderClass: string;
+  accentGlowClass: string;
+  buttonGradient: string;
+  buttonGlow: string;
+  confettiColors: string[];
+  headerTitle: string;
+  headerSubtitle: string;
+  submitText: string;
+  pendingText: string;
+  resultLabel: string;
+  resultAccentClass: string;
+  resultBarGradient: string;
+}
+
+interface QuizConfig {
+  questions: Question[];
+  results: Record<string, QuizResult>;
+  theme: QuizTheme;
+}
+
+// ─── Valentine's Quiz ───────────────────────────────────────────────
+
+const VALENTINES_THEME: QuizTheme = {
+  headerGradient: "bg-linear-to-r from-pink-950 to-rose-950",
+  accentClass: "text-pink-500",
+  accentBgClass: "bg-pink-500",
+  accentBorderClass: "border-pink-500",
+  accentGlowClass:
+    "bg-pink-500/10 border-pink-500/50 shadow-[0_0_15px_rgba(236,72,153,0.15)]",
+  buttonGradient:
+    "bg-linear-to-r from-pink-600 to-rose-600 text-white hover:shadow-[0_0_30px_rgba(225,29,72,0.4)]",
+  buttonGlow: "hover:shadow-[0_0_30px_rgba(225,29,72,0.4)]",
+  confettiColors: ["#ff0a54", "#ff477e", "#ff7096", "#ff85a1", "#fbb1bd"],
+  headerTitle: "What's Your Valentine's Vibe? 💘",
+  headerSubtitle: "Answer honestly. We won't judge. Much.",
+  submitText: "Reveal My Vibe ✨",
+  pendingText: "Answer all questions to continue",
+  resultLabel: "You are",
+  resultAccentClass: "text-pink-400",
+  resultBarGradient: "bg-linear-to-b from-pink-500 to-rose-500",
+};
+
+const VALENTINES_QUESTIONS: Question[] = [
   {
     id: 1,
     text: "It's February 13th. What's your mood?",
@@ -90,13 +142,7 @@ const QUESTIONS: Question[] = [
   },
 ];
 
-interface QuizResult {
-  title: string;
-  emojis: string;
-  description: string;
-}
-
-const RESULTS: Record<string, QuizResult> = {
+const VALENTINES_RESULTS: Record<string, QuizResult> = {
   A: {
     title: "The Soft Romantic",
     emojis: "💐🤍💌",
@@ -121,7 +167,6 @@ const RESULTS: Record<string, QuizResult> = {
     description:
       "You understand timing. You understand value. Love is sweet, but let's be serious — what are we exchanging here? If it's Valentine's, it must val.",
   },
-  // Ties
   "A,B": {
     title: "Hopeless Lover in Denial",
     emojis: "💖🙈💭",
@@ -160,11 +205,236 @@ const RESULTS: Record<string, QuizResult> = {
   },
 };
 
+// ─── Track Finder Quiz ──────────────────────────────────────────────
+
+const TRACK_FINDER_THEME: QuizTheme = {
+  headerGradient: "bg-linear-to-r from-indigo-950 to-violet-950",
+  accentClass: "text-violet-500",
+  accentBgClass: "bg-violet-500",
+  accentBorderClass: "border-violet-500",
+  accentGlowClass:
+    "bg-violet-500/10 border-violet-500/50 shadow-[0_0_15px_rgba(139,92,246,0.15)]",
+  buttonGradient:
+    "bg-linear-to-r from-indigo-600 to-violet-600 text-white hover:shadow-[0_0_30px_rgba(99,102,241,0.4)]",
+  buttonGlow: "hover:shadow-[0_0_30px_rgba(99,102,241,0.4)]",
+  confettiColors: ["#818cf8", "#6366f1", "#a78bfa", "#8b5cf6", "#c4b5fd"],
+  headerTitle: "Find Your Tech Track 🧭",
+  headerSubtitle: "9 questions. One path. No wrong answers.",
+  submitText: "Reveal My Track 🚀",
+  pendingText: "Answer all questions to continue",
+  resultLabel: "Your track is",
+  resultAccentClass: "text-violet-400",
+  resultBarGradient: "bg-linear-to-b from-indigo-500 to-violet-500",
+};
+
+const TRACK_FINDER_QUESTIONS: Question[] = [
+  {
+    id: 1,
+    text: "Which of these interests you the most?",
+    options: [
+      { letter: "A", text: "Finding patterns in data" },
+      { letter: "B", text: "Building apps or websites" },
+      { letter: "C", text: "Understanding how systems work" },
+      { letter: "D", text: "Designing how things look and feel" },
+    ],
+  },
+  {
+    id: 2,
+    text: "When you see a problem, you think:",
+    options: [
+      { letter: "A", text: "What data explains this?" },
+      { letter: "B", text: "How can I build a solution?" },
+      { letter: "C", text: "How does this system work?" },
+      { letter: "D", text: "How can this be better for users?" },
+    ],
+  },
+  {
+    id: 3,
+    text: "Which activity sounds most fun?",
+    options: [
+      { letter: "A", text: "Analyzing trends" },
+      { letter: "B", text: "Coding a feature" },
+      { letter: "C", text: "Setting up or testing systems" },
+      { letter: "D", text: "Designing an interface" },
+    ],
+  },
+  {
+    id: 4,
+    text: "People describe you as:",
+    options: [
+      { letter: "A", text: "Analytical" },
+      { letter: "B", text: "Logical" },
+      { letter: "C", text: "Curious" },
+      { letter: "D", text: "Creative" },
+    ],
+  },
+  {
+    id: 5,
+    text: "Your group project is due tomorrow, you:",
+    options: [
+      { letter: "A", text: "Handle the data and insights" },
+      { letter: "B", text: "Build the main solution" },
+      { letter: "C", text: "Make sure everything works properly" },
+      { letter: "D", text: "Make the presentation clean and attractive" },
+    ],
+  },
+  {
+    id: 6,
+    text: "You see a badly designed website:",
+    options: [
+      { letter: "A", text: "You don't really mind" },
+      { letter: "B", text: "As long as it works, it's fine" },
+      { letter: "C", text: "You wonder how it's built or hosted" },
+      { letter: "D", text: "Who designed this abeg 😭" },
+    ],
+  },
+  {
+    id: 7,
+    text: "Which tool would you rather learn?",
+    options: [
+      { letter: "A", text: "Excel or Python" },
+      { letter: "B", text: "JavaScript or React" },
+      { letter: "C", text: "Linux or Networking tools" },
+      { letter: "D", text: "Figma" },
+    ],
+  },
+  {
+    id: 8,
+    text: "What gives you the most satisfaction?",
+    options: [
+      { letter: "A", text: "Discovering insights" },
+      { letter: "B", text: "Building something functional" },
+      { letter: "C", text: "Making a system stable or secure" },
+      { letter: "D", text: "Creating something visually appealing" },
+    ],
+  },
+  {
+    id: 9,
+    text: "Finally, pick one:",
+    options: [
+      { letter: "A", text: "Data" },
+      { letter: "B", text: "Code" },
+      { letter: "C", text: "Systems" },
+      { letter: "D", text: "Design" },
+    ],
+  },
+];
+
+const TRACK_FINDER_RESULTS: Record<string, QuizResult> = {
+  A: {
+    title: "Data & AI",
+    emojis: "📊🤖🔍",
+    description:
+      "You see what others miss. Numbers speak to you, patterns excite you, and insights are your superpower. Whether it's machine learning models or data pipelines, you're built for turning raw information into real impact.",
+  },
+  B: {
+    title: "Software Development & Engineering",
+    emojis: "💻🚀⚡",
+    description:
+      "You're a builder at heart. If there's a problem, you want to code the solution. From frontend interfaces to backend logic, you thrive when you're shipping features and watching your ideas come to life.",
+  },
+  C: {
+    title: "Infrastructure & Security",
+    emojis: "🔧🛡️⚙️",
+    description:
+      "You're the one asking \"but how does it actually work?\" You care about what's under the hood — networks, servers, cloud, and security. If it runs, scales, or needs protecting, that's your domain.",
+  },
+  D: {
+    title: "Design & Management",
+    emojis: "🎨✨📐",
+    description:
+      "You have an eye for what feels right. Bad UX bothers you, ugly interfaces keep you up at night, and you believe tech should look as good as it works. You're the bridge between ideas and experiences.",
+  },
+  "A,B": {
+    title: "Data-Driven Developer",
+    emojis: "📊💻🔬",
+    description:
+      "You don't just build — you build with evidence. You love both writing code and mining data for insights. Think full-stack data engineer or ML-powered applications.",
+  },
+  "A,C": {
+    title: "Data Infrastructure Specialist",
+    emojis: "📊🔧🗄️",
+    description:
+      "You're fascinated by both data and the systems that power it. Data pipelines, cloud architecture, and scalable analytics platforms? That's your sweet spot.",
+  },
+  "A,D": {
+    title: "Data Visualization Specialist",
+    emojis: "📊🎨📈",
+    description:
+      "You turn numbers into stories people can see. You combine analytical thinking with a keen design eye — dashboards, infographics, and visual insights are your thing.",
+  },
+  "B,C": {
+    title: "DevOps Engineer",
+    emojis: "💻⚙️🔄",
+    description:
+      "You love building AND making sure it runs. Code meets infrastructure in your world — CI/CD pipelines, containerization, and seamless deployments excite you.",
+  },
+  "B,D": {
+    title: "Product Engineer",
+    emojis: "💻🎨🚀",
+    description:
+      "You build things that look and work beautifully. You care about the code AND the experience. Frontend engineering with a design sensibility — that's your lane.",
+  },
+  "C,D": {
+    title: "UX-Focused Systems Thinker",
+    emojis: "🛡️🎨🧩",
+    description:
+      "An unusual but powerful combo. You care about how systems work AND how people interact with them. Think design systems, accessible architecture, or security UX.",
+  },
+  THREE_WAY: {
+    title: "Tech Polymath",
+    emojis: "🧠💡🌐",
+    description:
+      "You can't be boxed in. Data, code, systems, design — you're curious about it all. Your versatility is your strength. Explore broadly, then go deep where it clicks.",
+  },
+  ALL: {
+    title: "Renaissance Technologist",
+    emojis: "👑🔮✨",
+    description:
+      "Every track speaks to you equally. You're the rare one who sees the big picture — how data, code, infrastructure, and design all connect. You might just end up leading the whole thing.",
+  },
+};
+
+// ─── Quiz Registry ──────────────────────────────────────────────────
+
+const QUIZ_REGISTRY: Record<string, QuizConfig> = {
+  "valentines-2026": {
+    questions: VALENTINES_QUESTIONS,
+    results: VALENTINES_RESULTS,
+    theme: VALENTINES_THEME,
+  },
+  "track-finder-2026": {
+    questions: TRACK_FINDER_QUESTIONS,
+    results: TRACK_FINDER_RESULTS,
+    theme: TRACK_FINDER_THEME,
+  },
+};
+
+// ─── Component ──────────────────────────────────────────────────────
+
 export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [result, setResult] = useState<QuizResult | null>(null);
 
-  const isComplete = Object.keys(answers).length === QUESTIONS.length;
+  const config = quizId
+    ? QUIZ_REGISTRY[quizId]
+    : QUIZ_REGISTRY["valentines-2026"];
+
+  // If no matching quiz found, show fallback
+  if (!config) {
+    return (
+      <div className="my-10 p-8 bg-[#1a1a1a] border border-white/10 rounded-xl text-center">
+        <span className="text-4xl mb-4 block">🧩</span>
+        <p className="text-white font-semibold mb-2">Personality Quiz</p>
+        <p className="text-gray-400 text-sm">
+          Quiz ID &quot;{quizId}&quot; not found.
+        </p>
+      </div>
+    );
+  }
+
+  const { questions, results, theme } = config;
+  const isComplete = Object.keys(answers).length === questions.length;
 
   const handleSelect = (questionId: number, letter: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: letter }));
@@ -183,7 +453,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
     // Find all letters that have the max count
     const topLetters = Object.keys(counts)
       .filter((letter) => counts[letter] === maxCount)
-      .sort(); // Sort to ensure consistent key generation like "A,B"
+      .sort();
 
     let finalResultKey = topLetters[0];
 
@@ -192,20 +462,17 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
     } else if (topLetters.length === 3) {
       finalResultKey = "THREE_WAY";
     } else if (topLetters.length === 2) {
-      // Possible 2-way ties: A&B, B&D, A&C, C&D
       const tieKey = topLetters.join(",");
-      if (RESULTS[tieKey]) {
+      if (results[tieKey]) {
         finalResultKey = tieKey;
       } else {
-        // Fallback for unhandled 2-way ties (e.g. A&D, B&C - though not specified in rules, just in case)
-        finalResultKey = "THREE_WAY"; // Use confused state as fallback
+        finalResultKey = "THREE_WAY";
       }
     }
 
-    setResult(RESULTS[finalResultKey]);
+    setResult(results[finalResultKey]);
 
-    // Custom pure DOM confetti since canvas-confetti package isn't available
-    const colors = ["#ff0a54", "#ff477e", "#ff7096", "#ff85a1", "#fbb1bd"];
+    // Custom pure DOM confetti
     const container = document.createElement("div");
     container.style.position = "fixed";
     container.style.top = "0";
@@ -218,7 +485,10 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
 
     for (let i = 0; i < 100; i++) {
       const particle = document.createElement("div");
-      const color = colors[Math.floor(Math.random() * colors.length)];
+      const color =
+        theme.confettiColors[
+          Math.floor(Math.random() * theme.confettiColors.length)
+        ];
       const left = Math.random() * 100;
       const animDuration = Math.random() * 3 + 2;
       const delay = Math.random() * 0.5;
@@ -262,41 +532,30 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
     setResult(null);
   };
 
-  // If it's not the valentine's quiz, show a placeholder
-  if (quizId && quizId !== "valentines-2026") {
-    return (
-      <div className="my-10 p-8 bg-[#1a1a1a] border border-white/10 rounded-xl text-center">
-        <span className="text-4xl mb-4 block">💝</span>
-        <p className="text-white font-semibold mb-2">Personality Quiz</p>
-        <p className="text-gray-400 text-sm">
-          Quiz ID &quot;{quizId}&quot; not found.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="my-12 bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
       {/* Header */}
-      <div className="bg-linear-to-r from-pink-950 to-rose-950 p-6 sm:p-8 text-center border-b border-white/10">
+      <div
+        className={`${theme.headerGradient} p-6 sm:p-8 text-center border-b border-white/10`}
+      >
         <h2
           className="text-2xl sm:text-3xl font-bold text-white mb-2"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          What&apos;s Your Valentine&apos;s Vibe? 💘
+          {theme.headerTitle}
         </h2>
-        <p className="text-pink-200/80 text-sm sm:text-base">
-          Answer honestly. We won&apos;t judge. Much.
+        <p className="text-white/60 text-sm sm:text-base">
+          {theme.headerSubtitle}
         </p>
       </div>
 
       <div className="p-6 sm:p-8">
         {!result ? (
           <div className="space-y-10">
-            {QUESTIONS.map((q, index) => (
+            {questions.map((q, index) => (
               <div key={q.id} className="scroll-mt-24" id={`q-${q.id}`}>
                 <h3 className="text-lg font-semibold text-white mb-4 flex gap-3">
-                  <span className="text-pink-500">{index + 1}.</span>
+                  <span className={theme.accentClass}>{index + 1}.</span>
                   <span>{q.text}</span>
                 </h3>
                 <div className="space-y-3">
@@ -307,7 +566,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
                         block p-4 rounded-xl border cursor-pointer transition-all duration-200
                         ${
                           answers[q.id] === opt.letter
-                            ? "bg-pink-500/10 border-pink-500/50 shadow-[0_0_15px_rgba(236,72,153,0.15)]"
+                            ? theme.accentGlowClass
                             : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
                         }
                       `}
@@ -318,13 +577,15 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
                           w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors
                           ${
                             answers[q.id] === opt.letter
-                              ? "border-pink-500"
+                              ? theme.accentBorderClass
                               : "border-gray-500"
                           }
                         `}
                         >
                           {answers[q.id] === opt.letter && (
-                            <div className="w-3 h-3 bg-pink-500 rounded-full" />
+                            <div
+                              className={`w-3 h-3 ${theme.accentBgClass} rounded-full`}
+                            />
                           )}
                         </div>
                         <span
@@ -358,23 +619,23 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
                   px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300
                   ${
                     isComplete
-                      ? "bg-linear-to-r from-pink-600 to-rose-600 text-white hover:shadow-[0_0_30px_rgba(225,29,72,0.4)] hover:-translate-y-1 cursor-pointer"
+                      ? `${theme.buttonGradient} hover:-translate-y-1 cursor-pointer`
                       : "bg-white/10 text-gray-400 cursor-not-allowed"
                   }
                 `}
                 style={{ fontFamily: "var(--font-heading)" }}
               >
-                {isComplete
-                  ? "Reveal My Vibe ✨"
-                  : "Answer all questions to continue"}
+                {isComplete ? theme.submitText : theme.pendingText}
               </button>
             </div>
           </div>
         ) : (
           <div className="text-center py-8 animate-in fade-in zoom-in duration-500">
             <div className="text-5xl sm:text-7xl mb-6">{result.emojis}</div>
-            <p className="text-pink-400 font-medium uppercase tracking-widest text-sm mb-2">
-              You are
+            <p
+              className={`${theme.resultAccentClass} font-medium uppercase tracking-widest text-sm mb-2`}
+            >
+              {theme.resultLabel}
             </p>
             <h3
               className="text-3xl sm:text-4xl font-bold text-white mb-6"
@@ -383,7 +644,9 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
               {result.title}
             </h3>
             <div className="bg-white/5 p-6 sm:p-8 rounded-2xl border border-white/10 max-w-2xl mx-auto mb-8 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-pink-500 to-rose-500" />
+              <div
+                className={`absolute top-0 left-0 w-1 h-full ${theme.resultBarGradient}`}
+              />
               <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
                 {result.description}
               </p>
