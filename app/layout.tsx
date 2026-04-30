@@ -3,6 +3,7 @@ import { Space_Grotesk, Inter, Merriweather, Caveat } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
+import { cn } from "./lib/utils";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -41,7 +42,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${merriweather.variable} ${caveat.variable} antialiased`}
+        className={cn(
+          spaceGrotesk.variable,
+          inter.variable,
+          merriweather.variable,
+          caveat.variable,
+          "antialiased",
+        )}
       >
         <Toaster
           theme="dark"
