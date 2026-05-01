@@ -76,10 +76,9 @@ export async function getFeaturedPost() {
 }
 
 // Fetch recent posts (excluding featured)
-export async function getRecentPosts(limit: number = 4) {
-  return client.fetch(
-    `
-    *[_type == "post" && featured != true && hidden != true] | order(publishedAt desc)[0...$limit] {
+export async function getRecentPosts() {
+  return client.fetch(`
+    *[_type == "post" && featured != true && hidden != true] | order(publishedAt desc) {
       _id,
       title,
       slug,
@@ -89,9 +88,7 @@ export async function getRecentPosts(limit: number = 4) {
       "author": author->{ name, image },
       "categories": categories[]->{ title }
     }
-  `,
-    { limit: limit - 1 },
-  );
+  `);
 }
 
 // Fetch all team members
