@@ -43,7 +43,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
   const isHidden = post.hidden === true;
   const readingTime = calculateReadingTime(post.body);
-  const relatedPosts = await getRecentPosts(3);
+  const relatedPosts = await getRecentPosts();
 
   // Filter out current post from related
   const filteredRelated = relatedPosts.filter(
