@@ -532,6 +532,121 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
     setResult(null);
   };
 
+  const exportAsImage = async () => {
+    if (!result) return;
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const w = 1080;
+    const h = 1080;
+    canvas.width = w;
+    canvas.height = h;
+
+    // Background
+    const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+    bgGrad.addColorStop(0, "#0a0a0a");
+    bgGrad.addColorStop(1, "#1a1a2e");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Accent gradient bar at the top
+    const accentColor = theme.confettiColors[0] || "#ff0a54";
+    const accentColor2 = theme.confettiColors[2] || "#ff7096";
+    const topBar = ctx.createLinearGradient(0, 0, w, 0);
+    topBar.addColorStop(0, accentColor);
+    topBar.addColorStop(1, accentColor2);
+    ctx.fillStyle = topBar;
+    ctx.fillRect(0, 0, w, 6);
+
+    // Subtle border
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(40, 40, w - 80, h - 80);
+
+    // Emojis
+    ctx.font = "80px serif";
+    ctx.textAlign = "center";
+    ctx.fillText(result.emojis, w / 2, 200);
+
+    // "You are" / result label
+    ctx.font = "600 16px 'Inter', sans-serif";
+    ctx.fillStyle = accentColor;
+    ctx.letterSpacing = "4px";
+    ctx.fillText(theme.resultLabel.toUpperCase(), w / 2, 280);
+    ctx.letterSpacing = "0px";
+
+    // Title
+    ctx.font = "bold 48px 'Inter', sans-serif";
+    ctx.fillStyle = "#ffffff";
+    const titleLines = wrapText(ctx, result.title, w - 160);
+    let titleY = 340;
+    for (const line of titleLines) {
+      ctx.fillText(line, w / 2, titleY);
+      titleY += 58;
+    }
+
+    // Description card background
+    const descTop = titleY + 20;
+    const descPadding = 40;
+    const descMaxWidth = w - 160;
+
+    ctx.font = "400 22px 'Inter', sans-serif";
+    const descLines = wrapText(
+      ctx,
+      result.description,
+      descMaxWidth - descPadding * 2,
+    );
+    const descBlockHeight = descLines.length * 34 + descPadding * 2;
+
+    // Card bg
+    ctx.fillStyle = "rgba(255,255,255,0.04)";
+    roundedRect(ctx, 80, descTop, w - 160, descBlockHeight, 20);
+    ctx.fill();
+
+    // Card border
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1;
+    roundedRect(ctx, 80, descTop, w - 160, descBlockHeight, 20);
+    ctx.stroke();
+
+    // Accent bar on card
+    const barGrad = ctx.createLinearGradient(
+      0,
+      descTop,
+      0,
+      descTop + descBlockHeight,
+    );
+    barGrad.addColorStop(0, accentColor);
+    barGrad.addColorStop(1, accentColor2);
+    ctx.fillStyle = barGrad;
+    roundedRect(ctx, 80, descTop, 4, descBlockHeight, 2);
+    ctx.fill();
+
+    // Description text
+    ctx.font = "400 22px 'Inter', sans-serif";
+    ctx.fillStyle = "#d1d5db";
+    ctx.textAlign = "center";
+    let descY = descTop + descPadding + 22;
+    for (const line of descLines) {
+      ctx.fillText(line, w / 2, descY);
+      descY += 34;
+    }
+
+    // Branding footer
+    ctx.font = "600 18px 'Inter', sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.25)";
+    ctx.textAlign = "center";
+    ctx.fillText("RADAR", w / 2, h - 60);
+
+    // Download
+    const link = document.createElement("a");
+    link.download = `${(result.title || "quiz-result").replace(/\s+/g, "-").toLowerCase()}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
   return (
     <div className="my-12 bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
       {/* Header */}
@@ -652,15 +767,84 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
               </p>
             </div>
 
-            <button
-              onClick={resetQuiz}
-              className="text-gray-400 hover:text-white underline underline-offset-4 transition-colors text-sm"
-            >
-              Retake Quiz
-            </button>
+            <div className="flex items-center justify-center gap-6">
+              <button
+                onClick={exportAsImage}
+                className={`${theme.buttonGradient} px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 cursor-pointer flex items-center gap-2`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Save as Image
+              </button>
+              <button
+                onClick={resetQuiz}
+                className="text-gray-400 hover:text-white underline underline-offset-4 transition-colors text-sm"
+              >
+                Retake Quiz
+              </button>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
+}
+
+// ─── Canvas Helpers ───────────────────────────────────────────────────
+
+function wrapText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+): string[] {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let currentLine = "";
+
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && currentLine) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = testLine;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+  return lines;
+}
+
+function roundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number,
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
 }
