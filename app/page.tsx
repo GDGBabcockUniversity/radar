@@ -11,7 +11,7 @@ import { getFeaturedPost, getRecentPosts } from "./lib/sanity";
 
 export default async function Home() {
   const featuredPost = await getFeaturedPost();
-  const recentPosts = await getRecentPosts(4);
+  const recentPosts = await getRecentPosts();
 
   return (
     <>
