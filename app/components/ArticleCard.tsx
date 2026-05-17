@@ -52,10 +52,7 @@ export default function ArticleCard({
         {/* Content */}
         <div className="absolute inset-0 flex flex-col justify-end p-6">
           {/* Tags Row */}
-          <div
-            className="mb-3 flex items-center gap-3"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
+          <div className="mb-3 flex items-center gap-3">
             {tag && (
               <span className="px-2 py-1 text-xs font-semibold uppercase tracking-wide rounded bg-primary text-white">
                 {tag}
@@ -64,19 +61,13 @@ export default function ArticleCard({
           </div>
 
           {/* Title - Space Grotesk */}
-          <h3
-            className="text-2xl md:text-3xl font-semibold text-white leading-tight"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
+          <h3 className="text-2xl md:text-3xl font-semibold text-white leading-tight">
             {title}
           </h3>
 
           {/* Description - Inter */}
           {description && (
-            <p
-              className="mt-2 text-sm text-white/70 line-clamp-2"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
+            <p className="mt-2 text-sm text-white/70 line-clamp-2">
               {description}
             </p>
           )}
@@ -109,10 +100,7 @@ export default function ArticleCard({
       {/* Content Section */}
       <div className="p-5">
         {/* Meta Row - Edition number and date */}
-        <div
-          className="flex items-center justify-between mb-4"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
+        <div className="flex items-center justify-between mb-4">
           {/* Edition Number */}
           {editionNumber && (
             <span className="text-xs font-semibold uppercase tracking-wide text-primary">
@@ -154,19 +142,13 @@ export default function ArticleCard({
         <div className="h-0.5 bg-[#161616] mb-5 rounded-full" />
 
         {/* Title - Space Grotesk */}
-        <h3
-          className="text-xl font-semibold text-white leading-tight mb-3"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
+        <h3 className="text-xl font-semibold text-white leading-tight mb-3">
           {title}
         </h3>
 
         {/* Description - Inter */}
         {description && (
-          <p
-            className="text-sm text-gray-400 leading-relaxed line-clamp-3"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
+          <p className="text-sm text-gray-400 leading-relaxed line-clamp-3">
             {description}
           </p>
         )}
