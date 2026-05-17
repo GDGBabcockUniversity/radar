@@ -80,10 +80,7 @@ export default async function TeamPage() {
               </span>
               THE CREATIVE COLLECTIVE
             </p>
-            <h1
-              className="text-6xl md:text-8xl font-bold mb-8 leading-[108.8px] tracking-[-6.4px]"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-[108.8px] tracking-[-6.4px]">
               The Faces
               <br />
               behind
@@ -97,10 +94,7 @@ export default async function TeamPage() {
               </span>
             </h1>
             <div className="border-l-4 border-primary pl-6 max-w-2xl">
-              <p
-                className="text-[#CBD5E1] text-base md:text-2xl leading-[48.75px] italic"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
+              <p className="text-[#CBD5E1] text-base md:text-2xl leading-[48.75px] italic">
                 &quot;Behind every word, line of statement and piece,
                 there&apos;s a voice — a person. This is us — unfiltered, human,
                 and learning as we go.&quot;
@@ -118,22 +112,13 @@ export default async function TeamPage() {
                   <MemberAvatar name={member.name} image={member.image} />
 
                   <div className="flex-1">
-                    <h3
-                      className="text-lg md:text-3xl leading-9 tracking-[-0.75px] font-bold text-white mb-1"
-                      style={{ fontFamily: "var(--font-heading)" }}
-                    >
+                    <h3 className="text-lg md:text-3xl leading-9 tracking-[-0.75px] font-bold text-white mb-1">
                       {member.name}
                     </h3>
-                    <p
-                      className="text-primary text-[10px] md:text-sm leading-5 tracking-[1.4px] font-bold uppercase mb-2"
-                      style={{ fontFamily: "var(--font-body)" }}
-                    >
+                    <p className="text-primary text-[10px] md:text-sm leading-5 tracking-[1.4px] font-bold uppercase mb-2">
                       {member.role}
                     </p>
-                    <p
-                      className="text-[#94A3B8] text-[8px] md:text-[10px] leading-3.75 tracking-[1.4px] font-semibold uppercase mb-2"
-                      style={{ fontFamily: "var(--font-body)" }}
-                    >
+                    <p className="text-[#94A3B8] text-[8px] md:text-[10px] leading-3.75 tracking-[1.4px] font-semibold uppercase mb-2">
                       {member.course}
                     </p>
                     {member.socialLinks && (
@@ -266,10 +251,7 @@ export default async function TeamPage() {
           </div>
         </div>
         <div className="bg-[#16181D] border border-[#FFFFFF0D] rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
-          <p
-            className="text-[#94A3B8] text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
-            style={{ fontFamily: "var(--font-serif)" }}
-          >
+          <p className="text-[#94A3B8] text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12">
             &quot;What stands out isn&apos;t just what we study or what we
             build, but who we are while doing it. We manage pressure
             differently. We find meaning in different things. We recharge in our
@@ -283,12 +265,7 @@ export default async function TeamPage() {
           </span>
 
           <div className="text-center">
-            <h2
-              className="text-5xl md:text-6xl leading-24 text-primary mb-2 -rotate-2"
-              style={{
-                fontFamily: "var(--font-caveat)",
-              }}
-            >
+            <h2 className="text-5xl md:text-6xl leading-24 text-primary mb-2 -rotate-2">
               Commit & Push
             </h2>
             <p className="text-[#6b7280] font-bold text-xs leading-4.5 uppercase tracking-[7.2px]">
