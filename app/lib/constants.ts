@@ -2,6 +2,7 @@ export const BASE_URL = "https://radar.gdgbabcock.com";
 
 export const IMAGES = {
   logo: { src: "/logo.png", w: 390, h: 390 },
+  hero_bg: { src: "/hero-bg.png", w: 1780, h: 1780 },
 };
 
 export const CREDENTIALS = {
@@ -17,4 +18,11 @@ export const CREDENTIALS = {
 
   upstash_redis_rest_url: process.env.UPSTASH_REDIS_REST_URL!,
   upstash_redis_rest_token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+};
+
+export const PAGES = {
+  home: "/",
+  team: "/team",
+  series: "/series",
+  post: (slug: string) => `/posts/${slug}`,
 };
