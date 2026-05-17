@@ -376,10 +376,7 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
   return (
     <div className="my-8 p-4 sm:p-6 bg-[#0f0f0f] border border-white/10 rounded-xl">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h3
-          className="text-lg sm:text-xl font-bold text-white"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
+        <h3 className="text-lg sm:text-xl font-bold text-white">
           🧩 Crossword Puzzle
         </h3>
         <button
@@ -442,12 +439,7 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
 
         <div className="flex-1 grid sm:grid-cols-2 gap-4 sm:gap-6 text-xs sm:text-sm">
           <div>
-            <h4
-              className="font-bold text-white mb-2 sm:mb-3"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Across
-            </h4>
+            <h4 className="font-bold text-white mb-2 sm:mb-3">Across</h4>
             <ul className="space-y-1.5 sm:space-y-2">
               {acrossClues.map((clue) => (
                 <li key={clue.id} className="text-gray-300">
@@ -458,12 +450,7 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
             </ul>
           </div>
           <div>
-            <h4
-              className="font-bold text-white mb-2 sm:mb-3"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Down
-            </h4>
+            <h4 className="font-bold text-white mb-2 sm:mb-3">Down</h4>
             <ul className="space-y-1.5 sm:space-y-2">
               {downClues.map((clue) => (
                 <li key={clue.id} className="text-gray-300">
