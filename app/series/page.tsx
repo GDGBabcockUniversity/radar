@@ -4,7 +4,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { getSeriesGroups, urlFor } from "@/app/lib/sanity";
 import { Header, Footer } from "@/app/components";
-import { PAGES } from "@/app/lib/constants";
+
+interface SeriesItem {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  youtubeUrl?: string;
+  mainImage?: object;
+  author?: { name: string };
+}
+
+interface SeriesGroup {
+  _id: string;
+  title: string;
+  description?: string;
+  series?: SeriesItem[];
+}
 
 // Helper to extract YouTube video ID
 function getYouTubeId(url: string) {
@@ -36,7 +51,7 @@ export default async function SeriesPage() {
             <p className="text-gray-400">No series available yet.</p>
           ) : (
             <div className="space-y-24">
-              {groups.map((group: any) => (
+              {groups.map((group: SeriesGroup) => (
                 <section key={group._id} className="space-y-8">
                   <div>
                     <h2 className="text-3xl font-bold tracking-tight mb-2">
@@ -51,7 +66,7 @@ export default async function SeriesPage() {
 
                   {group.series && group.series.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {group.series.map((item: any) => {
+                      {group.series.map((item: SeriesItem) => {
                         const ytId = item.youtubeUrl
                           ? getYouTubeId(item.youtubeUrl)
                           : null;
