@@ -34,16 +34,10 @@ export default function PastEditionsSection({
       <div className="container">
         {/* Section Header */}
         <div className="mb-10">
-          <h2
-            className="text-3xl md:text-4xl font-bold text-white mb-2"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
             Past Editions
           </h2>
-          <p
-            className="text-gray-400"
-            style={{ fontFamily: "var(--font-serif)" }}
-          >
+          <p className="text-gray-400">
             The history of GDG Babcock, documented.
           </p>
         </div>
