@@ -62,11 +62,7 @@ export default function NewsletterForm({
   if (isFooter) {
     // Footer variant: stacked layout with rectangular button
     return (
-      <form
-        onSubmit={handleSubmit}
-        className={`w-full ${className}`}
-        style={{ fontFamily: "var(--font-body)" }}
-      >
+      <form onSubmit={handleSubmit} className={`w-full ${className}`}>
         <div className="space-y-3">
           <input
             type="email"
@@ -101,7 +97,6 @@ export default function NewsletterForm({
     <form
       onSubmit={handleSubmit}
       className={`w-full max-w-md mx-auto ${className}`}
-      style={{ fontFamily: "var(--font-body)" }}
     >
       <div className="flex items-center rounded-md sm:rounded-full bg-white/5 border border-white/10 p-1.5">
         {/* Email Icon */}
