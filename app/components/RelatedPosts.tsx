@@ -26,10 +26,7 @@ export default function RelatedPosts({ posts }: RelatedPostsProps) {
   return (
     <section className="py-16 border-t border-white/10">
       <div className="container">
-        <h2
-          className="text-2xl md:text-3xl font-bold text-white mb-8"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">
           More from RADAR
         </h2>
 
