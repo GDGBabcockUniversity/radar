@@ -32,18 +32,12 @@ export default function NewsletterSection() {
         </div>
 
         {/* Heading - Space Grotesk */}
-        <h2
-          className="text-3xl md:text-4xl font-bold text-white mb-4"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
           Don&apos;t Miss a Signal
         </h2>
 
         {/* Description - Merriweather */}
-        <p
-          className="text-gray-400 mb-8 max-w-lg mx-auto leading-relaxed"
-          style={{ fontFamily: "var(--font-serif)" }}
-        >
+        <p className="text-gray-400 mb-8 max-w-lg mx-auto leading-relaxed">
           Join the community. Get the latest tech news, student spotlights, and
           opportunities delivered to your inbox every month.
         </p>
@@ -52,10 +46,7 @@ export default function NewsletterSection() {
         <NewsletterForm />
 
         {/* Privacy notice */}
-        <p
-          className="mt-4 text-xs text-gray-500 uppercase tracking-wider"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
+        <p className="mt-4 text-xs text-gray-500 uppercase tracking-wider">
           No spam • Unsubscribe anytime
         </p>
       </div>
