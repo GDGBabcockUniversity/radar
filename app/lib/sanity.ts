@@ -114,3 +114,49 @@ export async function getTeamMembers() {
     { next: { revalidate: 60 } }, // Revalidate every 60 seconds
   );
 }
+
+// Fetch all series groups along with their series
+export async function getSeriesGroups() {
+  return client.fetch(
+    `
+    *[_type == "seriesGroup"] | order(title asc) {
+      _id,
+      title,
+      slug,
+      description,
+      "series": *[_type == "series" && references(^._id)] | order(publishedAt desc) {
+        _id,
+        title,
+        slug,
+        youtubeUrl,
+        publishedAt,
+        mainImage,
+        "author": author->{ name, image }
+      }
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } }
+  );
+}
+
+// Fetch a single series by slug
+export async function getSeriesPost(slug: string) {
+  return client.fetch(
+    `
+    *[_type == "series" && slug.current == $slug][0] {
+      _id,
+      title,
+      slug,
+      "group": group->{ title, slug },
+      youtubeUrl,
+      publishedAt,
+      mainImage,
+      body,
+      "author": author->{ name, image, bio }
+    }
+    `,
+    { slug },
+    { next: { revalidate: 60 } }
+  );
+}
