@@ -8,7 +8,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-transparent backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between gap-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-2 group mr-auto">
           {/* Signal Icon */}
           {/* <div className="flex h-10 w-10 items-center justify-center rounded-lg"> */}
           <Image
