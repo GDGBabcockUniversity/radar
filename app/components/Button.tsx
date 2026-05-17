@@ -77,22 +77,14 @@ export default function Button({
 
   if (href) {
     return (
-      <a
-        href={href}
-        className={`group ${classes}`}
-        style={{ fontFamily: "var(--font-body)" }}
-      >
+      <a href={href} className={`group ${classes}`}>
         {content}
       </a>
     );
   }
 
   return (
-    <button
-      onClick={onClick}
-      className={`group ${classes}`}
-      style={{ fontFamily: "var(--font-body)" }}
-    >
+    <button onClick={onClick} className={`group ${classes}`}>
       {content}
     </button>
   );
