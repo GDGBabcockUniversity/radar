@@ -80,7 +80,6 @@ const components: PortableTextComponents = {
       <h1
         className="font-bold text-white mt-12 mb-4"
         style={{
-          fontFamily: "var(--font-heading)",
           fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
           lineHeight: 1.2,
         }}
@@ -96,7 +95,6 @@ const components: PortableTextComponents = {
           id={id}
           className="font-bold text-white mt-10 mb-3 group relative"
           style={{
-            fontFamily: "var(--font-heading)",
             fontSize: "clamp(1.5rem, 3vw, 2rem)",
             lineHeight: 1.3,
           }}
@@ -116,7 +114,6 @@ const components: PortableTextComponents = {
       <h3
         className="font-semibold text-white mt-8 mb-3"
         style={{
-          fontFamily: "var(--font-heading)",
           fontSize: "clamp(1.25rem, 2.5vw, 1.5rem)",
           lineHeight: 1.3,
         }}
@@ -128,7 +125,6 @@ const components: PortableTextComponents = {
       <h4
         className="font-semibold text-white mt-6 mb-2"
         style={{
-          fontFamily: "var(--font-heading)",
           fontSize: "clamp(1.125rem, 2vw, 1.25rem)",
           lineHeight: 1.4,
         }}
@@ -140,7 +136,6 @@ const components: PortableTextComponents = {
       <h5
         className="font-semibold text-white mt-5 mb-2"
         style={{
-          fontFamily: "var(--font-heading)",
           fontSize: "1.125rem",
           lineHeight: 1.4,
         }}
@@ -152,7 +147,6 @@ const components: PortableTextComponents = {
       <h6
         className="font-semibold text-gray-300 mt-4 mb-2 uppercase tracking-wide"
         style={{
-          fontFamily: "var(--font-heading)",
           fontSize: "0.875rem",
           lineHeight: 1.5,
         }}
@@ -164,7 +158,6 @@ const components: PortableTextComponents = {
       <p
         className="text-gray-300 leading-relaxed mb-5"
         style={{
-          fontFamily: "var(--font-body)",
           fontSize: "1rem",
           lineHeight: 1.75,
         }}
@@ -184,7 +177,6 @@ const components: PortableTextComponents = {
         <blockquote
           className="border-l-4 pl-5 my-6 italic text-gray-400"
           style={{
-            fontFamily: "var(--font-serif)",
             fontSize: "1rem",
             lineHeight: 1.6,
             borderColor,
@@ -265,10 +257,7 @@ const components: PortableTextComponents = {
             className="w-full h-auto rounded-lg"
           />
           {value.caption && (
-            <figcaption
-              className="text-gray-500 text-sm mt-2 text-center"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
+            <figcaption className="text-gray-500 text-sm mt-2 text-center">
               {value.caption}
             </figcaption>
           )}
