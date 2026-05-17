@@ -71,10 +71,10 @@ html {
 
 body {
   /* Font aliases - must be in body scope where Next.js font variables are available */
-  --font-heading: var(--font-space-grotesk);
-  --font-body: var(--font-inter);
+  --font-body: var(--font-google-sans-flex);
+  /* --font-heading: var(--font-space-grotesk);
   --font-serif: var(--font-merriweather);
-  --font-caveat: var(--font-caveat);
+  --font-caveat: var(--font-caveat); */
 
   font-family: var(--font-body);
   background: var(--color-bg-dark);
