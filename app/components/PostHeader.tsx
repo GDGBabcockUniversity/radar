@@ -24,10 +24,7 @@ export default function PostHeader({
         <div className="container">
           {/* Tags Row */}
           {categories && categories.length > 0 && (
-            <div
-              className="mb-3 flex items-center gap-2"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
+            <div className="mb-3 flex items-center gap-2">
               {categories.map((cat) => (
                 <span
                   key={cat.title}
@@ -40,19 +37,13 @@ export default function PostHeader({
           )}
 
           {/* Title */}
-          <h1
-            className="text-2xl md:text-3xl font-bold text-white leading-tight max-w-3xl"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
+          <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight max-w-3xl">
             {title}
           </h1>
 
           {/* Description */}
           {description && (
-            <p
-              className="mt-3 text-base md:text-lg text-gray-400 max-w-2xl leading-relaxed"
-              style={{ fontFamily: "var(--font-serif)" }}
-            >
+            <p className="mt-3 text-base md:text-lg text-gray-400 max-w-2xl leading-relaxed">
               {description}
             </p>
           )}
@@ -82,10 +73,7 @@ export default function PostHeader({
           <div className="container pb-6 md:pb-10">
             {/* Tags Row */}
             {categories && categories.length > 0 && (
-              <div
-                className="mb-3 flex items-center gap-2"
-                style={{ fontFamily: "var(--font-body)" }}
-              >
+              <div className="mb-3 flex items-center gap-2">
                 {categories.map((cat) => (
                   <span
                     key={cat.title}
@@ -98,19 +86,13 @@ export default function PostHeader({
             )}
 
             {/* Title */}
-            <h1
-              className="text-2xl md:text-3xl font-bold text-white leading-tight max-w-3xl"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
+            <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight max-w-3xl">
               {title}
             </h1>
 
             {/* Description */}
             {description && (
-              <p
-                className="mt-3 text-sm md:text-base text-gray-300 max-w-2xl leading-relaxed"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
+              <p className="mt-3 text-sm md:text-base text-gray-300 max-w-2xl leading-relaxed">
                 {description}
               </p>
             )}
