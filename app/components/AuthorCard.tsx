@@ -27,10 +27,7 @@ export default function AuthorCard({
   };
 
   return (
-    <div
-      className="flex items-center justify-start gap-4 py-6 border-b border-white/10"
-      style={{ fontFamily: "var(--font-body)" }}
-    >
+    <div className="flex items-center justify-start gap-4 py-6 border-b border-white/10">
       {/* Author Avatar */}
       {author?.image ? (
         <Image
