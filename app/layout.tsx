@@ -1,33 +1,44 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, Merriweather, Caveat } from "next/font/google";
+import { Google_Sans_Flex } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { cn } from "./lib/utils";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const googleSansFlex = Google_Sans_Flex({
+  variable: "--font-google-sans-flex",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: [
+    "100",
+    "200",
+    "300",
+    "400",
+    "500",
+    "600",
+    "700",
+    "800",
+    "900",
+    "1000",
+  ],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
+// const inter = Inter({
+//   variable: "--font-inter",
+//   subsets: ["latin"],
+//   weight: ["400", "500", "600", "700"],
+// });
 
-const merriweather = Merriweather({
-  variable: "--font-merriweather",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
+// const merriweather = Merriweather({
+//   variable: "--font-merriweather",
+//   subsets: ["latin"],
+//   weight: ["400", "700"],
+// });
 
-const caveat = Caveat({
-  variable: "--font-caveat",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
+// const caveat = Caveat({
+//   variable: "--font-caveat",
+//   subsets: ["latin"],
+//   weight: ["400", "700"],
+// });
 
 export const metadata: Metadata = {
   title: "RADAR | GDG Babcock",
@@ -41,15 +52,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={cn(
-          spaceGrotesk.variable,
-          inter.variable,
-          merriweather.variable,
-          caveat.variable,
-          "antialiased",
-        )}
-      >
+      <body className={cn(googleSansFlex.variable, "antialiased")}>
         <Toaster
           theme="dark"
           position="top-right"
