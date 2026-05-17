@@ -653,10 +653,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
       <div
         className={`${theme.headerGradient} p-6 sm:p-8 text-center border-b border-white/10`}
       >
-        <h2
-          className="text-2xl sm:text-3xl font-bold text-white mb-2"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
           {theme.headerTitle}
         </h2>
         <p className="text-white/60 text-sm sm:text-base">
@@ -738,7 +735,6 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
                       : "bg-white/10 text-gray-400 cursor-not-allowed"
                   }
                 `}
-                style={{ fontFamily: "var(--font-heading)" }}
               >
                 {isComplete ? theme.submitText : theme.pendingText}
               </button>
@@ -752,10 +748,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
             >
               {theme.resultLabel}
             </p>
-            <h3
-              className="text-3xl sm:text-4xl font-bold text-white mb-6"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
+            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-6">
               {result.title}
             </h3>
             <div className="bg-white/5 p-6 sm:p-8 rounded-2xl border border-white/10 max-w-2xl mx-auto mb-8 relative overflow-hidden">
