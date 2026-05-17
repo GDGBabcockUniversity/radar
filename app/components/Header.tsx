@@ -1,14 +1,14 @@
 import Link from "next/link";
 import Button from "./Button";
 import Image from "next/image";
-import { IMAGES } from "../lib/constants";
+import { IMAGES, PAGES } from "../lib/constants";
 
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-transparent backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between gap-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group mr-auto">
+        <Link href="/" className="flex items-center gap-2 group">
           {/* Signal Icon */}
           {/* <div className="flex h-10 w-10 items-center justify-center rounded-lg"> */}
           <Image
@@ -20,40 +20,25 @@ export default function Header() {
           />
           {/* </div> */}
           <div className="flex flex-col">
-            <span
-              className="text-sm font-bold tracking-tight text-white"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
+            <span className="text-sm font-bold tracking-tight text-white">
               RADAR
             </span>
-            <span
-              className="text-[9px] uppercase tracking-wider text-gray-400"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
+            <span className="text-[9px] uppercase tracking-wider text-gray-400">
               By GDG Babcock
             </span>
           </div>
         </Link>
 
         {/* Navigation */}
-        <nav
-          className="hidden items-center gap-8 md:flex"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          {/* <Link
-            href="/"
+        <nav className="hidden items-center gap-8 md:flex">
+          <Link
+            href={PAGES.series}
             className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
-            Latest
+            Series
           </Link>
           <Link
-            href="/archive"
-            className="text-sm font-medium text-white hover:text-primary transition-colors"
-          >
-            Archive
-          </Link> */}
-          <Link
-            href="/team"
+            href={PAGES.team}
             className="text-sm font-medium text-white hover:text-primary transition-colors"
           >
             Team
