@@ -11,3 +11,4 @@ export { default as RelatedPosts } from "./RelatedPosts";
 export { default as CrosswordPuzzle } from "./CrosswordPuzzle";
 export { default as ViewCounter } from "./ViewCounter";
 export { default as PersonalityQuiz } from "./PersonalityQuiz";
+export { default as TableOfContents } from "./TableOfContents";
