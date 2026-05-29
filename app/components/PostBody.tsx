@@ -3,6 +3,7 @@ import Image from "next/image";
 import { urlFor } from "../lib/sanity";
 import CrosswordPuzzle from "./CrosswordPuzzle";
 import PersonalityQuiz from "./PersonalityQuiz";
+import TweetEmbed from "./TweetEmbed";
 import { getRandomElement } from "../lib/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,6 +70,66 @@ function getYouTubeVideoId(href: string | undefined): string | null {
     }
     if (url.pathname === "/watch" || url.pathname.startsWith("/watch")) {
       return url.searchParams.get("v");
+    }
+  }
+  return null;
+}
+
+/** Supported Spotify content types for embedding. */
+const SPOTIFY_TYPES = new Set(["track", "album", "playlist", "episode", "show"]);
+
+function getSpotifyEmbedUrl(href: string | undefined): string | null {
+  if (!href?.trim()) return null;
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return null;
+  }
+  const host = url.hostname.replace(/^www\./, "");
+  if (host !== "open.spotify.com") return null;
+
+  // Filter out locale prefixes like "intl-es", "intl-pt", etc.
+  const parts = url.pathname
+    .split("/")
+    .filter(Boolean)
+    .filter((p) => !p.startsWith("intl-"));
+
+  if (parts.length < 2) return null;
+
+  // Already an embed URL: /embed/track/ID
+  if (parts[0] === "embed" && parts.length >= 3 && SPOTIFY_TYPES.has(parts[1])) {
+    const type = parts[1];
+    const id = parts[2].split("?")[0];
+    if (!id) return null;
+    return `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+  }
+
+  // Regular URL: /track/ID
+  const type = parts[0];
+  const id = parts[1].split("?")[0];
+
+  if (!SPOTIFY_TYPES.has(type) || !id) return null;
+
+  return `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+}
+
+function getTweetId(href: string | undefined): string | null {
+  if (!href?.trim()) return null;
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return null;
+  }
+  const host = url.hostname.replace(/^www\./, "");
+  if (host === "twitter.com" || host === "x.com") {
+    const parts = url.pathname.split("/").filter(Boolean);
+    if (parts.length >= 3 && parts[1] === "status") {
+      const id = parts[2].split("?")[0];
+      if (/^\d+$/.test(id)) {
+        return id;
+      }
     }
   }
   return null;
@@ -155,7 +216,7 @@ const components: PortableTextComponents = {
       </h6>
     ),
     normal: ({ children }) => (
-      <p
+      <div
         className="text-gray-300 leading-relaxed mb-5"
         style={{
           fontSize: "1rem",
@@ -163,7 +224,7 @@ const components: PortableTextComponents = {
         }}
       >
         {children}
-      </p>
+      </div>
     ),
     blockquote: ({ children }) => {
       const borderColor = getRandomElement([
@@ -231,6 +292,29 @@ const components: PortableTextComponents = {
           </div>
         );
       }
+
+      const spotifyEmbedUrl = getSpotifyEmbedUrl(href);
+      if (spotifyEmbedUrl) {
+        return (
+          <div className="my-6 w-full max-w-4xl mx-auto overflow-hidden rounded-xl">
+            <iframe
+              style={{ borderRadius: "12px" }}
+              src={spotifyEmbedUrl}
+              width="100%"
+              height="352"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              title="Spotify embed"
+            />
+          </div>
+        );
+      }
+
+      const tweetId = getTweetId(href);
+      if (tweetId) {
+        return <TweetEmbed tweetId={tweetId} />;
+      }
+
       return (
         <a
           href={href}
