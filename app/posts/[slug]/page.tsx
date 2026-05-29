@@ -6,6 +6,7 @@ import { Header, Footer } from "@/app/components";
 import PostHeader from "@/app/components/PostHeader";
 import AuthorCard from "@/app/components/AuthorCard";
 import PostBody from "@/app/components/PostBody";
+import TableOfContents from "@/app/components/TableOfContents";
 import RelatedPosts from "@/app/components/RelatedPosts";
 import ViewCounter from "@/app/components/ViewCounter";
 import { NewsletterSection } from "@/app/sections";
@@ -77,7 +78,14 @@ export default async function PostPage({ params }: PostPageProps) {
             </div>
           )}
 
-          <PostBody body={post.body || []} />
+          <div className="post-layout">
+            <div className="post-content">
+              <PostBody body={post.body || []} />
+            </div>
+            <aside className="post-sidebar">
+              <TableOfContents body={post.body || []} />
+            </aside>
+          </div>
         </div>
 
         <RelatedPosts posts={filteredRelated} />
