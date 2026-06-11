@@ -23,28 +23,24 @@ export default function ThemeProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [theme, setTheme] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
-
-  // Read saved theme on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("radar-theme") as Theme | null;
-    if (saved === "light" || saved === "dark") {
-      setTheme(saved);
-    } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-      setTheme("light");
-    }
-    setMounted(true);
-  }, []);
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "dark";
+    try {
+      const saved = localStorage.getItem("radar-theme") as Theme | null;
+      if (saved === "light" || saved === "dark") return saved;
+      if (window.matchMedia("(prefers-color-scheme: light)").matches)
+        return "light";
+    } catch {}
+    return "dark";
+  });
 
   // Apply theme class to <html> and persist
   useEffect(() => {
-    if (!mounted) return;
     const root = document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(theme);
     localStorage.setItem("radar-theme", theme);
-  }, [theme, mounted]);
+  }, [theme]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
