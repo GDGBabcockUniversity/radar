@@ -2,7 +2,8 @@ export const BASE_URL = "https://radar.gdgbabcock.com";
 
 export const IMAGES = {
   logo: { src: "/logo.png", w: 390, h: 390 },
-  hero_bg: { src: "/hero-bg.png", w: 1780, h: 1780 },
+  radarLogo: { src: "/radar-logo.png", w: 430, h: 242 },
+  radarSignalBg: { src: "/radar-signal-bg.png", w: 1780, h: 1780 },
 };
 
 export const CREDENTIALS = {
@@ -25,4 +26,9 @@ export const PAGES = {
   team: "/team",
   series: "/series",
   post: (slug: string) => `/posts/${slug}`,
+};
+
+export const LINKS = {
+  youtubePlaylist: "https://www.youtube.com/playlist?list=PLtUz78Yj1nzl2DRvEzS5raH_Jabh0fZ6S",
+  contactEmail: "mailto:gdgbabcock@gmail.com",
 };
