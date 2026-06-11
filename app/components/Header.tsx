@@ -53,7 +53,7 @@ export default function Header() {
           <button
             onClick={toggleTheme}
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            className="flex items-center justify-center w-9 h-9 rounded-full text-lg text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer"
+            className="items-center justify-center hidden w-9 h-9 rounded-full text-lg text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer"
           >
             {isDark ? <IoMoonOutline /> : <IoSunnyOutline />}
           </button>
