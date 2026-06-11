@@ -1,9 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import Button from "./Button";
 import Image from "next/image";
 import { IMAGES, PAGES } from "../lib/constants";
+import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
+import { useTheme } from "./ThemeProvider";
 
 export default function Header() {
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-transparent backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between gap-8">
@@ -44,6 +51,15 @@ export default function Header() {
             Team
           </Link>
         </nav>
+
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          className="flex items-center justify-center w-9 h-9 rounded-full text-lg text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer"
+        >
+          {isDark ? <IoMoonOutline /> : <IoSunnyOutline />}
+        </button>
 
         {/* Subscribe Button */}
         <Button
