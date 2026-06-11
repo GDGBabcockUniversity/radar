@@ -46,13 +46,14 @@ export default function SpotlightSection() {
               href={LINKS.youtubePlaylist}
               target="_blank"
               rel="noopener noreferrer"
+              className="bg-gdg-red hover:bg-gdg-red text-white"
             >
               <svg
                 width="14"
                 height="14"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="opacity-90 bg-gdg-red hover:bg-gdg-red"
+                className="opacity-90"
               >
                 <path d="M8 5v14l11-7z" />
               </svg>
