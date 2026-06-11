@@ -294,3 +294,81 @@ img {
 .animate-pulse-dot {
   animation: pulse-dot 2s ease-in-out infinite;
 }
+
+/* ===== Hero Section ===== */
+.hero-section {
+  background: #030014;
+  padding-top: 8rem;
+  padding-bottom: 6rem;
+}
+
+/* Blue cone / sweep at bottom */
+.hero-cone {
+  position: absolute;
+  bottom: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 400px;
+  background: conic-gradient(
+    from 250deg at 50% 0%,
+    transparent 0deg,
+    rgba(66, 100, 244, 0.18) 20deg,
+    rgba(66, 100, 244, 0.25) 40deg,
+    transparent 80deg
+  );
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* ===== Light theme hero overrides ===== */
+html.light .hero-section {
+  background: #f0f2f8;
+}
+
+html.light .hero-cone {
+  background: conic-gradient(
+    from 250deg at 50% 0%,
+    transparent 0deg,
+    rgba(66, 100, 244, 0.12) 20deg,
+    rgba(66, 100, 244, 0.18) 40deg,
+    transparent 80deg
+  );
+}
+
+/* ===== Spotlight Section ===== */
+.spotlight-section {
+  background: #150a40;
+}
+
+html.light .spotlight-section {
+  background: #e8eaf0;
+}
+/* ===== New Sections ===== */
+.latest-issue-section {
+  background: #0a0a0a;
+}
+html.light .latest-issue-section {
+  background: #f8f9fa;
+}
+
+.past-editions-section {
+  background: #000000;
+}
+html.light .past-editions-section {
+  background: #ffffff;
+}
+
+.newsletter-section {
+  background: radial-gradient(ellipse at center top, #141828 0%, #0a0a0a 70%);
+}
+html.light .newsletter-section {
+  background: radial-gradient(ellipse at center top, #e8f0fe 0%, #f8f9fa 70%);
+}
+
+.footer-section {
+  background: #0c0c0c;
+}
+html.light .footer-section {
+  background: #f0f2f8;
+}
