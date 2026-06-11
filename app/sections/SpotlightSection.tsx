@@ -40,13 +40,19 @@ export default function SpotlightSection() {
             </div>
 
             {/* CTA */}
-            <Button variant="blue" size="md" href={LINKS.youtubePlaylist} target="_blank" rel="noopener noreferrer">
+            <Button
+              variant="primary"
+              size="md"
+              href={LINKS.youtubePlaylist}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <svg
                 width="14"
                 height="14"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="opacity-90"
+                className="opacity-90 bg-gdg-red hover:bg-gdg-red"
               >
                 <path d="M8 5v14l11-7z" />
               </svg>
@@ -75,12 +81,7 @@ export default function SpotlightSection() {
             {/* YouTube play button */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-16 h-11 bg-[#FF0000] rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="white"
-                >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </div>
