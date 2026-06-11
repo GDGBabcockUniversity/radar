@@ -2,12 +2,14 @@ import { cn } from "../lib/utils";
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: "primary" | "outlined" | "ghost";
+  variant?: "primary" | "blue" | "outlined" | "ghost";
   size?: "sm" | "md" | "lg";
   href?: string;
   onClick?: () => void;
   className?: string;
   showArrow?: boolean;
+  target?: string;
+  rel?: string;
 }
 
 export default function Button({
@@ -18,6 +20,8 @@ export default function Button({
   onClick,
   className = "",
   showArrow = false,
+  target,
+  rel,
 }: ButtonProps) {
   const baseStyles = `
     inline-flex items-center justify-center gap-2
@@ -32,9 +36,14 @@ export default function Button({
       hover:bg-gray-100 hover:scale-[1.02]
       active:scale-[0.98]
     `,
+    blue: `
+      bg-primary text-white
+      hover:bg-primary-hover hover:scale-[1.02]
+      active:scale-[0.98]
+    `,
     outlined: `
-      border-2 border-white text-white
-      hover:bg-white hover:text-gray-900
+      border border-white/20 text-white bg-white/5
+      hover:bg-white/10 hover:border-white/30
       active:scale-[0.98]
     `,
     ghost: `
@@ -77,7 +86,7 @@ export default function Button({
 
   if (href) {
     return (
-      <a href={href} className={`group ${classes}`}>
+      <a href={href} target={target} rel={rel} className={`group ${classes}`}>
         {content}
       </a>
     );
