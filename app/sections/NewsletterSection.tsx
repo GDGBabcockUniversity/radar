@@ -1,24 +1,21 @@
+import Image from "next/image";
 import { NewsletterForm } from "../components";
+import { IMAGES } from "../lib/constants";
 
 export default function NewsletterSection() {
   return (
     <section
       id="subscribe"
-      className="relative py-24 md:py-32"
-      style={{
-        background:
-          "radial-gradient(ellipse at center, #1a2744 0%, #0a0a0a 70%)",
-      }}
+      className="newsletter-section relative py-24 md:py-32"
     >
       <div className="container max-w-2xl mx-auto text-center">
-        {/* Icon */}
-        <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-xl bg-white/5 border border-white/10">
+        {/* Envelope Icon */}
+        <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#1a2040] border border-white/10">
           <svg
             width="24"
             height="24"
             viewBox="0 0 24 24"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg"
             className="text-primary"
           >
             <path
@@ -31,23 +28,33 @@ export default function NewsletterSection() {
           </svg>
         </div>
 
-        {/* Heading - Space Grotesk */}
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          Don&apos;t Miss a Signal
+        {/* Heading */}
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 flex items-center justify-center gap-4">
+          Get{" "}
+          <span className="inline-block align-middle">
+            <Image
+              src={IMAGES.radarLogo.src}
+              width={IMAGES.radarLogo.w}
+              height={IMAGES.radarLogo.h}
+              alt="Radar"
+              className="w-24 h-auto inline"
+            />
+          </span>{" "}
+          in your inbox
         </h2>
 
-        {/* Description - Merriweather */}
-        <p className="text-gray-400 mb-8 max-w-lg mx-auto leading-relaxed">
-          Join the community. Get the latest tech news, student spotlights, and
-          opportunities delivered to your inbox every month.
+        {/* Subtitle */}
+        <p className="text-gray-400 mb-10 max-w-lg mx-auto leading-relaxed text-sm md:text-base">
+          Monthly issues, weekly series drops, and the signals students should
+          not miss.
         </p>
 
         {/* Newsletter Form */}
         <NewsletterForm />
 
         {/* Privacy notice */}
-        <p className="mt-4 text-xs text-gray-500 uppercase tracking-wider">
-          No spam • Unsubscribe anytime
+        <p className="mt-5 text-[10px] text-gray-500 uppercase tracking-[0.2em] font-medium">
+          No spam. Just signal. Unsubscribe anytime
         </p>
       </div>
     </section>
