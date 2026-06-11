@@ -47,6 +47,39 @@
   --radius-full: 9999px;
 }
 
+/* ===== Light Theme Overrides ===== */
+html.light {
+  --color-bg-light: #ffffff;
+  --color-bg-dark: #f8f9fa;
+  --color-bg-dark-secondary: #f0f1f3;
+  --color-bg-dark-card: #ffffff;
+
+  --color-text-light: #171717;
+  --color-text-dark: #171717;
+  --color-text-muted: #6b7280;
+  --color-text-muted-dark: #9ca3af;
+
+  --color-border-light: rgba(0, 0, 0, 0.1);
+  --color-border-dark: rgba(0, 0, 0, 0.1);
+
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+html.light .section-gradient {
+  background: radial-gradient(ellipse at center top, #dce6f7 0%, #f8f9fa 70%);
+}
+
+html.light .toc-container {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+html.light .toc-link:hover {
+  color: var(--color-text-dark);
+  background: rgba(0, 0, 0, 0.03);
+  border-left-color: rgba(0, 0, 0, 0.15);
+}
+
 /* ===== Tailwind Theme Extension ===== */
 @theme inline {
   --color-primary: var(--color-primary);
@@ -72,9 +105,8 @@ html {
 body {
   /* Font aliases - must be in body scope where Next.js font variables are available */
   --font-body: var(--font-google-sans-flex);
-  /* --font-heading: var(--font-space-grotesk);
   --font-serif: var(--font-merriweather);
-  --font-caveat: var(--font-caveat); */
+  --font-caveat: var(--font-caveat);
 
   font-family: var(--font-body);
   background: var(--color-bg-dark);
