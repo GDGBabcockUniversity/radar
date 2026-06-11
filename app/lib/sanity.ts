@@ -75,10 +75,10 @@ export async function getFeaturedPost() {
   `);
 }
 
-// Fetch recent posts (excluding featured)
+// Fetch recent posts (all posts)
 export async function getRecentPosts() {
   return client.fetch(`
-    *[_type == "post" && featured != true && hidden != true] | order(publishedAt desc) {
+    *[_type == "post" && hidden != true] | order(publishedAt desc) {
       _id,
       title,
       slug,
