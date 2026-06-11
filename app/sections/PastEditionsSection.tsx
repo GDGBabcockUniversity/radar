@@ -30,7 +30,7 @@ export default function PastEditionsSection({
   };
 
   return (
-    <section id="editions" className="bg-black py-20 md:py-28">
+    <section id="issues" className="past-editions-section py-20 md:py-28">
       <div className="container">
         {/* Section Header */}
         <div className="mb-10">
