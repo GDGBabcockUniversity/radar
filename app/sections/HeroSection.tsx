@@ -16,7 +16,7 @@ export default function HeroSection({ latestIssueSlug }: HeroSectionProps) {
           width={IMAGES.radarSignalBg.w}
           height={IMAGES.radarSignalBg.h}
           alt=""
-          className="w-[90%] max-w-[900px] h-auto opacity-70"
+          className="w-[90%] max-w-225 h-auto opacity-70"
           priority
           aria-hidden="true"
         />
