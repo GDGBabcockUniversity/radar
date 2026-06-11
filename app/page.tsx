@@ -3,23 +3,25 @@ export const dynamic = "force-dynamic";
 import { Header, Footer } from "./components";
 import {
   HeroSection,
-  FeaturedSection,
+  LatestIssueSection,
+  SpotlightSection,
   PastEditionsSection,
   NewsletterSection,
 } from "./sections";
-import { getFeaturedPost, getRecentPosts } from "./lib/sanity";
+import { getRecentPosts } from "./lib/sanity";
 
 export default async function Home() {
-  const featuredPost = await getFeaturedPost();
-  const recentPosts = await getRecentPosts();
+  const posts = await getRecentPosts();
+  const latestIssueSlug = posts && posts.length > 0 ? posts[0].slug.current : undefined;
 
   return (
     <>
       <Header />
       <main>
-        <HeroSection />
-        <FeaturedSection post={featuredPost} />
-        <PastEditionsSection posts={recentPosts} />
+        <HeroSection latestIssueSlug={latestIssueSlug} />
+        <LatestIssueSection posts={posts} />
+        <SpotlightSection />
+        <PastEditionsSection posts={posts} />
         <NewsletterSection />
       </main>
       <Footer />
