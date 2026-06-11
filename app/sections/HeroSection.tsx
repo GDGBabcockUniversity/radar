@@ -69,6 +69,7 @@ export default function HeroSection({ latestIssueSlug }: HeroSectionProps) {
             href={LINKS.youtubePlaylist}
             target="_blank"
             rel="noopener noreferrer"
+            className="bg-white text-black"
           >
             <svg
               width="14"
