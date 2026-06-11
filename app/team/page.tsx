@@ -251,7 +251,10 @@ export default async function TeamPage() {
           </div>
         </div>
         <div className="bg-[#16181D] border border-[#FFFFFF0D] rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
-          <p className="text-[#94A3B8] text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12">
+          <p
+            className="text-[#94A3B8] text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
             &quot;What stands out isn&apos;t just what we study or what we
             build, but who we are while doing it. We manage pressure
             differently. We find meaning in different things. We recharge in our
@@ -265,7 +268,10 @@ export default async function TeamPage() {
           </span>
 
           <div className="text-center">
-            <h2 className="text-5xl md:text-6xl leading-24 text-primary mb-2 -rotate-2">
+            <h2
+              className="text-5xl md:text-6xl lg:text-7xl leading-24 text-primary mb-2 -rotate-2"
+              style={{ fontFamily: "var(--font-caveat)" }}
+            >
               Commit & Push
             </h2>
             <p className="text-[#6b7280] font-bold text-xs leading-4.5 uppercase tracking-[7.2px]">
