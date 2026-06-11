@@ -124,7 +124,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
           {/* Left — Latest Issue Card */}
           <div className="p-8 md:p-10 border-b lg:border-b-0 lg:border-r border-white/10">
             {/* Header label */}
-            <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)] mb-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-(--color-text-muted) mb-6">
               Latest Issue — {issueNumber}
             </p>
 
@@ -138,7 +138,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
 
             {/* Title + Image row */}
             <div className="flex gap-6 items-start mb-6">
-              <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text-light)] leading-tight flex-1">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight flex-1">
                 {latestPost.title}
               </h2>
               {imageUrl && (
@@ -156,7 +156,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
 
             {/* Description */}
             {latestPost.description && (
-              <p className="text-sm text-[var(--color-text-muted)] leading-relaxed mb-6 max-w-md">
+              <p className="text-sm text-(--color-text-muted) leading-relaxed mb-6 max-w-md">
                 {latestPost.description}
               </p>
             )}
@@ -165,7 +165,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
             <div className="h-px bg-white/10 mb-4" />
 
             {/* Author / meta */}
-            <p className="text-xs text-[var(--color-text-muted)] mb-4">
+            <p className="text-xs text-(--color-text-muted) mb-4">
               {latestPost.author?.name ? `By ${latestPost.author.name}` : ""}
               {latestPost.publishedAt &&
                 ` · ${formatDate(latestPost.publishedAt)}`}
@@ -195,16 +195,16 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-semibold text-[var(--color-text-light)] leading-snug mb-1">
+                    <h4 className="text-sm font-semibold text-foreground leading-snug mb-1">
                       {signal.title}
                     </h4>
-                    <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
+                    <p className="text-xs text-(--color-text-muted) leading-relaxed">
                       {signal.description}
                     </p>
                   </div>
 
                   {/* Arrow */}
-                  <span className="text-[var(--color-text-muted)] group-hover:text-[var(--color-text-light)] transition-colors mt-1 shrink-0">
+                  <span className="text-(--color-text-muted) group-hover:text-foreground transition-colors mt-1 shrink-0">
                     →
                   </span>
                 </div>
@@ -215,7 +215,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
             <div className="mt-6 pt-4 border-t border-white/10">
               <Link
                 href="#"
-                className="text-xs uppercase tracking-[0.15em] font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-text-light)] transition-colors"
+                className="text-xs uppercase tracking-[0.15em] font-semibold text-(--color-text-muted) hover:text-foreground transition-colors"
               >
                 View All Signals →
               </Link>
@@ -236,7 +236,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
             >
               {/* Section label with accent line */}
               <div className="flex items-center gap-2 mb-5">
-                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--color-text-light)]">
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground">
                   {section.label}
                 </span>
                 <div
@@ -248,7 +248,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
               {/* Title */}
               {section.title && (
                 <h3
-                  className="text-base font-bold text-[var(--color-text-light)] leading-snug mb-3"
+                  className="text-base font-bold text-foreground leading-snug mb-3"
                   // style={{ fontFamily: "var(--font-serif)" }}
                 >
                   {section.title}
@@ -257,7 +257,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
 
               {/* Description */}
               {section.description && (
-                <p className="text-xs text-[var(--color-text-muted)] leading-relaxed mb-5">
+                <p className="text-xs text-(--color-text-muted) leading-relaxed mb-5">
                   {section.description}
                 </p>
               )}
