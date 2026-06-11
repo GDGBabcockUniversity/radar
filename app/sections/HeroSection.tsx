@@ -42,19 +42,13 @@ export default function HeroSection({ latestIssueSlug }: HeroSectionProps) {
         {/* Divider + subtitle */}
         <div className="flex flex-col items-center gap-4 mb-10 md:mb-12">
           <div className="w-64 md:w-80 h-px bg-white/20" />
-          <p className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-gray-400 font-medium">
+          <p className="text-md md:text-lg uppercase tracking-widest text-white font-medium border-y py-2">
             The Official Record of the Babcock Tech Ecosystem
           </p>
         </div>
 
         {/* Tagline */}
-        <p
-          className="text-xl md:text-2xl lg:text-3xl font-bold uppercase leading-snug mb-10 md:mb-12 text-white max-w-2xl"
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontStyle: "italic",
-          }}
-        >
+        <p className="text-xl md:text-2xl lg:text-3xl italic font-extrabold uppercase leading-snug mb-10 md:mb-12 text-white max-w-2xl">
           Tracking the signals, projects, and people shaping the Babcock tech
           ecosystem.
         </p>
@@ -81,7 +75,7 @@ export default function HeroSection({ latestIssueSlug }: HeroSectionProps) {
               height="14"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="opacity-80"
+              className="opacity-80 text-gdg-red"
             >
               <path d="M8 5v14l11-7z" />
             </svg>
