@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
-import { IMAGES, LINKS } from "../lib/constants";
+import { IMAGES, LINKS, PAGES } from "../lib/constants";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Team", href: "/team" },
   { label: "Issues", href: "#issues" },
-  { label: "Series", href: LINKS.youtubePlaylist },
+  { label: "Series", href: PAGES.series },
 ];
 
 const CONNECT_LINKS = [

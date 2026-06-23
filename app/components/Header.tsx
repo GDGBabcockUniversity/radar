@@ -3,13 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import Button from "./Button";
-import { IMAGES, LINKS } from "../lib/constants";
+import { IMAGES, PAGES } from "../lib/constants";
 import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
 import { useTheme } from "./ThemeProvider";
 
 const NAV_LINKS = [
   { label: "Issues", href: "#issues" },
-  { label: "Series", href: LINKS.youtubePlaylist },
+  { label: "Series", href: PAGES.series },
   { label: "About", href: "#" },
   { label: "Team", href: "/team" },
   { label: "Submit a Signal", href: "#" },

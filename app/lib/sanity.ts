@@ -288,6 +288,89 @@ export async function getAuthors() {
   );
 }
 
+// Map the legacy teamMember.socialLinks object -> labelled socials[] array so
+// legacy docs render with the same UI as consolidated authors.
+const LEGACY_SOCIAL_LABELS: Record<string, string> = {
+  email: "Email",
+  medium: "Medium",
+  substack: "Substack",
+  x: "X",
+  instagram: "Instagram",
+  snapchat: "Snapchat",
+};
+
+// Unified team roster for /team: consolidated `author` docs first, plus any
+// legacy `teamMember` docs not yet migrated, normalised to the author shape.
+// Legacy entries intentionally carry no slug, since they have no author profile
+// page yet. Remove the teamMember branch once the migration has been run.
+export async function getTeamRoster() {
+  const [authors, teamMembers] = await Promise.all([
+    getAuthors(),
+    client.fetch(
+      `
+      *[_type == "teamMember"] | order(order asc, name asc){
+        _id, name, slug, role, course, image, socialLinks,
+        songObsession, tabsCurrentlyOpen, currentlyLearning,
+        unpopularOpinion, techPhilosophy
+      }
+      `,
+      {},
+      { next: { revalidate: 60 } },
+    ),
+  ]);
+
+  // Skip legacy docs already represented as an author (matched by slug, name).
+  const seen = new Set<string>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  for (const a of authors as any[]) {
+    if (a.slug?.current) seen.add(`slug:${a.slug.current}`);
+    if (a.name) seen.add(`name:${a.name.toLowerCase()}`);
+  }
+
+  const legacy = (teamMembers as TeamMemberDoc[])
+    .filter(
+      (tm) =>
+        !(tm.slug?.current && seen.has(`slug:${tm.slug.current}`)) &&
+        !(tm.name && seen.has(`name:${tm.name.toLowerCase()}`)),
+    )
+    .map((tm) => ({
+      _id: tm._id,
+      name: tm.name,
+      role: tm.role,
+      course: tm.course,
+      image: tm.image,
+      songObsession: tm.songObsession,
+      tabsCurrentlyOpen: tm.tabsCurrentlyOpen,
+      currentlyLearning: tm.currentlyLearning,
+      unpopularOpinion: tm.unpopularOpinion,
+      techPhilosophy: tm.techPhilosophy,
+      socials: tm.socialLinks
+        ? Object.entries(LEGACY_SOCIAL_LABELS)
+            .filter(([key]) => tm.socialLinks?.[key])
+            .map(([key, label]) => ({ label, url: tm.socialLinks![key]! }))
+        : undefined,
+    }));
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return [...(authors as any[]), ...legacy];
+}
+
+interface TeamMemberDoc {
+  _id: string;
+  name: string;
+  slug?: { current: string };
+  role?: string;
+  course?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  image?: any;
+  socialLinks?: Record<string, string>;
+  songObsession?: string;
+  tabsCurrentlyOpen?: string;
+  currentlyLearning?: string;
+  unpopularOpinion?: string;
+  techPhilosophy?: string;
+}
+
 // The latest issue (highest issue number), for the home featured slot.
 export async function getLatestIssue() {
   return client.fetch(

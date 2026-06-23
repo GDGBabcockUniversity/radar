@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { Header, Footer } from "../components";
-import { getAuthors, urlFor } from "../lib/sanity";
+import { getTeamRoster, urlFor } from "../lib/sanity";
 import { PAGES } from "../lib/constants";
 
 interface Social {
@@ -63,7 +63,7 @@ function MemberAvatar({
 }
 
 export default async function TeamPage() {
-  const teamMembers: Author[] = await getAuthors();
+  const teamMembers: Author[] = await getTeamRoster();
 
   return (
     <main className="min-h-screen bg-[#0B0D0F]">
