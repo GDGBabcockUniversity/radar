@@ -13,4 +13,6 @@ export { default as ViewCounter } from "./ViewCounter";
 export { default as PersonalityQuiz } from "./PersonalityQuiz";
 export { default as TableOfContents } from "./TableOfContents";
 export { default as ThemeProvider, useTheme } from "./ThemeProvider";
+export { default as ShareButtons } from "./ShareButtons";
+export { default as Byline } from "./Byline";
 

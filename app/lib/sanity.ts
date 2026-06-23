@@ -160,3 +160,173 @@ export async function getSeriesPost(slug: string) {
     { next: { revalidate: 60 } }
   );
 }
+
+/* ------------------------------------------------------------------ */
+/*  New publication model: issues, articles, authors                  */
+/* ------------------------------------------------------------------ */
+
+// Shared projection for an article when listed (card / byline contexts).
+const ARTICLE_CARD_FIELDS = `
+  _id,
+  title,
+  slug,
+  section,
+  excerpt,
+  coverImage,
+  publishedAt,
+  order,
+  "authors": authors[]->{ name, slug, image }
+`;
+
+// One full issue + its embedded signals/opportunities + all articles that
+// reference it (reverse query), ready to be grouped by section on the page.
+export async function getIssue(slug: string) {
+  return client.fetch(
+    `
+    *[_type == "issue" && slug.current == $slug][0]{
+      _id,
+      issueNumber,
+      title,
+      slug,
+      publishedAt,
+      coverImage,
+      excerpt,
+      signals,
+      opportunities,
+      "articles": *[_type == "article" && references(^._id)]
+        | order(section asc, order asc, publishedAt asc){
+          ${ARTICLE_CARD_FIELDS}
+        }
+    }
+    `,
+    { slug },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Single article by slug, with full author list and issue context.
+export async function getArticle(slug: string) {
+  return client.fetch(
+    `
+    *[_type == "article" && slug.current == $slug][0]{
+      _id,
+      title,
+      slug,
+      section,
+      excerpt,
+      coverImage,
+      publishedAt,
+      body,
+      "issue": issue->{ title, slug, issueNumber },
+      "authors": authors[]->{ name, slug, image, bio, role }
+    }
+    `,
+    { slug },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Author profile + every article referencing them (reverse reference).
+export async function getAuthor(slug: string) {
+  return client.fetch(
+    `
+    *[_type == "author" && slug.current == $slug][0]{
+      _id,
+      name,
+      slug,
+      image,
+      bio,
+      role,
+      course,
+      socials,
+      songObsession,
+      tabsCurrentlyOpen,
+      currentlyLearning,
+      unpopularOpinion,
+      techPhilosophy,
+      "articles": *[_type == "article" && references(^._id)]
+        | order(publishedAt desc){
+          _id,
+          title,
+          slug,
+          section,
+          excerpt,
+          coverImage,
+          publishedAt,
+          "issue": issue->{ title, slug, issueNumber }
+        }
+    }
+    `,
+    { slug },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// All authors for the team page (only those meant to be shown — has a role).
+export async function getAuthors() {
+  return client.fetch(
+    `
+    *[_type == "author"] | order(order asc, name asc){
+      _id,
+      name,
+      slug,
+      image,
+      bio,
+      role,
+      course,
+      socials,
+      songObsession,
+      tabsCurrentlyOpen,
+      currentlyLearning,
+      unpopularOpinion,
+      techPhilosophy
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+// The latest issue (highest issue number), for the home featured slot.
+export async function getLatestIssue() {
+  return client.fetch(
+    `
+    *[_type == "issue"] | order(issueNumber desc)[0]{
+      _id,
+      issueNumber,
+      title,
+      slug,
+      publishedAt,
+      coverImage,
+      excerpt
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Unified archive: new issues + legacy posts, normalised into one shape so the
+// home/archive listing can render both eras together (newest first).
+export async function getArchive() {
+  return client.fetch(
+    `
+    *[
+      (_type == "issue") ||
+      (_type == "post" && hidden != true)
+    ] | order(coalesce(publishedAt, _createdAt) desc){
+      _id,
+      _type,
+      "kind": _type,
+      title,
+      slug,
+      publishedAt,
+      issueNumber,
+      "excerpt": coalesce(excerpt, description),
+      "image": coalesce(coverImage, mainImage)
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}

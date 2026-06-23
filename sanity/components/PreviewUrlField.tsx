@@ -6,9 +6,19 @@ interface PreviewUrlFieldProps {
   schemaType?: any;
 }
 
+// Map document type -> route segment so the preview link matches the page.
+const TYPE_PATHS: Record<string, string> = {
+  post: "posts",
+  issue: "issues",
+  article: "articles",
+  series: "series",
+};
+
 export function PreviewUrlField(props: PreviewUrlFieldProps) {
   const slug = useFormValue(["slug", "current"]) as string | undefined;
-  const url = slug ? `https://radar.gdgbabcock.com/posts/${slug}` : "";
+  const type = useFormValue(["_type"]) as string | undefined;
+  const segment = (type && TYPE_PATHS[type]) || "posts";
+  const url = slug ? `https://radar.gdgbabcock.com/${segment}/${slug}` : "";
 
   const handleCopy = async () => {
     if (!url) return;

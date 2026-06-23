@@ -26,6 +26,9 @@ export const PAGES = {
   team: "/team",
   series: "/series",
   post: (slug: string) => `/posts/${slug}`,
+  issue: (slug: string) => `/issues/${slug}`,
+  article: (slug: string) => `/articles/${slug}`,
+  author: (slug: string) => `/team/${slug}`,
 };
 
 export const LINKS = {
