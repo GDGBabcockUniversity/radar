@@ -3,6 +3,7 @@ import {
   HeroSection,
   LatestIssueSection,
   SpotlightSection,
+  SeriesSection,
   PastEditionsSection,
   NewsletterSection,
 } from "./sections";
@@ -10,20 +11,28 @@ import {
   getRecentPosts,
   getArchive,
   getLatestIssue,
+  getHomeSpotlight,
   getFeaturedSeries,
   getLatestEpisodes,
 } from "./lib/sanity";
 import { PAGES } from "./lib/constants";
 
 export default async function Home() {
-  const [posts, archive, latestIssue, featuredSeries, latestEpisodes] =
-    await Promise.all([
-      getRecentPosts(),
-      getArchive(),
-      getLatestIssue(),
-      getFeaturedSeries(),
-      getLatestEpisodes(1),
-    ]);
+  const [
+    posts,
+    archive,
+    latestIssue,
+    spotlight,
+    featuredSeries,
+    latestEpisodes,
+  ] = await Promise.all([
+    getRecentPosts(),
+    getArchive(),
+    getLatestIssue(),
+    getHomeSpotlight(),
+    getFeaturedSeries(),
+    getLatestEpisodes(3),
+  ]);
 
   // Hero CTA points at the newest edition: prefer a new issue, else latest post.
   const heroHref = latestIssue
@@ -38,10 +47,8 @@ export default async function Home() {
       <main>
         <HeroSection heroHref={heroHref} />
         <LatestIssueSection posts={posts} />
-        <SpotlightSection
-          series={featuredSeries}
-          latestEpisode={latestEpisodes?.[0] ?? null}
-        />
+        <SpotlightSection article={spotlight} />
+        <SeriesSection series={featuredSeries} episodes={latestEpisodes} />
         <PastEditionsSection entries={archive} />
         <NewsletterSection />
       </main>

@@ -1,133 +1,90 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "../components";
 import { urlFor } from "../lib/sanity";
-import { youTubeThumbnail } from "../lib/youtube";
 import { PAGES } from "../lib/constants";
+import { Byline } from "../components";
+import type { BylineAuthor } from "../components/Byline";
 
-const TAGS = ["Weekly", "Video + Write-Up", "On-site + YouTube"];
-
-interface FeaturedSeries {
+interface SpotlightArticle {
   _id: string;
   title: string;
   slug: { current: string };
-  description?: string;
+  excerpt?: string;
+  publishedAt?: string;
+  issueNumber?: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   coverImage?: any;
-}
-
-interface SpotlightEpisode {
-  _id: string;
-  title: string;
-  slug: { current: string };
-  youtubeUrl?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  coverImage?: any;
-  series?: { slug: { current: string } };
+  authors?: BylineAuthor[];
 }
 
 interface SpotlightSectionProps {
-  series?: FeaturedSeries | null;
-  latestEpisode?: SpotlightEpisode | null;
+  article?: SpotlightArticle | null;
 }
 
-// Homepage "Series" pillar — between-issue, on its own cadence. Data-driven:
-// renders the active series and links on-site (not straight to YouTube).
-export default function SpotlightSection({
-  series,
-  latestEpisode,
-}: SpotlightSectionProps) {
-  if (!series) return null;
+// Homepage Spotlight — the lead Spotlight article from the latest issue.
+// (Spotlight is an issue section, distinct from the Series pillar below.)
+export default function SpotlightSection({ article }: SpotlightSectionProps) {
+  if (!article) return null;
 
-  const showHref = PAGES.seriesShow(series.slug.current);
-
-  // Thumbnail prefers the latest episode's image; the episode link keeps the
-  // reader on-site (the video is embedded on the episode page).
-  const thumbSrc = latestEpisode?.coverImage?.asset
-    ? urlFor(latestEpisode.coverImage).width(800).height(450).url()
-    : youTubeThumbnail(latestEpisode?.youtubeUrl) ||
-      (series.coverImage?.asset
-        ? urlFor(series.coverImage).width(800).height(450).url()
-        : null);
-
-  const episodeSeriesSlug =
-    latestEpisode?.series?.slug?.current ?? series.slug.current;
-  const thumbHref = latestEpisode
-    ? PAGES.episode(episodeSeriesSlug, latestEpisode.slug.current)
-    : showHref;
+  const href = PAGES.article(article.slug.current);
+  const image = article.coverImage?.asset
+    ? urlFor(article.coverImage).width(1200).height(800).url()
+    : null;
 
   return (
     <section className="spotlight-section py-16 md:py-24">
       <div className="container">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Left — Text content */}
-          <div>
-            <span className="mb-3 inline-block text-xs font-bold uppercase tracking-[1.4px] text-primary">
-              Series
-            </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5">
-              {series.title}
-            </h2>
+        <div className="mb-8 flex items-center gap-4">
+          <h2 className="shrink-0 text-xs font-bold uppercase tracking-[2px] text-primary">
+            Spotlight
+          </h2>
+          <span className="h-px flex-1 bg-white/10" />
+        </div>
 
-            {series.description && (
-              <p className="text-sm md:text-base text-gray-300 leading-relaxed mb-8 max-w-lg">
-                {series.description}
+        <Link
+          href={href}
+          className="group grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center"
+        >
+          {image && (
+            <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+              <Image
+                src={image}
+                alt={article.coverImage?.alt || article.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+          )}
+
+          <div>
+            {article.issueNumber && (
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                From Issue #{article.issueNumber}
+              </span>
+            )}
+            <h3 className="mt-2 text-3xl md:text-4xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-primary">
+              {article.title}
+            </h3>
+            {article.excerpt && (
+              <p
+                className="mt-4 text-gray-300"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "1.125rem",
+                  lineHeight: 1.7,
+                }}
+              >
+                {article.excerpt}
               </p>
             )}
-
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-8">
-              {TAGS.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-semibold uppercase tracking-wider text-gray-300"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#e84a35]" />
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            {/* CTA */}
-            <Button variant="primary" size="md" href={showHref}>
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="opacity-90"
-              >
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              Watch the Series
-            </Button>
+            <Byline
+              authors={article.authors}
+              publishedAt={article.publishedAt}
+              showAvatars={false}
+              className="mt-5"
+            />
           </div>
-
-          {/* Right — Latest episode thumbnail */}
-          <Link
-            href={thumbHref}
-            className="relative aspect-video rounded-xl overflow-hidden group cursor-pointer block bg-white/5 border border-white/10"
-          >
-            {thumbSrc && (
-              <Image
-                src={thumbSrc}
-                width={800}
-                height={450}
-                alt={latestEpisode?.title || series.title}
-                unoptimized={!latestEpisode?.coverImage?.asset && !series.coverImage?.asset}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            )}
-            <div className="absolute inset-0 bg-black/30 transition-opacity group-hover:bg-black/20" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-16 h-11 bg-[#FF0000] rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-            </div>
-          </Link>
-        </div>
+        </Link>
       </div>
     </section>
   );

@@ -209,6 +209,29 @@ export async function getLatestEpisodes(limit = 3) {
   );
 }
 
+// The latest issue's Spotlight article, for the homepage Spotlight block.
+// Spotlight is an issue section (not the series) — this surfaces that piece.
+export async function getHomeSpotlight() {
+  return client.fetch(
+    `*[_type == "issue"] | order(issueNumber desc)[0]{
+      "article": *[_type == "article" && references(^._id) && section == "spotlight"]
+        | order(order asc, publishedAt asc)[0]{
+          _id,
+          title,
+          slug,
+          excerpt,
+          coverImage,
+          publishedAt,
+          "issueNumber": ^.issueNumber,
+          "issueTitle": ^.title,
+          "authors": authors[]->{ name, slug, image }
+        }
+    }.article`,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
 // The active/featured series for the homepage pillar (first active show).
 export async function getFeaturedSeries() {
   return client.fetch(
