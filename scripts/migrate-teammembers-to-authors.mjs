@@ -41,6 +41,15 @@ const client = createClient({
   useCdn: false,
 });
 
+// Build a URL-safe slug from a name (fallback when a teamMember has none).
+function slugify(name) {
+  return String(name || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 // Map the old fixed socialLinks object to the new labelled socials[] array.
 function mapSocials(socialLinks) {
   if (!socialLinks) return undefined;
@@ -67,7 +76,11 @@ function toAuthor(tm) {
     _id: `author.from.${tm._id.replace(/^drafts\./, "")}`,
     _type: "author",
     name: tm.name,
-    slug: tm.slug,
+    // author.slug is now required; derive one from the name if the legacy
+    // teamMember had none, so every migrated author has a usable profile route.
+    slug: tm.slug?.current
+      ? tm.slug
+      : { _type: "slug", current: slugify(tm.name) },
     image: tm.image,
     role: tm.role,
     course: tm.course,

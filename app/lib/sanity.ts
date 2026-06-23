@@ -263,10 +263,11 @@ export async function getAuthor(slug: string) {
 }
 
 // All authors for the team page (only those meant to be shown — has a role).
+// External bylines without a role are excluded so they don't surface on /team.
 export async function getAuthors() {
   return client.fetch(
     `
-    *[_type == "author"] | order(order asc, name asc){
+    *[_type == "author" && defined(role)] | order(order asc, name asc){
       _id,
       name,
       slug,

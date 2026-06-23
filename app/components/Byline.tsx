@@ -60,34 +60,41 @@ export default function Byline({
         </div>
       )}
 
-      <p className="text-sm text-gray-300">
-        <span className="text-gray-500">By </span>
-        {valid.map((a, i) => {
-          const sep =
-            i === 0 ? "" : i === valid.length - 1 ? " and " : ", ";
-          const node = a.slug?.current ? (
-            <Link
-              href={PAGES.author(a.slug.current)}
-              className="font-semibold text-white hover:text-primary transition-colors"
-            >
-              {a.name}
-            </Link>
-          ) : (
-            <span className="font-semibold text-white">{a.name}</span>
-          );
-          return (
-            <span key={a._id ?? a.name}>
-              {sep}
-              {node}
-            </span>
-          );
-        })}
-      </p>
+      {valid.length > 0 && (
+        <p className="text-sm text-gray-300">
+          <span className="text-gray-500">By </span>
+          {valid.map((a, i) => {
+            const sep =
+              i === 0 ? "" : i === valid.length - 1 ? " and " : ", ";
+            const node = a.slug?.current ? (
+              <Link
+                href={PAGES.author(a.slug.current)}
+                className="font-semibold text-white hover:text-primary transition-colors"
+              >
+                {a.name}
+              </Link>
+            ) : (
+              <span className="font-semibold text-white">{a.name}</span>
+            );
+            return (
+              <span key={a._id ?? a.name}>
+                {sep}
+                {node}
+              </span>
+            );
+          })}
+        </p>
+      )}
 
       {(date || readingTime) && (
         <span className="flex items-center gap-3 text-xs text-gray-500">
           {date && <span>{date}</span>}
-          {readingTime ? <span>· {readingTime} min read</span> : null}
+          {readingTime ? (
+            <span>
+              {date ? "· " : ""}
+              {readingTime} min read
+            </span>
+          ) : null}
         </span>
       )}
     </div>

@@ -100,7 +100,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
             <div className="mt-4 flex flex-wrap gap-3">
               {author.socials.map((social: { label: string; url: string }) => (
                 <a
-                  key={social.label}
+                  key={`${social.label}-${social.url}`}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"

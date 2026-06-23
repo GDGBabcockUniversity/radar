@@ -147,7 +147,7 @@ export default async function TeamPage() {
                         <div className="flex gap-2 flex-wrap font-bold text-[10px] leading-3.75 underline decoration-[#FFFFFF1A] decoration-0 underline-offset-4">
                           {member.socials.map((social) => (
                             <a
-                              key={social.label}
+                              key={`${social.label}-${social.url}`}
                               href={social.url}
                               target="_blank"
                               rel="noopener noreferrer"
