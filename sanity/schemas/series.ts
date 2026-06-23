@@ -1,6 +1,8 @@
 import { defineField, defineType } from "sanity";
-import { PreviewUrlField } from "../components/PreviewUrlField";
 
+// A Series is a *show* — a standalone strand that runs on its own schedule,
+// outside the monthly issue cycle (e.g. "Class of 2026 Spotlight"). Each weekly
+// piece is an `episode` that references its series (one-to-many, reverse query).
 export default defineType({
   name: "series",
   title: "Series",
@@ -11,6 +13,7 @@ export default defineType({
       title: "Title",
       type: "string",
       validation: (Rule) => Rule.required(),
+      description: "Name of the series, e.g. 'Class of 2026 Spotlight'",
     }),
     defineField({
       name: "slug",
@@ -23,74 +26,61 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "group",
-      title: "Series Group",
-      type: "reference",
-      to: [{ type: "seriesGroup" }],
-      validation: (Rule) => Rule.required(),
+      name: "description",
+      title: "Description",
+      type: "text",
+      rows: 3,
+      description: "A short description of what this series is about.",
     }),
     defineField({
-      name: "youtubeUrl",
-      title: "YouTube URL",
-      type: "url",
-      description: "The full YouTube video URL (e.g., https://www.youtube.com/watch?v=...)",
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: "author",
-      title: "Author",
-      type: "reference",
-      to: { type: "author" },
-    }),
-    defineField({
-      name: "mainImage",
-      title: "Main image",
+      name: "coverImage",
+      title: "Cover Image",
       type: "image",
-      options: {
-        hotspot: true,
-      },
-      fields: [
-        {
-          name: "alt",
-          type: "string",
-          title: "Alternative Text",
-        },
-      ],
+      description: "Hero/promo image for the series. Aim for ~1200×630.",
+      options: { hotspot: true },
+      fields: [{ name: "alt", type: "string", title: "Alternative Text" }],
     }),
     defineField({
-      name: "publishedAt",
-      title: "Published at",
-      type: "datetime",
-    }),
-    defineField({
-      name: "previewUrl",
-      title: "Preview URL",
+      name: "status",
+      title: "Status",
       type: "string",
-      readOnly: true,
-      components: {
-        field: PreviewUrlField,
+      description: "Active series are surfaced as currently running.",
+      options: {
+        list: [
+          { title: "Active", value: "active" },
+          { title: "Archived", value: "archived" },
+        ],
+        layout: "radio",
       },
-      description: "Relative preview link based on the slug. Use this to copy the URL for sharing.",
+      initialValue: "active",
     }),
     defineField({
-      name: "body",
-      title: "Write-up",
-      type: "blockContent",
+      name: "order",
+      title: "Display Order",
+      type: "number",
+      description: "Lower numbers appear first on the Series index.",
+      initialValue: 0,
     }),
   ],
   preview: {
     select: {
       title: "title",
-      author: "author.name",
-      media: "mainImage",
-      group: "group.title",
+      status: "status",
+      media: "coverImage",
     },
-    prepare(selection) {
-      const { author, group } = selection;
+    prepare({ title, status, media }) {
       return {
-        ...selection,
-        subtitle: `${group ? group + " - " : ""}${author ? "by " + author : ""}`,
+        title,
+        subtitle: status === "archived" ? "Archived" : "Active",
+        media,
       };
     },
   },
+  orderings: [
+    {
+      title: "Display Order",
+      name: "orderAsc",
+      by: [{ field: "order", direction: "asc" }],
+    },
+  ],
 });

@@ -1,9 +1,10 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticle } from "@/app/lib/sanity";
 import { buildOgMetadata } from "@/app/lib/metadata";
+import { calculateReadingTime } from "@/app/lib/readingTime";
 import { PAGES } from "@/app/lib/constants";
 import { SECTION_TITLES, type SectionValue } from "@/app/lib/sections";
 import {
@@ -18,22 +19,6 @@ import { NewsletterSection } from "@/app/sections";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
-}
-
-function calculateReadingTime(body: unknown[]): number {
-  if (!body) return 1;
-  let wordCount = 0;
-  const countWords = (obj: unknown): void => {
-    if (typeof obj === "string") {
-      wordCount += obj.split(/\s+/).filter(Boolean).length;
-    } else if (Array.isArray(obj)) {
-      obj.forEach(countWords);
-    } else if (obj && typeof obj === "object") {
-      Object.values(obj).forEach(countWords);
-    }
-  };
-  countWords(body);
-  return Math.max(1, Math.ceil(wordCount / 200));
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {

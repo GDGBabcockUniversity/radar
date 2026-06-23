@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { Header, Footer } from "./components";
 import {
   HeroSection,
@@ -8,15 +6,24 @@ import {
   PastEditionsSection,
   NewsletterSection,
 } from "./sections";
-import { getRecentPosts, getArchive, getLatestIssue } from "./lib/sanity";
+import {
+  getRecentPosts,
+  getArchive,
+  getLatestIssue,
+  getFeaturedSeries,
+  getLatestEpisodes,
+} from "./lib/sanity";
 import { PAGES } from "./lib/constants";
 
 export default async function Home() {
-  const [posts, archive, latestIssue] = await Promise.all([
-    getRecentPosts(),
-    getArchive(),
-    getLatestIssue(),
-  ]);
+  const [posts, archive, latestIssue, featuredSeries, latestEpisodes] =
+    await Promise.all([
+      getRecentPosts(),
+      getArchive(),
+      getLatestIssue(),
+      getFeaturedSeries(),
+      getLatestEpisodes(1),
+    ]);
 
   // Hero CTA points at the newest edition: prefer a new issue, else latest post.
   const heroHref = latestIssue
@@ -31,7 +38,10 @@ export default async function Home() {
       <main>
         <HeroSection heroHref={heroHref} />
         <LatestIssueSection posts={posts} />
-        <SpotlightSection />
+        <SpotlightSection
+          series={featuredSeries}
+          latestEpisode={latestEpisodes?.[0] ?? null}
+        />
         <PastEditionsSection entries={archive} />
         <NewsletterSection />
       </main>

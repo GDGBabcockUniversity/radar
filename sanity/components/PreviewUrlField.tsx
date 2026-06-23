@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormValue } from "sanity";
+import { useFormValue, useClient } from "sanity";
 
 interface PreviewUrlFieldProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,11 +14,39 @@ const TYPE_PATHS: Record<string, string> = {
   series: "series",
 };
 
+const BASE = "https://radar.gdgbabcock.com";
+
 export function PreviewUrlField(props: PreviewUrlFieldProps) {
   const slug = useFormValue(["slug", "current"]) as string | undefined;
   const type = useFormValue(["_type"]) as string | undefined;
-  const segment = (type && TYPE_PATHS[type]) || "posts";
-  const url = slug ? `https://radar.gdgbabcock.com/${segment}/${slug}` : "";
+  // Episodes are nested under their series: /series/<series>/<episode>.
+  const seriesRef = useFormValue(["series", "_ref"]) as string | undefined;
+  const client = useClient({ apiVersion: "2024-01-01" });
+  const [seriesSlug, setSeriesSlug] = React.useState<string | undefined>();
+
+  React.useEffect(() => {
+    if (type !== "episode" || !seriesRef) return;
+    let active = true;
+    client
+      .fetch<string | undefined>(`*[_id == $id][0].slug.current`, {
+        id: seriesRef,
+      })
+      .then((s) => active && setSeriesSlug(s))
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [client, type, seriesRef]);
+
+  let url = "";
+  if (slug) {
+    if (type === "episode") {
+      url = seriesSlug ? `${BASE}/series/${seriesSlug}/${slug}` : "";
+    } else {
+      const segment = (type && TYPE_PATHS[type]) || "posts";
+      url = `${BASE}/${segment}/${slug}`;
+    }
+  }
 
   const handleCopy = async () => {
     if (!url) return;

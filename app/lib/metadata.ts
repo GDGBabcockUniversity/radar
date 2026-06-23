@@ -9,6 +9,8 @@ interface OgMetaInput {
   title: string;
   description?: string;
   image?: SanityImage;
+  /** Raw image URL fallback when there is no Sanity image (e.g. YouTube thumb). */
+  imageUrl?: string;
   /** Absolute or root-relative canonical path, e.g. "/articles/foo". */
   path: string;
   /** OG type — "article" for articles/issues, "website" otherwise. */
@@ -16,11 +18,12 @@ interface OgMetaInput {
   publishedTime?: string;
 }
 
-// Renders a 1200×630 OG image URL from a Sanity image, or a sensible fallback.
-function ogImageUrl(image?: SanityImage): string {
+// Renders a 1200×630 OG image URL from a Sanity image, a raw URL, or a fallback.
+function ogImageUrl(image?: SanityImage, imageUrl?: string): string {
   if (image?.asset) {
     return urlFor(image).width(1200).height(630).fit("crop").url();
   }
+  if (imageUrl) return imageUrl;
   return `${BASE_URL}/radar-logo.png`;
 }
 
@@ -31,6 +34,7 @@ export function buildOgMetadata({
   title,
   description,
   image,
+  imageUrl,
   path,
   type = "article",
   publishedTime,
@@ -39,7 +43,7 @@ export function buildOgMetadata({
   const fullTitle = `${title} | RADAR`;
   const desc =
     description || "Your signal to what's next in the Babcock tech ecosystem.";
-  const img = ogImageUrl(image);
+  const img = ogImageUrl(image, imageUrl);
 
   return {
     title: fullTitle,

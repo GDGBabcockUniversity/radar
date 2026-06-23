@@ -115,49 +115,115 @@ export async function getTeamMembers() {
   );
 }
 
-// Fetch all series groups along with their series
-export async function getSeriesGroups() {
+// Shared projection for an episode in list/card contexts.
+const EPISODE_CARD_FIELDS = `
+  _id,
+  title,
+  slug,
+  excerpt,
+  youtubeUrl,
+  coverImage,
+  publishedAt,
+  episodeNumber,
+  "series": series->{ title, slug },
+  "author": author->{ name, slug, image }
+`;
+
+// All series (shows), each with its episodes. Active shows first.
+export async function getSeriesList() {
   return client.fetch(
     `
-    *[_type == "seriesGroup"] | order(title asc) {
+    *[_type == "series"] | order(order asc, title asc) {
       _id,
       title,
       slug,
       description,
-      "series": *[_type == "series" && references(^._id)] | order(publishedAt desc) {
-        _id,
-        title,
-        slug,
-        youtubeUrl,
-        publishedAt,
-        mainImage,
-        "author": author->{ name, image }
-      }
+      coverImage,
+      status,
+      "episodes": *[_type == "episode" && references(^._id)]
+        | order(episodeNumber asc, publishedAt desc) {
+          ${EPISODE_CARD_FIELDS}
+        }
     }
     `,
     {},
-    { next: { revalidate: 60 } }
+    { next: { revalidate: 60 } },
   );
 }
 
-// Fetch a single series by slug
-export async function getSeriesPost(slug: string) {
+// One series (show) by slug + its episodes (reverse query, like getIssue).
+export async function getSeries(slug: string) {
   return client.fetch(
     `
     *[_type == "series" && slug.current == $slug][0] {
       _id,
       title,
       slug,
-      "group": group->{ title, slug },
-      youtubeUrl,
-      publishedAt,
-      mainImage,
-      body,
-      "author": author->{ name, image, bio }
+      description,
+      coverImage,
+      status,
+      "episodes": *[_type == "episode" && references(^._id)]
+        | order(episodeNumber asc, publishedAt desc) {
+          ${EPISODE_CARD_FIELDS}
+        }
     }
     `,
     { slug },
-    { next: { revalidate: 60 } }
+    { next: { revalidate: 60 } },
+  );
+}
+
+// A single episode by slug, with its series context and author.
+export async function getEpisode(slug: string) {
+  return client.fetch(
+    `
+    *[_type == "episode" && slug.current == $slug][0] {
+      _id,
+      title,
+      slug,
+      excerpt,
+      youtubeUrl,
+      coverImage,
+      publishedAt,
+      episodeNumber,
+      body,
+      "series": series->{ title, slug },
+      "author": author->{ name, slug, image, bio, role }
+    }
+    `,
+    { slug },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Latest episodes across all series, for the homepage Series pillar.
+export async function getLatestEpisodes(limit = 3) {
+  return client.fetch(
+    `
+    *[_type == "episode"] | order(publishedAt desc)[0...$limit] {
+      ${EPISODE_CARD_FIELDS}
+    }
+    `,
+    { limit },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// The active/featured series for the homepage pillar (first active show).
+export async function getFeaturedSeries() {
+  return client.fetch(
+    `
+    *[_type == "series" && status == "active"] | order(order asc, title asc)[0] {
+      _id,
+      title,
+      slug,
+      description,
+      coverImage,
+      status
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
   );
 }
 
@@ -412,5 +478,67 @@ export async function getArchive() {
     `,
     {},
     { next: { revalidate: 60 } },
+  );
+}
+
+interface SitemapEntry {
+  slug: string;
+  updated: string;
+  seriesSlug?: string;
+}
+
+// All content slugs + last-modified times, grouped by type, for the sitemap.
+export async function getSitemapEntries(): Promise<{
+  issues: SitemapEntry[];
+  articles: SitemapEntry[];
+  series: SitemapEntry[];
+  episodes: SitemapEntry[];
+  authors: SitemapEntry[];
+  posts: SitemapEntry[];
+}> {
+  return client.fetch(
+    `{
+      "issues": *[_type == "issue" && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt },
+      "articles": *[_type == "article" && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt },
+      "series": *[_type == "series" && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt },
+      "episodes": *[_type == "episode" && defined(slug.current) && defined(series->slug.current)]{ "slug": slug.current, "seriesSlug": series->slug.current, "updated": _updatedAt },
+      "authors": *[_type == "author" && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt },
+      "posts": *[_type == "post" && hidden != true && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt }
+    }`,
+    {},
+    { next: { revalidate: 3600 } },
+  );
+}
+
+interface FeedItem {
+  _type: string;
+  title: string;
+  slug: string;
+  seriesSlug?: string;
+  excerpt?: string;
+  publishedAt?: string;
+  _createdAt: string;
+}
+
+// Newest content across all pillars (issues, articles, episodes, legacy posts)
+// for the RSS feed, normalised so each can build its own URL.
+export async function getFeedItems(limit = 30): Promise<FeedItem[]> {
+  return client.fetch(
+    `*[
+      (_type == "issue") ||
+      (_type == "article") ||
+      (_type == "episode") ||
+      (_type == "post" && hidden != true)
+    ] | order(coalesce(publishedAt, _createdAt) desc)[0...$limit]{
+      _type,
+      title,
+      "slug": slug.current,
+      "seriesSlug": series->slug.current,
+      "excerpt": coalesce(excerpt, description),
+      publishedAt,
+      _createdAt
+    }`,
+    { limit },
+    { next: { revalidate: 3600 } },
   );
 }
