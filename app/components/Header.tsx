@@ -10,7 +10,7 @@ import { useTheme } from "./ThemeProvider";
 const NAV_LINKS = [
   { label: "Issues", href: "/#issues" },
   { label: "Series", href: PAGES.series },
-  { label: "About", href: "#" },
+  { label: "About", href: PAGES.home }, // TODO: point to editorial note when added
   { label: "Team", href: PAGES.team },
   { label: "Submit a Signal", href: "#" },
 ];
