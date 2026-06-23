@@ -3,9 +3,9 @@ import Image from "next/image";
 import { IMAGES, LINKS, PAGES } from "../lib/constants";
 
 const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Team", href: "/team" },
-  { label: "Issues", href: "#issues" },
+  { label: "Home", href: PAGES.home },
+  { label: "Team", href: PAGES.team },
+  { label: "Issues", href: "/#issues" },
   { label: "Series", href: PAGES.series },
 ];
 

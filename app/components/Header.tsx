@@ -8,10 +8,10 @@ import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
 import { useTheme } from "./ThemeProvider";
 
 const NAV_LINKS = [
-  { label: "Issues", href: "#issues" },
+  { label: "Issues", href: "/#issues" },
   { label: "Series", href: PAGES.series },
   { label: "About", href: "#" },
-  { label: "Team", href: "/team" },
+  { label: "Team", href: PAGES.team },
   { label: "Submit a Signal", href: "#" },
 ];
 
@@ -59,7 +59,7 @@ export default function Header() {
           </button>
 
           {/* Subscribe Button */}
-          <Button variant="blue" size="sm" href="#subscribe">
+          <Button variant="blue" size="sm" href="/#subscribe">
             Subscribe
           </Button>
         </div>
