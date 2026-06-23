@@ -3,16 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import Button from "./Button";
-import { IMAGES, PAGES } from "../lib/constants";
+import { IMAGES, PAGES, LINKS } from "../lib/constants";
 import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
 import { useTheme } from "./ThemeProvider";
 
 const NAV_LINKS = [
-  { label: "Issues", href: "/#issues" },
+  { label: "Issues", href: PAGES.issues },
   { label: "Series", href: PAGES.series },
-  { label: "About", href: PAGES.home }, // TODO: point to editorial note when added
+  { label: "About", href: PAGES.about },
   { label: "Team", href: PAGES.team },
-  { label: "Submit a Signal", href: "#" },
+  { label: "Submit a Signal", href: LINKS.contactEmail },
 ];
 
 export default function Header() {
