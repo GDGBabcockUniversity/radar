@@ -54,11 +54,11 @@ export default async function SeriesShowPage({ params }: SeriesPageProps) {
   return (
     <>
       <Header />
-      <main className="bg-black min-h-screen text-white pt-20 pb-12">
+      <main className="bg-surface min-h-screen text-content pt-20 pb-12">
         <div className="container">
           <Link
             href={PAGES.series}
-            className="text-xs font-bold uppercase tracking-wider text-gray-500 hover:text-primary transition-colors"
+            className="text-xs font-bold uppercase tracking-wider text-content-subtle hover:text-primary transition-colors"
           >
             ← Back to series
           </Link>
@@ -68,16 +68,16 @@ export default async function SeriesShowPage({ params }: SeriesPageProps) {
               {series.title}
             </h1>
             {series.description && (
-              <p className="mt-4 text-lg text-gray-400">{series.description}</p>
+              <p className="mt-4 text-lg text-content-muted">{series.description}</p>
             )}
           </div>
 
-          <h2 className="mb-6 text-xs font-bold uppercase tracking-[1.4px] text-gray-500">
+          <h2 className="mb-6 text-xs font-bold uppercase tracking-[1.4px] text-content-subtle">
             Entries ({episodes.length})
           </h2>
 
           {episodes.length === 0 ? (
-            <p className="text-gray-400">No episodes in this series yet.</p>
+            <p className="text-content-muted">No episodes in this series yet.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {episodes.map((ep) => {
@@ -89,7 +89,7 @@ export default async function SeriesShowPage({ params }: SeriesPageProps) {
                     href={PAGES.episode(seriesSlug, ep.slug.current)}
                     className="group flex flex-col gap-4"
                   >
-                    <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                    <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-edge bg-overlay">
                       {image && (
                         <Image
                           src={image}
@@ -102,7 +102,7 @@ export default async function SeriesShowPage({ params }: SeriesPageProps) {
                       <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
                         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
                           <svg
-                            className="ml-1 h-6 w-6 text-white"
+                            className="ml-1 h-6 w-6 text-content"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -116,11 +116,11 @@ export default async function SeriesShowPage({ params }: SeriesPageProps) {
                         {ep.title}
                       </h3>
                       {ep.excerpt && (
-                        <p className="mt-1 line-clamp-2 text-sm text-gray-400">
+                        <p className="mt-1 line-clamp-2 text-sm text-content-muted">
                           {ep.excerpt}
                         </p>
                       )}
-                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-content-subtle">
                         {ep.author && <span>{ep.author.name}</span>}
                         {ep.author && date && <span>·</span>}
                         {date && <span>{date}</span>}

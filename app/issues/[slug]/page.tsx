@@ -82,7 +82,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
   return (
     <>
       <Header />
-      <main className="bg-black min-h-screen">
+      <main className="bg-surface min-h-screen">
         {/* 1. Issue masthead */}
         <header className="relative">
           {issue.coverImage?.asset ? (
@@ -106,7 +106,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
                   </h1>
                   {issue.excerpt && (
                     <p
-                      className="mt-4 max-w-2xl text-gray-200"
+                      className="mt-4 max-w-2xl text-white/80"
                       style={{
                         fontFamily: "var(--font-serif)",
                         fontSize: "1.25rem",
@@ -120,17 +120,17 @@ export default async function IssuePage({ params }: IssuePageProps) {
               </div>
             </div>
           ) : (
-            <div className="container pt-12 pb-8 border-b border-white/10">
+            <div className="container pt-12 pb-8 border-b border-edge">
               <span className="text-xs font-semibold uppercase tracking-[2px] text-primary">
                 RADAR · Issue #{issue.issueNumber}
                 {date ? ` · ${date}` : ""}
               </span>
-              <h1 className="mt-3 max-w-3xl text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight text-white">
+              <h1 className="mt-3 max-w-3xl text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight text-content">
                 {issue.title}
               </h1>
               {issue.excerpt && (
                 <p
-                  className="mt-4 max-w-2xl text-gray-200"
+                  className="mt-4 max-w-2xl text-content-secondary"
                   style={{
                     fontFamily: "var(--font-serif)",
                     fontSize: "1.25rem",
@@ -151,10 +151,10 @@ export default async function IssuePage({ params }: IssuePageProps) {
         {/* In this issue — contents */}
         {contents.length > 0 && (
           <nav className="container mt-10" aria-label="In this issue">
-            <h2 className="mb-4 text-xs font-bold uppercase tracking-[2px] text-gray-500">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-[2px] text-content-subtle">
               In this issue
             </h2>
-            <ol className="grid grid-cols-1 gap-x-10 gap-y-4 border-t border-white/10 pt-6 sm:grid-cols-2">
+            <ol className="grid grid-cols-1 gap-x-10 gap-y-4 border-t border-edge pt-6 sm:grid-cols-2">
               {contents.map((entry) => {
                 const sectionHref =
                   entry.anchor ??
@@ -181,7 +181,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
                           <li key={a._id}>
                             <Link
                               href={`#${articleAnchor(a._id)}`}
-                              className="text-gray-300 hover:text-white transition-colors"
+                              className="text-content-secondary hover:text-content transition-colors"
                             >
                               {a.title}
                             </Link>
@@ -230,7 +230,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
         {/* 8. Anything else from this issue */}
         <IssueSection title="More from this issue" articles={more} />
 
-        <div className="container border-t border-white/10 py-8">
+        <div className="container border-t border-edge py-8">
           <ShareButtons path={path} title={issue.title} />
         </div>
 

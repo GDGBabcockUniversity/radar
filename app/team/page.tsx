@@ -42,7 +42,7 @@ function MemberAvatar({
 
   if (image) {
     return (
-      <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-white/5 relative">
+      <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-overlay relative">
         <Image
           src={urlFor(image).width(140).height(140).url()}
           alt={image?.alt || name}
@@ -54,7 +54,7 @@ function MemberAvatar({
   }
 
   return (
-    <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-white/5 relative">
+    <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-overlay relative">
       <div className="w-full h-full bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
         <span className="text-2xl font-bold text-primary">{initials}</span>
       </div>
@@ -66,13 +66,13 @@ export default async function TeamPage() {
   const teamMembers: Author[] = await getTeamRoster();
 
   return (
-    <main className="min-h-screen bg-[#0B0D0F]">
+    <main className="min-h-screen bg-surface">
       <Header />
 
       <section className="py-20 px-4">
         <div className="container max-w-275 mx-auto">
           <div className="mb-16">
-            <p className="text-[#9CA3AF] text-[10px] font-bold uppercase leading-3.75 tracking-[4px] mb-6 flex items-center justify-center gap-3 bg-[#FFFFFF0D] border border-[#FFFFFF1A] rounded-[9999px] w-[291.5px] h-9.25 text-center">
+            <p className="text-content-muted text-[10px] font-bold uppercase leading-3.75 tracking-[4px] mb-6 flex items-center justify-center gap-3 bg-overlay border border-edge rounded-[9999px] w-[291.5px] h-9.25 text-center">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-hover opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
@@ -93,7 +93,7 @@ export default async function TeamPage() {
               </span>
             </h1>
             <div className="border-l-4 border-primary pl-6 max-w-2xl">
-              <p className="text-[#CBD5E1] text-base md:text-2xl leading-[48.75px] italic">
+              <p className="text-content-secondary text-base md:text-2xl leading-[48.75px] italic">
                 &quot;Behind every word, line of statement and piece,
                 there&apos;s a voice — a person. This is us — unfiltered, human,
                 and learning as we go.&quot;
@@ -109,7 +109,7 @@ export default async function TeamPage() {
               return (
                 <div
                   key={member._id}
-                  className="bg-[#16181D] rounded-2xl md:rounded-[48px] p-6 md:p-8 border border-[#FFFFFF0F]"
+                  className="bg-surface-raised rounded-2xl md:rounded-[48px] p-6 md:p-8 border border-edge"
                 >
                   <div className="flex items-start gap-4 md:gap-6 mb-4">
                     {profileHref ? (
@@ -121,7 +121,7 @@ export default async function TeamPage() {
                     )}
 
                     <div className="flex-1">
-                      <h3 className="text-lg md:text-3xl leading-9 tracking-[-0.75px] font-bold text-white mb-1">
+                      <h3 className="text-lg md:text-3xl leading-9 tracking-[-0.75px] font-bold text-content mb-1">
                         {profileHref ? (
                           <Link
                             href={profileHref}
@@ -139,7 +139,7 @@ export default async function TeamPage() {
                         </p>
                       )}
                       {member.course && (
-                        <p className="text-[#94A3B8] text-[8px] md:text-[10px] leading-3.75 tracking-[1.4px] font-semibold uppercase mb-2">
+                        <p className="text-content-muted text-[8px] md:text-[10px] leading-3.75 tracking-[1.4px] font-semibold uppercase mb-2">
                           {member.course}
                         </p>
                       )}
@@ -151,7 +151,7 @@ export default async function TeamPage() {
                               href={social.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-[#94A3B8] hover:text-primary transition-colors"
+                              className="text-content-muted hover:text-primary transition-colors"
                             >
                               {social.label}
                             </a>
@@ -161,15 +161,15 @@ export default async function TeamPage() {
                     </div>
                   </div>
 
-                  <hr className="mb-6 md:mb-8 text-[#FFFFFF0D]" />
+                  <hr className="mb-6 md:mb-8 text-edge" />
 
                   <div className="grid grid-cols-2 gap-4 md:gap-6 text-xs">
                     {member.songObsession && (
                       <div>
-                        <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
                           NEW SONG OBSESSION
                         </p>
-                        <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
                           {member.songObsession}
                         </p>
                       </div>
@@ -177,10 +177,10 @@ export default async function TeamPage() {
 
                     {member.tabsCurrentlyOpen && (
                       <div>
-                        <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
                           TABS CURRENTLY OPEN
                         </p>
-                        <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
                           {member.tabsCurrentlyOpen}
                         </p>
                       </div>
@@ -188,10 +188,10 @@ export default async function TeamPage() {
 
                     {member.currentlyLearning && (
                       <div>
-                        <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
                           WHAT I&apos;M LEARNING RIGHT NOW
                         </p>
-                        <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
                           {member.currentlyLearning}
                         </p>
                       </div>
@@ -199,10 +199,10 @@ export default async function TeamPage() {
 
                     {member.unpopularOpinion && (
                       <div>
-                        <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
                           UNPOPULAR DEV OPINION / HOT TAKE
                         </p>
-                        <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
                           {member.unpopularOpinion}
                         </p>
                       </div>
@@ -210,10 +210,10 @@ export default async function TeamPage() {
 
                     {member.techPhilosophy && (
                       <div>
-                        <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
                           TECH PHILOSOPHY
                         </p>
-                        <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
                           {member.techPhilosophy}
                         </p>
                       </div>
@@ -233,9 +233,9 @@ export default async function TeamPage() {
             })}
           </div>
         </div>
-        <div className="bg-[#16181D] border border-[#FFFFFF0D] rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
+        <div className="bg-surface-raised border border-edge rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
           <p
-            className="text-[#94A3B8] text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
+            className="text-content-muted text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             &quot;What stands out isn&apos;t just what we study or what we
@@ -257,7 +257,7 @@ export default async function TeamPage() {
             >
               Commit & Push
             </h2>
-            <p className="text-[#6b7280] font-bold text-xs leading-4.5 uppercase tracking-[7.2px]">
+            <p className="text-content-subtle font-bold text-xs leading-4.5 uppercase tracking-[7.2px]">
               THE GDG CREATIVE WRITING TEAM
             </p>
           </div>

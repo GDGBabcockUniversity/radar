@@ -36,7 +36,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <>
       <Header />
-      <main className="bg-black min-h-screen">
+      <main className="bg-surface min-h-screen">
         <PostHeader
           title={article.title}
           description={article.excerpt}
@@ -46,7 +46,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         <div className="container">
           {article.issue && (
-            <p className="mt-6 text-sm text-gray-500">
+            <p className="mt-6 text-sm text-content-subtle">
               From{" "}
               <Link
                 href={PAGES.issue(article.issue.slug.current)}
@@ -57,7 +57,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </p>
           )}
 
-          <div className="mt-4 flex flex-col gap-4 border-b border-white/10 pb-6 md:flex-row md:items-center md:justify-between">
+          <div className="mt-4 flex flex-col gap-4 border-b border-edge pb-6 md:flex-row md:items-center md:justify-between">
             <Byline
               authors={article.authors}
               publishedAt={article.publishedAt}
@@ -72,7 +72,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </div>
           </div>
 
-          <div className="border-t border-white/10 py-8">
+          <div className="border-t border-edge py-8">
             <ShareButtons path={path} title={article.title} />
           </div>
         </div>

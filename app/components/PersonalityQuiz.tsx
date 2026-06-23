@@ -51,7 +51,7 @@ const VALENTINES_THEME: QuizTheme = {
   accentGlowClass:
     "bg-pink-500/10 border-pink-500/50 shadow-[0_0_15px_rgba(236,72,153,0.15)]",
   buttonGradient:
-    "bg-linear-to-r from-pink-600 to-rose-600 text-white hover:shadow-[0_0_30px_rgba(225,29,72,0.4)]",
+    "bg-linear-to-r from-pink-600 to-rose-600 text-content hover:shadow-[0_0_30px_rgba(225,29,72,0.4)]",
   buttonGlow: "hover:shadow-[0_0_30px_rgba(225,29,72,0.4)]",
   confettiColors: ["#ff0a54", "#ff477e", "#ff7096", "#ff85a1", "#fbb1bd"],
   headerTitle: "What's Your Valentine's Vibe? 💘",
@@ -215,7 +215,7 @@ const TRACK_FINDER_THEME: QuizTheme = {
   accentGlowClass:
     "bg-violet-500/10 border-violet-500/50 shadow-[0_0_15px_rgba(139,92,246,0.15)]",
   buttonGradient:
-    "bg-linear-to-r from-indigo-600 to-violet-600 text-white hover:shadow-[0_0_30px_rgba(99,102,241,0.4)]",
+    "bg-linear-to-r from-indigo-600 to-violet-600 text-content hover:shadow-[0_0_30px_rgba(99,102,241,0.4)]",
   buttonGlow: "hover:shadow-[0_0_30px_rgba(99,102,241,0.4)]",
   confettiColors: ["#818cf8", "#6366f1", "#a78bfa", "#8b5cf6", "#c4b5fd"],
   headerTitle: "Find Your Tech Track 🧭",
@@ -423,10 +423,10 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
   // If no matching quiz found, show fallback
   if (!config) {
     return (
-      <div className="my-10 p-8 bg-[#1a1a1a] border border-white/10 rounded-xl text-center">
+      <div className="my-10 p-8 bg-surface-card border border-edge rounded-xl text-center">
         <span className="text-4xl mb-4 block">🧩</span>
-        <p className="text-white font-semibold mb-2">Personality Quiz</p>
-        <p className="text-gray-400 text-sm">
+        <p className="text-content font-semibold mb-2">Personality Quiz</p>
+        <p className="text-content-muted text-sm">
           Quiz ID &quot;{quizId}&quot; not found.
         </p>
       </div>
@@ -648,15 +648,15 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
   };
 
   return (
-    <div className="my-12 bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+    <div className="my-12 bg-surface-card border border-edge rounded-2xl overflow-hidden shadow-2xl">
       {/* Header */}
       <div
-        className={`${theme.headerGradient} p-6 sm:p-8 text-center border-b border-white/10`}
+        className={`${theme.headerGradient} p-6 sm:p-8 text-center border-b border-edge`}
       >
-        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-content mb-2">
           {theme.headerTitle}
         </h2>
-        <p className="text-white/60 text-sm sm:text-base">
+        <p className="text-content-secondary text-sm sm:text-base">
           {theme.headerSubtitle}
         </p>
       </div>
@@ -666,7 +666,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
           <div className="space-y-10">
             {questions.map((q, index) => (
               <div key={q.id} className="scroll-mt-24" id={`q-${q.id}`}>
-                <h3 className="text-lg font-semibold text-white mb-4 flex gap-3">
+                <h3 className="text-lg font-semibold text-content mb-4 flex gap-3">
                   <span className={theme.accentClass}>{index + 1}.</span>
                   <span>{q.text}</span>
                 </h3>
@@ -679,7 +679,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
                         ${
                           answers[q.id] === opt.letter
                             ? theme.accentGlowClass
-                            : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
+                            : "bg-overlay border-edge hover:bg-overlay-strong hover:border-edge-strong"
                         }
                       `}
                     >
@@ -701,9 +701,9 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
                           )}
                         </div>
                         <span
-                          className={`text-sm sm:text-base ${answers[q.id] === opt.letter ? "text-white" : "text-gray-300"}`}
+                          className={`text-sm sm:text-base ${answers[q.id] === opt.letter ? "text-content" : "text-content-secondary"}`}
                         >
-                          <span className="font-bold mr-2 text-gray-500">
+                          <span className="font-bold mr-2 text-content-subtle">
                             {opt.letter}.
                           </span>
                           {opt.text}
@@ -723,7 +723,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
               </div>
             ))}
 
-            <div className="pt-6 border-t border-white/10 flex justify-center">
+            <div className="pt-6 border-t border-edge flex justify-center">
               <button
                 onClick={calculateResult}
                 disabled={!isComplete}
@@ -732,7 +732,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
                   ${
                     isComplete
                       ? `${theme.buttonGradient} hover:-translate-y-1 cursor-pointer`
-                      : "bg-white/10 text-gray-400 cursor-not-allowed"
+                      : "bg-overlay-strong text-content-muted cursor-not-allowed"
                   }
                 `}
               >
@@ -748,14 +748,14 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
             >
               {theme.resultLabel}
             </p>
-            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+            <h3 className="text-3xl sm:text-4xl font-bold text-content mb-6">
               {result.title}
             </h3>
-            <div className="bg-white/5 p-6 sm:p-8 rounded-2xl border border-white/10 max-w-2xl mx-auto mb-8 relative overflow-hidden">
+            <div className="bg-overlay p-6 sm:p-8 rounded-2xl border border-edge max-w-2xl mx-auto mb-8 relative overflow-hidden">
               <div
                 className={`absolute top-0 left-0 w-1 h-full ${theme.resultBarGradient}`}
               />
-              <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+              <p className="text-content-secondary text-base sm:text-lg leading-relaxed">
                 {result.description}
               </p>
             </div>
@@ -784,7 +784,7 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
               </button>
               <button
                 onClick={resetQuiz}
-                className="text-gray-400 hover:text-white underline underline-offset-4 transition-colors text-sm"
+                className="text-content-muted hover:text-content underline underline-offset-4 transition-colors text-sm"
               >
                 Retake Quiz
               </button>

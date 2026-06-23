@@ -23,6 +23,23 @@
   --color-border-light: rgba(0, 0, 0, 0.1);
   --color-border-dark: rgba(255, 255, 255, 0.1);
 
+  /* Semantic surface/content tokens (dark defaults) */
+  --color-surface: #0a0a0a;
+  --color-surface-raised: #111111;
+  --color-surface-card: #1a1a1a;
+  --color-surface-inset: #161616;
+  --color-surface-input: #2a2a2a;
+
+  --color-content: #ffffff;
+  --color-content-secondary: #d1d5db;
+  --color-content-muted: #9ca3af;
+  --color-content-subtle: #6b7280;
+
+  --color-edge: rgba(255, 255, 255, 0.1);
+  --color-edge-strong: rgba(255, 255, 255, 0.2);
+  --color-overlay: rgba(255, 255, 255, 0.05);
+  --color-overlay-strong: rgba(255, 255, 255, 0.1);
+
   /* Spacing */
   --section-padding: 5rem;
   --container-max: 1200px;
@@ -50,9 +67,9 @@
 /* ===== Light Theme Overrides ===== */
 html.light {
   --color-bg-light: #ffffff;
-  --color-bg-dark: #f8f9fa;
-  --color-bg-dark-secondary: #f0f1f3;
-  --color-bg-dark-card: #ffffff;
+  --color-bg-dark: #fff6e0;
+  --color-bg-dark-secondary: #fdeecb;
+  --color-bg-dark-card: #fffdf5;
 
   --color-text-light: #171717;
   --color-text-dark: #171717;
@@ -63,21 +80,38 @@ html.light {
   --color-border-dark: rgba(0, 0, 0, 0.1);
 
   --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  /* Semantic tokens — light (warm cream) */
+  --color-surface: #fff6e0;
+  --color-surface-raised: #fffdf5;
+  --color-surface-card: #fdf3d6;
+  --color-surface-inset: #f3e7c4;
+  --color-surface-input: #f3e7c4;
+
+  --color-content: #1c1a14;
+  --color-content-secondary: #44403a;
+  --color-content-muted: #6b6557;
+  --color-content-subtle: #8a8475;
+
+  --color-edge: rgba(28, 26, 20, 0.12);
+  --color-edge-strong: rgba(28, 26, 20, 0.22);
+  --color-overlay: rgba(28, 26, 20, 0.04);
+  --color-overlay-strong: rgba(28, 26, 20, 0.08);
 }
 
 html.light .section-gradient {
-  background: radial-gradient(ellipse at center top, #dce6f7 0%, #f8f9fa 70%);
+  background: radial-gradient(ellipse at center top, #fff1cf 0%, #fff6e0 70%);
 }
 
 html.light .toc-container {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(28, 26, 20, 0.04);
+  border-color: rgba(28, 26, 20, 0.1);
 }
 
 html.light .toc-link:hover {
   color: var(--color-text-dark);
-  background: rgba(0, 0, 0, 0.03);
-  border-left-color: rgba(0, 0, 0, 0.15);
+  background: rgba(28, 26, 20, 0.04);
+  border-left-color: rgba(28, 26, 20, 0.15);
 }
 
 /* ===== Tailwind Theme Extension ===== */
@@ -91,6 +125,22 @@ html.light .toc-link:hover {
 
   --color-background: var(--color-bg-dark);
   --color-foreground: var(--color-text-light);
+
+  --color-surface: var(--color-surface);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-surface-card: var(--color-surface-card);
+  --color-surface-inset: var(--color-surface-inset);
+  --color-surface-input: var(--color-surface-input);
+
+  --color-content: var(--color-content);
+  --color-content-secondary: var(--color-content-secondary);
+  --color-content-muted: var(--color-content-muted);
+  --color-content-subtle: var(--color-content-subtle);
+
+  --color-edge: var(--color-edge);
+  --color-edge-strong: var(--color-edge-strong);
+  --color-overlay: var(--color-overlay);
+  --color-overlay-strong: var(--color-overlay-strong);
 }
 
 /* ===== Base Styles ===== */
@@ -323,15 +373,15 @@ img {
 
 /* ===== Light theme hero overrides ===== */
 html.light .hero-section {
-  background: #f0f2f8;
+  background: #fff1cf;
 }
 
 html.light .hero-cone {
   background: conic-gradient(
     from 250deg at 50% 0%,
     transparent 0deg,
-    rgba(66, 100, 244, 0.12) 20deg,
-    rgba(66, 100, 244, 0.18) 40deg,
+    rgba(66, 100, 244, 0.1) 20deg,
+    rgba(66, 100, 244, 0.14) 40deg,
     transparent 80deg
   );
 }
@@ -342,33 +392,33 @@ html.light .hero-cone {
 }
 
 html.light .spotlight-section {
-  background: #e8eaf0;
+  background: #fdeecb;
 }
 /* ===== New Sections ===== */
 .latest-issue-section {
   background: #0a0a0a;
 }
 html.light .latest-issue-section {
-  background: #f8f9fa;
+  background: #fff6e0;
 }
 
 .past-editions-section {
   background: #000000;
 }
 html.light .past-editions-section {
-  background: #ffffff;
+  background: #fffdf5;
 }
 
 .newsletter-section {
   background: radial-gradient(ellipse at center top, #141828 0%, #0a0a0a 70%);
 }
 html.light .newsletter-section {
-  background: radial-gradient(ellipse at center top, #e8f0fe 0%, #f8f9fa 70%);
+  background: radial-gradient(ellipse at center top, #fff0c8 0%, #fff6e0 70%);
 }
 
 .footer-section {
   background: #0c0c0c;
 }
 html.light .footer-section {
-  background: #f0f2f8;
+  background: #fdeecb;
 }

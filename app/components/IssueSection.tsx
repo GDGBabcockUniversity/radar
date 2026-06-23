@@ -43,7 +43,7 @@ function ArticleCard({
     <Link
       id={articleAnchor(article._id)}
       href={href}
-      className="group block overflow-hidden rounded-2xl border border-white/10 bg-[#111] transition-colors hover:border-white/20 scroll-mt-24"
+      className="group block overflow-hidden rounded-2xl border border-edge bg-surface-raised transition-colors hover:border-edge-strong scroll-mt-24"
     >
       {article.coverImage?.asset && (
         <div className={`relative ${large ? "aspect-video" : "aspect-4/3"}`}>
@@ -57,7 +57,7 @@ function ArticleCard({
       )}
       <div className={large ? "p-6 md:p-8" : "p-5"}>
         <h3
-          className={`font-semibold leading-tight text-white group-hover:text-primary transition-colors ${
+          className={`font-semibold leading-tight text-content group-hover:text-primary transition-colors ${
             large ? "text-3xl md:text-4xl tracking-tight" : "text-xl"
           }`}
         >
@@ -65,7 +65,7 @@ function ArticleCard({
         </h3>
         {article.excerpt && (
           <p
-            className={`mt-3 text-gray-300 ${large ? "" : "line-clamp-3 text-sm"}`}
+            className={`mt-3 text-content-secondary ${large ? "" : "line-clamp-3 text-sm"}`}
             style={
               large
                 ? {

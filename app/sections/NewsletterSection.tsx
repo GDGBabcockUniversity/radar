@@ -10,7 +10,7 @@ export default function NewsletterSection() {
     >
       <div className="container max-w-2xl mx-auto text-center">
         {/* Envelope Icon */}
-        <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#1a2040] border border-white/10">
+        <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-surface-raised border border-edge">
           <svg
             width="24"
             height="24"
@@ -29,7 +29,7 @@ export default function NewsletterSection() {
         </div>
 
         {/* Heading */}
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 flex items-center justify-center gap-4">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-content mb-4 flex items-center justify-center gap-4">
           Get{" "}
           <span className="inline-block align-middle">
             <Image
@@ -44,7 +44,7 @@ export default function NewsletterSection() {
         </h2>
 
         {/* Subtitle */}
-        <p className="text-gray-400 mb-10 max-w-lg mx-auto leading-relaxed text-sm md:text-base">
+        <p className="text-content-muted mb-10 max-w-lg mx-auto leading-relaxed text-sm md:text-base">
           Monthly issues, weekly series drops, and the signals students should
           not miss.
         </p>
@@ -53,7 +53,7 @@ export default function NewsletterSection() {
         <NewsletterForm />
 
         {/* Privacy notice */}
-        <p className="mt-5 text-[10px] text-gray-500 uppercase tracking-[0.2em] font-medium">
+        <p className="mt-5 text-[10px] text-content-subtle uppercase tracking-[0.2em] font-medium">
           No spam. Just signal. Unsubscribe anytime
         </p>
       </div>

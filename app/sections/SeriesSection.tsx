@@ -61,10 +61,10 @@ export default function SeriesSection({ series, episodes }: SeriesSectionProps) 
           <h2 className="shrink-0 text-xs font-bold uppercase tracking-[2px] text-primary">
             Series
           </h2>
-          <span className="h-px flex-1 bg-white/10" />
+          <span className="h-px flex-1 bg-overlay-strong" />
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-[#16181D] p-6 md:p-10">
+        <div className="rounded-3xl border border-edge bg-surface-raised p-6 md:p-10">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div className="max-w-xl">
               {series.status === "active" && (
@@ -73,11 +73,11 @@ export default function SeriesSection({ series, episodes }: SeriesSectionProps) 
                   Currently running
                 </span>
               )}
-              <h3 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
+              <h3 className="text-3xl md:text-4xl font-bold tracking-tight text-content">
                 {series.title}
               </h3>
               {series.description && (
-                <p className="mt-3 text-sm md:text-base leading-relaxed text-gray-300">
+                <p className="mt-3 text-sm md:text-base leading-relaxed text-content-secondary">
                   {series.description}
                 </p>
               )}
@@ -100,7 +100,7 @@ export default function SeriesSection({ series, episodes }: SeriesSectionProps) 
                     href={PAGES.episode(epSeriesSlug, ep.slug.current)}
                     className="group flex flex-col gap-3"
                   >
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                    <div className="relative aspect-video overflow-hidden rounded-xl border border-edge bg-overlay">
                       {image && (
                         <Image
                           src={image}
@@ -119,11 +119,11 @@ export default function SeriesSection({ series, episodes }: SeriesSectionProps) 
                       </div>
                     </div>
                     <div>
-                      <h4 className="line-clamp-2 font-semibold leading-snug text-white transition-colors group-hover:text-primary">
+                      <h4 className="line-clamp-2 font-semibold leading-snug text-content transition-colors group-hover:text-primary">
                         {ep.title}
                       </h4>
                       {date && (
-                        <span className="mt-1 block text-xs text-gray-500">
+                        <span className="mt-1 block text-xs text-content-subtle">
                           {date}
                         </span>
                       )}

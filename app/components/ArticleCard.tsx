@@ -67,7 +67,7 @@ export default function ArticleCard({
 
           {/* Description - Inter */}
           {description && (
-            <p className="mt-2 text-sm text-white/70 line-clamp-2">
+            <p className="mt-2 text-sm text-white/80 line-clamp-2">
               {description}
             </p>
           )}
@@ -81,9 +81,9 @@ export default function ArticleCard({
     <a
       href={href}
       className={`
-        group block overflow-hidden rounded-2xl bg-[#111] border border-white/10
+        group block overflow-hidden rounded-2xl bg-surface-raised border border-edge
         transition-all duration-300 ease-out
-        hover:border-white/20
+        hover:border-edge-strong
         ${className}
       `}
     >
@@ -114,7 +114,7 @@ export default function ArticleCard({
           )}
 
           {/* Date with calendar icon */}
-          <span className="text-xs text-gray-400 flex items-center gap-1.5">
+          <span className="text-xs text-content-muted flex items-center gap-1.5">
             <svg
               width="12"
               height="12"
@@ -139,16 +139,16 @@ export default function ArticleCard({
           </span>
         </div>
 
-        <div className="h-0.5 bg-[#161616] mb-5 rounded-full" />
+        <div className="h-0.5 bg-surface-inset mb-5 rounded-full" />
 
         {/* Title - Space Grotesk */}
-        <h3 className="text-xl font-semibold text-white leading-tight mb-3">
+        <h3 className="text-xl font-semibold text-content leading-tight mb-3">
           {title}
         </h3>
 
         {/* Description - Inter */}
         {description && (
-          <p className="text-sm text-gray-400 leading-relaxed line-clamp-3">
+          <p className="text-sm text-content-muted leading-relaxed line-clamp-3">
             {description}
           </p>
         )}

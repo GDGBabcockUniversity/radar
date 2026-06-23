@@ -42,20 +42,20 @@ export default async function SeriesIndexPage() {
   return (
     <>
       <Header />
-      <main className="bg-black min-h-screen text-white pt-20 pb-24">
+      <main className="bg-surface min-h-screen text-content pt-20 pb-24">
         <div className="container">
           <div className="mb-16">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
               Series
             </h1>
-            <p className="text-gray-400 text-lg max-w-2xl">
+            <p className="text-content-muted text-lg max-w-2xl">
               Deeper dives, recurring spotlights, and stories that live outside
               the monthly issue cycle.
             </p>
           </div>
 
           {series.length === 0 ? (
-            <p className="text-gray-400">No series available yet.</p>
+            <p className="text-content-muted">No series available yet.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {series.map((s) => {
@@ -65,9 +65,9 @@ export default async function SeriesIndexPage() {
                   <Link
                     key={s._id}
                     href={PAGES.seriesShow(s.slug.current)}
-                    className="group flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#16181D] transition-colors hover:border-primary"
+                    className="group flex flex-col overflow-hidden rounded-3xl border border-edge bg-surface-raised transition-colors hover:border-primary"
                   >
-                    <div className="relative aspect-video w-full overflow-hidden bg-white/5">
+                    <div className="relative aspect-video w-full overflow-hidden bg-overlay">
                       {image && (
                         <Image
                           src={image}
@@ -88,11 +88,11 @@ export default async function SeriesIndexPage() {
                         {s.title}
                       </h2>
                       {s.description && (
-                        <p className="mt-2 line-clamp-2 text-gray-400">
+                        <p className="mt-2 line-clamp-2 text-content-muted">
                           {s.description}
                         </p>
                       )}
-                      <span className="mt-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      <span className="mt-4 text-xs font-semibold uppercase tracking-wider text-content-subtle">
                         {count} {count === 1 ? "episode" : "episodes"}
                       </span>
                     </div>

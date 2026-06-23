@@ -38,7 +38,7 @@ export default function SpotlightSection({ article }: SpotlightSectionProps) {
           <h2 className="shrink-0 text-xs font-bold uppercase tracking-[2px] text-primary">
             Spotlight
           </h2>
-          <span className="h-px flex-1 bg-white/10" />
+          <span className="h-px flex-1 bg-overlay-strong" />
         </div>
 
         <Link
@@ -46,7 +46,7 @@ export default function SpotlightSection({ article }: SpotlightSectionProps) {
           className="group grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center"
         >
           {image && (
-            <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+            <div className="relative aspect-video overflow-hidden rounded-2xl border border-edge bg-overlay">
               <Image
                 src={image}
                 alt={article.coverImage?.alt || article.title}
@@ -58,16 +58,16 @@ export default function SpotlightSection({ article }: SpotlightSectionProps) {
 
           <div>
             {article.issueNumber && (
-              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <span className="text-xs font-semibold uppercase tracking-wider text-content-subtle">
                 From Issue #{article.issueNumber}
               </span>
             )}
-            <h3 className="mt-2 text-3xl md:text-4xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-primary">
+            <h3 className="mt-2 text-3xl md:text-4xl font-bold leading-tight tracking-tight text-content transition-colors group-hover:text-primary">
               {article.title}
             </h3>
             {article.excerpt && (
               <p
-                className="mt-4 text-gray-300"
+                className="mt-4 text-content-secondary"
                 style={{
                   fontFamily: "var(--font-serif)",
                   fontSize: "1.125rem",

@@ -20,7 +20,7 @@ export default function Header() {
   const isDark = theme === "dark";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-transparent backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-edge bg-transparent backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between gap-6">
         {/* Logo */}
         <Link href="/" className="flex items-center shrink-0">
@@ -40,7 +40,7 @@ export default function Header() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-sm font-normal text-gray-300 hover:text-white transition-colors whitespace-nowrap"
+              className="text-sm font-normal text-content-secondary hover:text-content transition-colors whitespace-nowrap"
             >
               {link.label}
             </Link>
@@ -53,7 +53,7 @@ export default function Header() {
           <button
             onClick={toggleTheme}
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            className="items-center justify-center hidden w-9 h-9 rounded-full text-lg text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer"
+            className="flex items-center justify-center w-9 h-9 rounded-full text-lg text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer"
           >
             {isDark ? <IoMoonOutline /> : <IoSunnyOutline />}
           </button>

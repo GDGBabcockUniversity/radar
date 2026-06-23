@@ -120,9 +120,9 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
     <section id="featured" className="latest-issue-section py-16 md:py-20">
       <div className="container">
         {/* ===== Top Row ===== */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-white/10 rounded-sm overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-edge rounded-sm overflow-hidden">
           {/* Left — Latest Issue Card */}
-          <div className="p-8 md:p-10 border-b lg:border-b-0 lg:border-r border-white/10">
+          <div className="p-8 md:p-10 border-b lg:border-b-0 lg:border-r border-edge">
             {/* Header label */}
             <p className="text-xs uppercase tracking-[0.2em] text-(--color-text-muted) mb-6">
               Latest Issue — {issueNumber}
@@ -162,7 +162,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
             )}
 
             {/* Separator */}
-            <div className="h-px bg-white/10 mb-4" />
+            <div className="h-px bg-overlay-strong mb-4" />
 
             {/* Author / meta */}
             <p className="text-xs text-(--color-text-muted) mb-4">
@@ -212,7 +212,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
             </div>
 
             {/* View All */}
-            <div className="mt-6 pt-4 border-t border-white/10">
+            <div className="mt-6 pt-4 border-t border-edge">
               <Link
                 href="#"
                 className="text-xs uppercase tracking-[0.15em] font-semibold text-(--color-text-muted) hover:text-foreground transition-colors"
@@ -224,13 +224,13 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
         </div>
 
         {/* ===== Bottom Row ===== */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-x border-b border-white/10 rounded-b-sm overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-x border-b border-edge rounded-b-sm overflow-hidden">
           {BOTTOM_SECTIONS.map((section, i) => (
             <div
               key={i}
               className={`p-6 md:p-8 ${
                 i < BOTTOM_SECTIONS.length - 1
-                  ? "border-b sm:border-b-0 sm:border-r border-white/10"
+                  ? "border-b sm:border-b-0 sm:border-r border-edge"
                   : ""
               } ${i === 2 ? "sm:border-b lg:border-b-0" : ""}`}
             >
@@ -264,7 +264,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
 
               {/* Card */}
               {section.card && (
-                <div className="border border-white/10 rounded-sm p-4 mt-auto">
+                <div className="border border-edge rounded-sm p-4 mt-auto">
                   <p
                     className="text-[10px] font-bold uppercase tracking-[0.15em] mb-3"
                     style={{ color: section.card.labelColor }}
@@ -274,7 +274,7 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
 
                   {"text" in section.card && section.card.text && (
                     <p
-                      className="text-xs text-gray-400 leading-relaxed italic"
+                      className="text-xs text-content-muted leading-relaxed italic"
                       // style={{
                       //   fontFamily: "var(--font-serif)",
                       //   fontStyle: "italic",
@@ -288,10 +288,10 @@ export default function LatestIssueSection({ posts }: LatestIssueSectionProps) {
                     <div className="flex flex-col gap-3">
                       {section.card.items.map((item, j) => (
                         <div key={j} className="flex items-center gap-3">
-                          <span className="text-xs text-gray-600 font-medium">
+                          <span className="text-xs text-content-subtle font-medium">
                             {item.num}
                           </span>
-                          <span className="text-sm font-semibold text-white">
+                          <span className="text-sm font-semibold text-content">
                             {item.text}
                           </span>
                         </div>

@@ -54,7 +54,7 @@ export default async function PostPage({ params }: PostPageProps) {
   return (
     <>
       <Header />
-      <main className="bg-black min-h-screen">
+      <main className="bg-surface min-h-screen">
         <PostHeader
           title={post.title}
           description={post.description}

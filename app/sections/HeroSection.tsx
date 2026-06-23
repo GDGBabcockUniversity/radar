@@ -41,14 +41,14 @@ export default function HeroSection({ heroHref }: HeroSectionProps) {
 
         {/* Divider + subtitle */}
         <div className="flex flex-col items-center gap-4 mb-10 md:mb-12">
-          <div className="w-64 md:w-80 h-px bg-white/20" />
-          <p className="text-md md:text-lg uppercase tracking-widest text-white font-medium border-y py-2">
+          <div className="w-64 md:w-80 h-px bg-content/20" />
+          <p className="text-md md:text-lg uppercase tracking-widest text-content font-medium border-y py-2">
             The Official Record of the Babcock Tech Ecosystem
           </p>
         </div>
 
         {/* Tagline */}
-        <p className="text-xl md:text-2xl lg:text-3xl italic font-extrabold uppercase leading-snug mb-10 md:mb-12 text-white max-w-2xl">
+        <p className="text-xl md:text-2xl lg:text-3xl italic font-extrabold uppercase leading-snug mb-10 md:mb-12 text-content max-w-2xl">
           Tracking the signals, projects, and people shaping the Babcock tech
           ecosystem.
         </p>

@@ -12,7 +12,7 @@ export default function SectionHeading({
       <h2 className="shrink-0 text-xs font-bold uppercase tracking-[2px] text-primary">
         {children}
       </h2>
-      <span className="h-px flex-1 bg-white/10" />
+      <span className="h-px flex-1 bg-overlay-strong" />
     </div>
   );
 }

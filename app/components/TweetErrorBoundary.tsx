@@ -28,7 +28,7 @@ export class TweetErrorBoundary extends React.Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return this.props.fallback || (
-        <div className="my-6 p-4 border border-white/10 bg-white/5 text-gray-400 rounded-lg text-center text-sm max-w-lg mx-auto">
+        <div className="my-6 p-4 border border-edge bg-overlay text-content-muted rounded-lg text-center text-sm max-w-lg mx-auto">
           Embedded tweet could not be loaded. It may have been deleted.
         </div>
       );
