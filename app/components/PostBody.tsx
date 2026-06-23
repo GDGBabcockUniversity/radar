@@ -217,10 +217,11 @@ const components: PortableTextComponents = {
     ),
     normal: ({ children }) => (
       <div
-        className="text-gray-300 leading-relaxed mb-5"
+        className="text-gray-200 mb-6"
         style={{
-          fontSize: "1rem",
-          lineHeight: 1.75,
+          fontFamily: "var(--font-serif)",
+          fontSize: "1.1875rem",
+          lineHeight: 1.8,
         }}
       >
         {children}
@@ -236,9 +237,10 @@ const components: PortableTextComponents = {
 
       return (
         <blockquote
-          className="border-l-4 pl-5 my-6 italic text-gray-400"
+          className="border-l-4 pl-5 my-8 italic text-gray-300"
           style={{
-            fontSize: "1rem",
+            fontFamily: "var(--font-serif)",
+            fontSize: "1.3125rem",
             lineHeight: 1.6,
             borderColor,
           }}
@@ -250,12 +252,18 @@ const components: PortableTextComponents = {
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="list-disc list-inside text-gray-300 mb-5 space-y-1.5 ml-2">
+      <ul
+        className="list-disc list-outside text-gray-200 mb-6 space-y-2 pl-6"
+        style={{ fontFamily: "var(--font-serif)", fontSize: "1.1875rem", lineHeight: 1.8 }}
+      >
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="list-decimal list-inside text-gray-300 mb-5 space-y-1.5 ml-2">
+      <ol
+        className="list-decimal list-outside text-gray-200 mb-6 space-y-2 pl-6"
+        style={{ fontFamily: "var(--font-serif)", fontSize: "1.1875rem", lineHeight: 1.8 }}
+      >
         {children}
       </ol>
     ),
@@ -407,7 +415,7 @@ const components: PortableTextComponents = {
 
 export default function PostBody({ body }: PostBodyProps) {
   return (
-    <article className="max-w-4xl py-8">
+    <article className="py-8 max-w-[68ch]">
       <PortableText value={body} components={components} />
     </article>
   );

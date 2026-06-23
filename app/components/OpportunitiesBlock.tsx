@@ -1,3 +1,5 @@
+import SectionHeading from "./SectionHeading";
+
 export interface OpportunityItem {
   title: string;
   type: string;
@@ -24,11 +26,9 @@ export default function OpportunitiesBlock({
   if (!opportunities || opportunities.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-16">
+    <section id="opportunities" className="py-12 md:py-16 scroll-mt-24">
       <div className="container">
-        <h2 className="mb-8 text-2xl md:text-3xl font-bold text-white">
-          Opportunity Drop
-        </h2>
+        <SectionHeading>Opportunity Drop</SectionHeading>
         <div className="flex flex-col gap-3">
           {opportunities.map((opp, i) => {
             const deadline = formatDeadline(opp.deadline);

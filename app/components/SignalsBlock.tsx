@@ -1,3 +1,5 @@
+import SectionHeading from "./SectionHeading";
+
 export interface SignalItem {
   label: "WIN" | "LAUNCH" | "WATCH" | "SHIFT";
   headline: string;
@@ -17,11 +19,9 @@ export default function SignalsBlock({ signals }: { signals?: SignalItem[] }) {
   if (!signals || signals.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-16">
+    <section id="signals" className="py-12 md:py-16 scroll-mt-24">
       <div className="container">
-        <h2 className="mb-8 text-2xl md:text-3xl font-bold text-white">
-          Signals This Month
-        </h2>
+        <SectionHeading>Signals This Month</SectionHeading>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {signals.map((signal, i) => {
             const color = LABEL_COLORS[signal.label] ?? "#ea4335";

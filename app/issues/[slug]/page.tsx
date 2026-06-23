@@ -6,8 +6,12 @@ import { getIssue, urlFor } from "@/app/lib/sanity";
 import { buildOgMetadata } from "@/app/lib/metadata";
 import { PAGES } from "@/app/lib/constants";
 import { SECTION_TITLES, type SectionValue } from "@/app/lib/sections";
+import Link from "next/link";
 import { Header, Footer, ShareButtons } from "@/app/components";
-import IssueSection, { type IssueArticle } from "@/app/components/IssueSection";
+import IssueSection, {
+  type IssueArticle,
+  articleAnchor,
+} from "@/app/components/IssueSection";
 import SignalsBlock from "@/app/components/SignalsBlock";
 import OpportunitiesBlock from "@/app/components/OpportunitiesBlock";
 import { NewsletterSection } from "@/app/sections";
@@ -54,11 +58,32 @@ export default async function IssuePage({ params }: IssuePageProps) {
     (a) => !placed.has(a.section as SectionValue),
   );
 
+  // "In this issue" contents, in render order. Embedded blocks (signals,
+  // opportunities) link to their section anchors; article rows link to the
+  // per-article anchor set by IssueSection.
+  const contents: {
+    label: string;
+    anchor?: string;
+    items: IssueArticle[];
+  }[] = [
+    { label: SECTION_TITLES.openingNote, items: opening },
+    ...(issue.signals?.length
+      ? [{ label: "Signals This Month", anchor: "#signals", items: [] }]
+      : []),
+    { label: SECTION_TITLES.spotlight, items: spotlight },
+    ...(issue.opportunities?.length
+      ? [{ label: "Opportunity Drop", anchor: "#opportunities", items: [] }]
+      : []),
+    { label: SECTION_TITLES.ecosystemBrief, items: ecosystem },
+    { label: SECTION_TITLES.alumniSpotlight, items: alumni },
+    { label: "More from this issue", items: more },
+  ].filter((c) => c.anchor || c.items.length > 0);
+
   return (
     <>
       <Header />
       <main className="bg-black min-h-screen">
-        {/* 1. Issue header */}
+        {/* 1. Issue masthead */}
         <header className="relative">
           {issue.coverImage?.asset ? (
             <div className="relative aspect-video md:aspect-21/9 w-full overflow-hidden">
@@ -72,15 +97,22 @@ export default async function IssuePage({ params }: IssuePageProps) {
               <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-transparent" />
               <div className="absolute inset-0 flex flex-col justify-end">
                 <div className="container pb-8 md:pb-12">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                    Issue #{issue.issueNumber}
+                  <span className="text-xs font-semibold uppercase tracking-[2px] text-primary">
+                    RADAR · Issue #{issue.issueNumber}
                     {date ? ` · ${date}` : ""}
                   </span>
-                  <h1 className="mt-2 max-w-3xl text-3xl md:text-5xl font-bold leading-tight text-white">
+                  <h1 className="mt-3 max-w-3xl text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight text-white">
                     {issue.title}
                   </h1>
                   {issue.excerpt && (
-                    <p className="mt-3 max-w-2xl text-sm md:text-base text-gray-300">
+                    <p
+                      className="mt-4 max-w-2xl text-gray-200"
+                      style={{
+                        fontFamily: "var(--font-serif)",
+                        fontSize: "1.25rem",
+                        lineHeight: 1.6,
+                      }}
+                    >
                       {issue.excerpt}
                     </p>
                   )}
@@ -88,16 +120,23 @@ export default async function IssuePage({ params }: IssuePageProps) {
               </div>
             </div>
           ) : (
-            <div className="container pt-12 pb-8">
-              <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                Issue #{issue.issueNumber}
+            <div className="container pt-12 pb-8 border-b border-white/10">
+              <span className="text-xs font-semibold uppercase tracking-[2px] text-primary">
+                RADAR · Issue #{issue.issueNumber}
                 {date ? ` · ${date}` : ""}
               </span>
-              <h1 className="mt-2 max-w-3xl text-3xl md:text-5xl font-bold leading-tight text-white">
+              <h1 className="mt-3 max-w-3xl text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight text-white">
                 {issue.title}
               </h1>
               {issue.excerpt && (
-                <p className="mt-3 max-w-2xl text-sm md:text-base text-gray-300">
+                <p
+                  className="mt-4 max-w-2xl text-gray-200"
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: "1.25rem",
+                    lineHeight: 1.6,
+                  }}
+                >
                   {issue.excerpt}
                 </p>
               )}
@@ -105,9 +144,57 @@ export default async function IssuePage({ params }: IssuePageProps) {
           )}
         </header>
 
-        <div className="container pt-6">
+        <div className="container flex flex-wrap items-center justify-between gap-4 pt-6">
           <ShareButtons path={path} title={issue.title} />
         </div>
+
+        {/* In this issue — contents */}
+        {contents.length > 0 && (
+          <nav className="container mt-10" aria-label="In this issue">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-[2px] text-gray-500">
+              In this issue
+            </h2>
+            <ol className="grid grid-cols-1 gap-x-10 gap-y-4 border-t border-white/10 pt-6 sm:grid-cols-2">
+              {contents.map((entry) => {
+                const sectionHref =
+                  entry.anchor ??
+                  (entry.items[0]
+                    ? `#${articleAnchor(entry.items[0]._id)}`
+                    : undefined);
+                return (
+                  <li key={entry.label}>
+                    {sectionHref ? (
+                      <Link
+                        href={sectionHref}
+                        className="text-sm font-bold uppercase tracking-wider text-primary hover:text-primary-hover transition-colors"
+                      >
+                        {entry.label}
+                      </Link>
+                    ) : (
+                      <span className="text-sm font-bold uppercase tracking-wider text-primary">
+                        {entry.label}
+                      </span>
+                    )}
+                    {entry.items.length > 0 && (
+                      <ul className="mt-2 space-y-1.5">
+                        {entry.items.map((a) => (
+                          <li key={a._id}>
+                            <Link
+                              href={`#${articleAnchor(a._id)}`}
+                              className="text-gray-300 hover:text-white transition-colors"
+                            >
+                              {a.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
+        )}
 
         {/* 2. Opening Note */}
         <IssueSection
