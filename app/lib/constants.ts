@@ -25,10 +25,23 @@ export const PAGES = {
   home: "/",
   team: "/team",
   series: "/series",
+  about: "/about",
+  issues: "/issues",
   post: (slug: string) => `/posts/${slug}`,
+  issue: (slug: string) => `/issues/${slug}`,
+  article: (slug: string) => `/articles/${slug}`,
+  author: (slug: string) => `/team/${slug}`,
+  seriesShow: (slug: string) => `/series/${slug}`,
+  episode: (seriesSlug: string, slug: string) =>
+    `/series/${seriesSlug}/${slug}`,
 };
 
 export const LINKS = {
   youtubePlaylist: "https://www.youtube.com/playlist?list=PLtUz78Yj1nzl2DRvEzS5raH_Jabh0fZ6S",
   contactEmail: "mailto:gdgbabcock@gmail.com",
 };
+
+// Cadence copy lives here so growing monthly -> bi-weekly -> weekly is a
+// one-line edit, not a hunt through JSX.
+export const CADENCE_TAGLINE =
+  "Issues monthly. Series weekly. Signals continuously.";

@@ -115,48 +115,453 @@ export async function getTeamMembers() {
   );
 }
 
-// Fetch all series groups along with their series
-export async function getSeriesGroups() {
+// Shared projection for an episode in list/card contexts.
+const EPISODE_CARD_FIELDS = `
+  _id,
+  title,
+  slug,
+  excerpt,
+  youtubeUrl,
+  coverImage,
+  publishedAt,
+  episodeNumber,
+  "series": series->{ title, slug },
+  "author": author->{ name, slug, image }
+`;
+
+// All series (shows), each with its episodes. Active shows first.
+export async function getSeriesList() {
   return client.fetch(
     `
-    *[_type == "seriesGroup"] | order(title asc) {
+    *[_type == "series"] | order(order asc, title asc) {
       _id,
       title,
       slug,
       description,
-      "series": *[_type == "series" && references(^._id)] | order(publishedAt desc) {
-        _id,
-        title,
-        slug,
-        youtubeUrl,
-        publishedAt,
-        mainImage,
-        "author": author->{ name, image }
-      }
+      coverImage,
+      status,
+      "episodes": *[_type == "episode" && references(^._id)]
+        | order(episodeNumber asc, publishedAt desc) {
+          ${EPISODE_CARD_FIELDS}
+        }
     }
     `,
     {},
-    { next: { revalidate: 60 } }
+    { next: { revalidate: 60 } },
   );
 }
 
-// Fetch a single series by slug
-export async function getSeriesPost(slug: string) {
+// One series (show) by slug + its episodes (reverse query, like getIssue).
+export async function getSeries(slug: string) {
   return client.fetch(
     `
     *[_type == "series" && slug.current == $slug][0] {
       _id,
       title,
       slug,
-      "group": group->{ title, slug },
-      youtubeUrl,
-      publishedAt,
-      mainImage,
-      body,
-      "author": author->{ name, image, bio }
+      description,
+      coverImage,
+      status,
+      "episodes": *[_type == "episode" && references(^._id)]
+        | order(episodeNumber asc, publishedAt desc) {
+          ${EPISODE_CARD_FIELDS}
+        }
     }
     `,
     { slug },
-    { next: { revalidate: 60 } }
+    { next: { revalidate: 60 } },
+  );
+}
+
+// A single episode by slug, with its series context and author.
+export async function getEpisode(slug: string) {
+  return client.fetch(
+    `
+    *[_type == "episode" && slug.current == $slug][0] {
+      _id,
+      title,
+      slug,
+      excerpt,
+      youtubeUrl,
+      coverImage,
+      publishedAt,
+      episodeNumber,
+      body,
+      "series": series->{ title, slug },
+      "author": author->{ name, slug, image, bio, role }
+    }
+    `,
+    { slug },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Latest episodes across all series, for the homepage Series pillar.
+export async function getLatestEpisodes(limit = 3) {
+  return client.fetch(
+    `
+    *[_type == "episode"] | order(publishedAt desc)[0...$limit] {
+      ${EPISODE_CARD_FIELDS}
+    }
+    `,
+    { limit },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// The latest issue's Spotlight article, for the homepage Spotlight block.
+// Spotlight is an issue section (not the series) — this surfaces that piece.
+export async function getHomeSpotlight() {
+  return client.fetch(
+    `*[_type == "issue"] | order(issueNumber desc)[0]{
+      "article": *[_type == "article" && references(^._id) && section == "spotlight"]
+        | order(order asc, publishedAt asc)[0]{
+          _id,
+          title,
+          slug,
+          excerpt,
+          coverImage,
+          publishedAt,
+          "issueNumber": ^.issueNumber,
+          "issueTitle": ^.title,
+          "authors": authors[]->{ name, slug, image }
+        }
+    }.article`,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+// The active/featured series for the homepage pillar (first active show).
+export async function getFeaturedSeries() {
+  return client.fetch(
+    `
+    *[_type == "series" && status == "active"] | order(order asc, title asc)[0] {
+      _id,
+      title,
+      slug,
+      description,
+      coverImage,
+      status
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  New publication model: issues, articles, authors                  */
+/* ------------------------------------------------------------------ */
+
+// Shared projection for an article when listed (card / byline contexts).
+const ARTICLE_CARD_FIELDS = `
+  _id,
+  title,
+  slug,
+  section,
+  excerpt,
+  coverImage,
+  publishedAt,
+  order,
+  "authors": authors[]->{ name, slug, image }
+`;
+
+// One full issue + its embedded signals/opportunities + all articles that
+// reference it (reverse query), ready to be grouped by section on the page.
+export async function getIssue(slug: string) {
+  return client.fetch(
+    `
+    *[_type == "issue" && slug.current == $slug][0]{
+      _id,
+      issueNumber,
+      title,
+      slug,
+      publishedAt,
+      coverImage,
+      excerpt,
+      signals,
+      opportunities,
+      "articles": *[_type == "article" && references(^._id)]
+        | order(section asc, order asc, publishedAt asc){
+          ${ARTICLE_CARD_FIELDS}
+        }
+    }
+    `,
+    { slug },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Single article by slug, with full author list and issue context.
+export async function getArticle(slug: string) {
+  return client.fetch(
+    `
+    *[_type == "article" && slug.current == $slug][0]{
+      _id,
+      title,
+      slug,
+      section,
+      excerpt,
+      coverImage,
+      publishedAt,
+      body,
+      "issue": issue->{ title, slug, issueNumber },
+      "authors": authors[]->{ name, slug, image, bio, role }
+    }
+    `,
+    { slug },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Author profile + every article referencing them (reverse reference).
+export async function getAuthor(slug: string) {
+  return client.fetch(
+    `
+    *[_type == "author" && slug.current == $slug][0]{
+      _id,
+      name,
+      slug,
+      image,
+      bio,
+      role,
+      course,
+      socials,
+      songObsession,
+      tabsCurrentlyOpen,
+      currentlyLearning,
+      unpopularOpinion,
+      techPhilosophy,
+      "articles": *[_type == "article" && references(^._id)]
+        | order(publishedAt desc){
+          _id,
+          title,
+          slug,
+          section,
+          excerpt,
+          coverImage,
+          publishedAt,
+          "issue": issue->{ title, slug, issueNumber }
+        }
+    }
+    `,
+    { slug },
+    { next: { revalidate: 60 } },
+  );
+}
+
+// All authors for the team page (only those meant to be shown — has a role).
+// External bylines without a role are excluded so they don't surface on /team.
+export async function getAuthors() {
+  return client.fetch(
+    `
+    *[_type == "author" && defined(role)] | order(order asc, name asc){
+      _id,
+      name,
+      slug,
+      image,
+      bio,
+      role,
+      course,
+      socials,
+      songObsession,
+      tabsCurrentlyOpen,
+      currentlyLearning,
+      unpopularOpinion,
+      techPhilosophy
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Map the legacy teamMember.socialLinks object -> labelled socials[] array so
+// legacy docs render with the same UI as consolidated authors.
+const LEGACY_SOCIAL_LABELS: Record<string, string> = {
+  email: "Email",
+  medium: "Medium",
+  substack: "Substack",
+  x: "X",
+  instagram: "Instagram",
+  snapchat: "Snapchat",
+};
+
+// Unified team roster for /team: consolidated `author` docs first, plus any
+// legacy `teamMember` docs not yet migrated, normalised to the author shape.
+// Legacy entries intentionally carry no slug, since they have no author profile
+// page yet. Remove the teamMember branch once the migration has been run.
+export async function getTeamRoster() {
+  const [authors, teamMembers] = await Promise.all([
+    getAuthors(),
+    client.fetch(
+      `
+      *[_type == "teamMember"] | order(order asc, name asc){
+        _id, name, slug, role, course, image, socialLinks,
+        songObsession, tabsCurrentlyOpen, currentlyLearning,
+        unpopularOpinion, techPhilosophy
+      }
+      `,
+      {},
+      { next: { revalidate: 60 } },
+    ),
+  ]);
+
+  // Skip legacy docs already represented as an author (matched by slug, name).
+  const seen = new Set<string>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  for (const a of authors as any[]) {
+    if (a.slug?.current) seen.add(`slug:${a.slug.current}`);
+    if (a.name) seen.add(`name:${a.name.toLowerCase()}`);
+  }
+
+  const legacy = (teamMembers as TeamMemberDoc[])
+    .filter(
+      (tm) =>
+        !(tm.slug?.current && seen.has(`slug:${tm.slug.current}`)) &&
+        !(tm.name && seen.has(`name:${tm.name.toLowerCase()}`)),
+    )
+    .map((tm) => ({
+      _id: tm._id,
+      name: tm.name,
+      role: tm.role,
+      course: tm.course,
+      image: tm.image,
+      songObsession: tm.songObsession,
+      tabsCurrentlyOpen: tm.tabsCurrentlyOpen,
+      currentlyLearning: tm.currentlyLearning,
+      unpopularOpinion: tm.unpopularOpinion,
+      techPhilosophy: tm.techPhilosophy,
+      socials: tm.socialLinks
+        ? Object.entries(LEGACY_SOCIAL_LABELS)
+            .filter(([key]) => tm.socialLinks?.[key])
+            .map(([key, label]) => ({ label, url: tm.socialLinks![key]! }))
+        : undefined,
+    }));
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return [...(authors as any[]), ...legacy];
+}
+
+interface TeamMemberDoc {
+  _id: string;
+  name: string;
+  slug?: { current: string };
+  role?: string;
+  course?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  image?: any;
+  socialLinks?: Record<string, string>;
+  songObsession?: string;
+  tabsCurrentlyOpen?: string;
+  currentlyLearning?: string;
+  unpopularOpinion?: string;
+  techPhilosophy?: string;
+}
+
+// The latest issue (highest issue number), for the home featured slot.
+export async function getLatestIssue() {
+  return client.fetch(
+    `
+    *[_type == "issue"] | order(issueNumber desc)[0]{
+      _id,
+      issueNumber,
+      title,
+      slug,
+      publishedAt,
+      coverImage,
+      excerpt
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Unified archive: new issues + legacy posts, normalised into one shape so the
+// home/archive listing can render both eras together (newest first).
+export async function getArchive() {
+  return client.fetch(
+    `
+    *[
+      (_type == "issue") ||
+      (_type == "post" && hidden != true)
+    ] | order(coalesce(publishedAt, _createdAt) desc){
+      _id,
+      _type,
+      "kind": _type,
+      title,
+      slug,
+      publishedAt,
+      issueNumber,
+      "excerpt": coalesce(excerpt, description),
+      "image": coalesce(coverImage, mainImage)
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+interface SitemapEntry {
+  slug: string;
+  updated: string;
+  seriesSlug?: string;
+}
+
+// All content slugs + last-modified times, grouped by type, for the sitemap.
+export async function getSitemapEntries(): Promise<{
+  issues: SitemapEntry[];
+  articles: SitemapEntry[];
+  series: SitemapEntry[];
+  episodes: SitemapEntry[];
+  authors: SitemapEntry[];
+  posts: SitemapEntry[];
+}> {
+  return client.fetch(
+    `{
+      "issues": *[_type == "issue" && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt },
+      "articles": *[_type == "article" && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt },
+      "series": *[_type == "series" && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt },
+      "episodes": *[_type == "episode" && defined(slug.current) && defined(series->slug.current)]{ "slug": slug.current, "seriesSlug": series->slug.current, "updated": _updatedAt },
+      "authors": *[_type == "author" && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt },
+      "posts": *[_type == "post" && hidden != true && defined(slug.current)]{ "slug": slug.current, "updated": _updatedAt }
+    }`,
+    {},
+    { next: { revalidate: 3600 } },
+  );
+}
+
+interface FeedItem {
+  _type: string;
+  title: string;
+  slug: string;
+  seriesSlug?: string;
+  excerpt?: string;
+  publishedAt?: string;
+  _createdAt: string;
+}
+
+// Newest content across all pillars (issues, articles, episodes, legacy posts)
+// for the RSS feed, normalised so each can build its own URL.
+export async function getFeedItems(limit = 30): Promise<FeedItem[]> {
+  return client.fetch(
+    `*[
+      (_type == "issue") ||
+      (_type == "article") ||
+      (_type == "episode") ||
+      (_type == "post" && hidden != true)
+    ] | order(coalesce(publishedAt, _createdAt) desc)[0...$limit]{
+      _type,
+      title,
+      "slug": slug.current,
+      "seriesSlug": series->slug.current,
+      "excerpt": coalesce(excerpt, description),
+      publishedAt,
+      _createdAt
+    }`,
+    { limit },
+    { next: { revalidate: 3600 } },
   );
 }

@@ -1,94 +1,90 @@
 import Image from "next/image";
-import { Button } from "../components";
-import { LINKS } from "../lib/constants";
+import Link from "next/link";
+import { urlFor } from "../lib/sanity";
+import { PAGES } from "../lib/constants";
+import { Byline } from "../components";
+import type { BylineAuthor } from "../components/Byline";
 
-const TAGS = [
-  "Weekly",
-  "Video + Write-Up",
-  "Graduation Countdown",
-  "YouTube Launch",
-];
+interface SpotlightArticle {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  excerpt?: string;
+  publishedAt?: string;
+  issueNumber?: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  coverImage?: any;
+  authors?: BylineAuthor[];
+}
 
-export default function SpotlightSection() {
+interface SpotlightSectionProps {
+  article?: SpotlightArticle | null;
+}
+
+// Homepage Spotlight — the lead Spotlight article from the latest issue.
+// (Spotlight is an issue section, distinct from the Series pillar below.)
+export default function SpotlightSection({ article }: SpotlightSectionProps) {
+  if (!article) return null;
+
+  const href = PAGES.article(article.slug.current);
+  const image = article.coverImage?.asset
+    ? urlFor(article.coverImage).width(1200).height(800).url()
+    : null;
+
   return (
     <section className="spotlight-section py-16 md:py-24">
       <div className="container">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Left — Text content */}
-          <div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5">
-              Class of 2026 <span className="text-[#e84a35]">Spotlight</span>
-            </h2>
-
-            <p className="text-sm md:text-base text-gray-300 leading-relaxed mb-8 max-w-lg">
-              A weekly graduation countdown series featuring short videos and
-              write-ups from the graduating class. It keeps RADAR active between
-              issues and launches the publication&apos;s YouTube presence.
-            </p>
-
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-8">
-              {TAGS.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-semibold uppercase tracking-wider text-gray-300"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#e84a35]" />
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            {/* CTA */}
-            <Button
-              variant="primary"
-              size="md"
-              href={LINKS.youtubePlaylist}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gdg-red hover:bg-gdg-red text-white"
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="opacity-90"
-              >
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              Watch the Series
-            </Button>
-          </div>
-
-          {/* Right — Video thumbnail */}
-          <a
-            href={LINKS.youtubePlaylist}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative aspect-video rounded-xl overflow-hidden group cursor-pointer block"
-          >
-            <Image
-              src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&h=450&fit=crop"
-              width={800}
-              height={450}
-              alt="Class of 2026 Spotlight"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-
-            {/* Dark overlay */}
-            <div className="absolute inset-0 bg-black/30 transition-opacity group-hover:bg-black/20" />
-
-            {/* YouTube play button */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-16 h-11 bg-[#FF0000] rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-            </div>
-          </a>
+        <div className="mb-8 flex items-center gap-4">
+          <h2 className="shrink-0 text-xs font-bold uppercase tracking-[2px] text-primary">
+            Spotlight
+          </h2>
+          <span className="h-px flex-1 bg-white/10" />
         </div>
+
+        <Link
+          href={href}
+          className="group grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center"
+        >
+          {image && (
+            <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+              <Image
+                src={image}
+                alt={article.coverImage?.alt || article.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+          )}
+
+          <div>
+            {article.issueNumber && (
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                From Issue #{article.issueNumber}
+              </span>
+            )}
+            <h3 className="mt-2 text-3xl md:text-4xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-primary">
+              {article.title}
+            </h3>
+            {article.excerpt && (
+              <p
+                className="mt-4 text-gray-300"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "1.125rem",
+                  lineHeight: 1.7,
+                }}
+              >
+                {article.excerpt}
+              </p>
+            )}
+            <Byline
+              authors={article.authors}
+              publishedAt={article.publishedAt}
+              showAvatars={false}
+              className="mt-5"
+            />
+          </div>
+        </Link>
       </div>
     </section>
   );

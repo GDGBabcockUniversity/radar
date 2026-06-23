@@ -1,16 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
-import { IMAGES, LINKS } from "../lib/constants";
+import { IMAGES, LINKS, PAGES, CADENCE_TAGLINE } from "../lib/constants";
 
 const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Team", href: "/team" },
-  { label: "Issues", href: "#issues" },
-  { label: "Series", href: LINKS.youtubePlaylist },
+  { label: "Home", href: PAGES.home },
+  { label: "Issues", href: PAGES.issues },
+  { label: "Series", href: PAGES.series },
+  { label: "About", href: PAGES.about },
+  { label: "Team", href: PAGES.team },
 ];
 
 const CONNECT_LINKS = [
-  { label: "Submit a Signal", href: "#" },
+  { label: "Submit a Signal", href: LINKS.contactEmail },
   { label: "Contact", href: LINKS.contactEmail },
 ];
 
@@ -131,7 +132,7 @@ export default function Footer() {
               Stay in the Loop
             </h4>
             <p className="text-sm text-gray-400 leading-relaxed mb-4">
-              Issues monthly. Series weekly. Signals continuously.
+              {CADENCE_TAGLINE}
             </p>
 
             {/* GDG Color Bars */}

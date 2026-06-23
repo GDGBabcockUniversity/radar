@@ -3,16 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import Button from "./Button";
-import { IMAGES, LINKS } from "../lib/constants";
+import { IMAGES, PAGES, LINKS } from "../lib/constants";
 import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
 import { useTheme } from "./ThemeProvider";
 
 const NAV_LINKS = [
-  { label: "Issues", href: "#issues" },
-  { label: "Series", href: LINKS.youtubePlaylist },
-  { label: "About", href: "#" },
-  { label: "Team", href: "/team" },
-  { label: "Submit a Signal", href: "#" },
+  { label: "Issues", href: PAGES.issues },
+  { label: "Series", href: PAGES.series },
+  { label: "About", href: PAGES.about },
+  { label: "Team", href: PAGES.team },
+  { label: "Submit a Signal", href: LINKS.contactEmail },
 ];
 
 export default function Header() {
@@ -59,7 +59,7 @@ export default function Header() {
           </button>
 
           {/* Subscribe Button */}
-          <Button variant="blue" size="sm" href="#subscribe">
+          <Button variant="blue" size="sm" href="/#subscribe">
             Subscribe
           </Button>
         </div>

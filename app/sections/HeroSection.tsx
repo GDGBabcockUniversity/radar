@@ -3,10 +3,10 @@ import { Button } from "../components";
 import { IMAGES, LINKS } from "../lib/constants";
 
 interface HeroSectionProps {
-  latestIssueSlug?: string;
+  heroHref?: string;
 }
 
-export default function HeroSection({ latestIssueSlug }: HeroSectionProps) {
+export default function HeroSection({ heroHref }: HeroSectionProps) {
   return (
     <section className="hero-section relative overflow-hidden flex flex-col items-center justify-center text-center min-h-[90vh] px-4">
       {/* Radar signal background image */}
@@ -58,7 +58,7 @@ export default function HeroSection({ latestIssueSlug }: HeroSectionProps) {
           <Button
             variant="blue"
             size="md"
-            href={latestIssueSlug ? `/posts/${latestIssueSlug}` : "#featured"}
+            href={heroHref ?? "#featured"}
             showArrow
           >
             Read Latest Issue
