@@ -19,6 +19,11 @@ export const CREDENTIALS = {
 
   upstash_redis_rest_url: process.env.UPSTASH_REDIS_REST_URL!,
   upstash_redis_rest_token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+
+  // Shared GDG auth service (optional — engagement stays anonymous until set).
+  auth_api_url: process.env.AUTH_API_URL,
+  auth_jwt_secret: process.env.AUTH_JWT_SECRET,
+  auth_cookie_name: process.env.AUTH_COOKIE_NAME || "gdg_token",
 };
 
 export const PAGES = {
