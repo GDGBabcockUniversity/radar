@@ -471,7 +471,10 @@ export async function getLatestIssue() {
       slug,
       publishedAt,
       coverImage,
-      excerpt
+      excerpt,
+      signals,
+      opportunities,
+      editorial
     }
     `,
     {},

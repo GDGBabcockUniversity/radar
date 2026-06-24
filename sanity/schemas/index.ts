@@ -9,6 +9,7 @@ import issue from "./issue";
 import article from "./article";
 import signalItem from "./signalItem";
 import opportunityItem from "./opportunityItem";
+import editorial from "./editorial";
 
 export const schemaTypes = [
   // New publication model
@@ -17,6 +18,7 @@ export const schemaTypes = [
   author,
   signalItem,
   opportunityItem,
+  editorial,
   // Shared
   blockContent,
   category,

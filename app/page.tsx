@@ -46,7 +46,7 @@ export default async function Home() {
       <Header />
       <main>
         <HeroSection heroHref={heroHref} />
-        <LatestIssueSection posts={posts} />
+        <LatestIssueSection posts={posts} issue={latestIssue} />
         <SpotlightSection article={spotlight} />
         <SeriesSection series={featuredSeries} episodes={latestEpisodes} />
         <PastEditionsSection entries={archive} />
