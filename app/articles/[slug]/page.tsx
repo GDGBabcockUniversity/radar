@@ -14,6 +14,7 @@ import {
   PostBody,
   Byline,
   ShareButtons,
+  ReadingTracker,
 } from "@/app/components";
 import { NewsletterSection } from "@/app/sections";
 
@@ -36,6 +37,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <>
       <Header />
+      <ReadingTracker slug={path} />
       <main className="bg-surface min-h-screen">
         <PostHeader
           title={article.title}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "../lib/track";
 
 interface Question {
   id: number;
@@ -471,6 +472,10 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
     }
 
     setResult(results[finalResultKey]);
+    track("game.played", {
+      gameId: `quiz:${quizId ?? "unknown"}`,
+      resultKey: finalResultKey,
+    });
 
     // Custom pure DOM confetti
     const container = document.createElement("div");

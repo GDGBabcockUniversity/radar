@@ -9,6 +9,7 @@ import PostBody from "@/app/components/PostBody";
 import TableOfContents from "@/app/components/TableOfContents";
 import RelatedPosts from "@/app/components/RelatedPosts";
 import ViewCounter from "@/app/components/ViewCounter";
+import ReadingTracker from "@/app/components/ReadingTracker";
 import { NewsletterSection } from "@/app/sections";
 
 interface PostPageProps {
@@ -54,6 +55,7 @@ export default async function PostPage({ params }: PostPageProps) {
   return (
     <>
       <Header />
+      <ReadingTracker slug={`/posts/${slug}`} />
       <main className="bg-surface min-h-screen">
         <PostHeader
           title={post.title}

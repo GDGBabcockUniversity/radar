@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { track } from "../lib/track";
 
 // Puzzle data for "new-year-new-lies"
 // Grid: 25 columns × 19 rows (converted to 0-based indexing)
@@ -257,6 +258,15 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
     }
     return true;
   }, [grid]);
+
+  // Report completion once (engagement tracking).
+  const reportedComplete = useRef(false);
+  useEffect(() => {
+    if (isComplete && !reportedComplete.current) {
+      reportedComplete.current = true;
+      track("game.played", { gameId: `crossword:${puzzleId}`, solved: true });
+    }
+  }, [isComplete, puzzleId]);
 
   const handleCellInput = (row: number, col: number, value: string) => {
     if (grid[row][col].isBlocked) return;
