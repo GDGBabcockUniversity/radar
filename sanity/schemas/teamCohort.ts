@@ -54,6 +54,51 @@ export default defineType({
               description: "Lower numbers appear first.",
               initialValue: 0,
             }),
+            defineField({
+              name: "course",
+              title: "Course (this year)",
+              type: "string",
+              description: "e.g. Computer Science. Frozen for this year.",
+            }),
+            defineField({
+              name: "image",
+              title: "Photo (this year)",
+              type: "image",
+              description:
+                "Optional per-year photo. Falls back to the author's main photo.",
+              options: { hotspot: true },
+              fields: [{ name: "alt", type: "string", title: "Alternative Text" }],
+            }),
+            // Personality snapshot — frozen per year.
+            defineField({
+              name: "songObsession",
+              title: "New Song Obsession",
+              type: "string",
+            }),
+            defineField({
+              name: "tabsCurrentlyOpen",
+              title: "Tabs Currently Open",
+              type: "text",
+              rows: 2,
+            }),
+            defineField({
+              name: "currentlyLearning",
+              title: "What I'm Learning Right Now",
+              type: "text",
+              rows: 3,
+            }),
+            defineField({
+              name: "unpopularOpinion",
+              title: "Unpopular Dev Opinion / Hot Take",
+              type: "text",
+              rows: 3,
+            }),
+            defineField({
+              name: "techPhilosophy",
+              title: "Tech Philosophy",
+              type: "text",
+              rows: 3,
+            }),
           ],
           preview: {
             select: {

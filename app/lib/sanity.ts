@@ -460,6 +460,30 @@ interface TeamMemberDoc {
   techPhilosophy?: string;
 }
 
+// Every author who has ever published — bylined on an article or a legacy post,
+// regardless of team/cohort membership. The permanent, ever-growing record of
+// contributors (past and present). Ordered by name.
+export async function getContributors() {
+  return client.fetch(
+    `
+    *[_type == "author" && (
+      count(*[_type == "article" && references(^._id)]) +
+      count(*[_type == "post" && references(^._id)]) > 0
+    )] | order(name asc){
+      _id,
+      name,
+      slug,
+      image,
+      role,
+      "count": count(*[_type == "article" && references(^._id)]) +
+               count(*[_type == "post" && references(^._id)])
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
 // All team cohorts, newest first — for the team-page year switcher.
 export async function getTeamCohorts(): Promise<
   { _id: string; label: string; startYear: number }[]
@@ -484,6 +508,13 @@ export async function getTeamCohort(label?: string) {
         "members": members[]{
           role,
           order,
+          course,
+          image,
+          songObsession,
+          tabsCurrentlyOpen,
+          currentlyLearning,
+          unpopularOpinion,
+          techPhilosophy,
           "author": author->{
             _id, name, slug, image, course, socials,
             songObsession, tabsCurrentlyOpen, currentlyLearning,
@@ -505,9 +536,18 @@ export async function getTeamCohort(label?: string) {
     .filter((m: any) => m.author)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .map((m: any) => ({
+      // Author is the permanent identity; per-year fields override it (with a
+      // fallback to the author level for not-yet-migrated cohorts).
       ...m.author,
       role: m.role ?? m.author.role,
       order: m.order ?? 0,
+      course: m.course ?? m.author.course,
+      image: m.image ?? m.author.image,
+      songObsession: m.songObsession ?? m.author.songObsession,
+      tabsCurrentlyOpen: m.tabsCurrentlyOpen ?? m.author.tabsCurrentlyOpen,
+      currentlyLearning: m.currentlyLearning ?? m.author.currentlyLearning,
+      unpopularOpinion: m.unpopularOpinion ?? m.author.unpopularOpinion,
+      techPhilosophy: m.techPhilosophy ?? m.author.techPhilosophy,
     }))
     .sort(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

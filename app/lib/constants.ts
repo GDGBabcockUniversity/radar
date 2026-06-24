@@ -24,6 +24,7 @@ export const CREDENTIALS = {
 export const PAGES = {
   home: "/",
   team: "/team",
+  contributors: "/contributors",
   series: "/series",
   about: "/about",
   issues: "/issues",
