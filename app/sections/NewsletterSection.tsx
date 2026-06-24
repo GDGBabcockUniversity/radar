@@ -37,7 +37,7 @@ export default function NewsletterSection() {
               width={IMAGES.radarLogo.w}
               height={IMAGES.radarLogo.h}
               alt="Radar"
-              className="w-24 h-auto inline"
+              className="w-24 h-auto inline theme-invert"
             />
           </span>{" "}
           in your inbox

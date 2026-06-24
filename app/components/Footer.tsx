@@ -64,7 +64,7 @@ export default function Footer() {
                 width={IMAGES.radarLogo.w}
                 height={IMAGES.radarLogo.h}
                 alt="Radar"
-                className="w-40 h-auto"
+                className="w-40 h-auto theme-invert"
               />
             </Link>
 

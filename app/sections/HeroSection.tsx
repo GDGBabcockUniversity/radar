@@ -16,7 +16,7 @@ export default function HeroSection({ heroHref }: HeroSectionProps) {
           width={IMAGES.radarSignalBg.w}
           height={IMAGES.radarSignalBg.h}
           alt=""
-          className="w-[90%] max-w-225 h-auto opacity-70"
+          className="w-[90%] max-w-225 h-auto opacity-70 theme-invert hero-signal"
           priority
           aria-hidden="true"
         />
@@ -34,7 +34,7 @@ export default function HeroSection({ heroHref }: HeroSectionProps) {
             width={IMAGES.radarLogo.w}
             height={IMAGES.radarLogo.h}
             alt="Radar"
-            className="h-24 md:h-32 lg:h-40 w-auto"
+            className="h-24 md:h-32 lg:h-40 w-auto theme-invert"
             priority
           />
         </div>

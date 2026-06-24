@@ -29,7 +29,7 @@ export default function Header() {
             width={IMAGES.radarLogo.w}
             height={IMAGES.radarLogo.h}
             alt="Radar"
-            className="w-20 h-auto"
+            className="w-20 h-auto theme-invert"
             priority
           />
         </Link>

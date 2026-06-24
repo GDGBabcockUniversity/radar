@@ -108,6 +108,19 @@ html.light .toc-container {
   border-color: rgba(28, 26, 20, 0.1);
 }
 
+/* Invert brand image assets (white wordmark, dark radar graphic) for light
+   mode. invert + hue-rotate flips lightness while preserving hue, so the
+   logo's green accent and the radar's blue glow stay on-brand. */
+html.light .theme-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* The radar-signal backdrop has a solid dark fill; once inverted it reads as
+   a light panel, so soften it on cream to keep just the subtle radar motif. */
+html.light .hero-signal {
+  opacity: 0.4;
+}
+
 html.light .toc-link:hover {
   color: var(--color-text-dark);
   background: rgba(28, 26, 20, 0.04);
