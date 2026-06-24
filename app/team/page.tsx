@@ -3,7 +3,12 @@ export const revalidate = 60;
 import Image from "next/image";
 import Link from "next/link";
 import { Header, Footer } from "../components";
-import { getTeamRoster, urlFor } from "../lib/sanity";
+import {
+  getTeamRoster,
+  getTeamCohorts,
+  getTeamCohort,
+  urlFor,
+} from "../lib/sanity";
 import { PAGES } from "../lib/constants";
 
 interface Social {
@@ -62,8 +67,28 @@ function MemberAvatar({
   );
 }
 
-export default async function TeamPage() {
-  const teamMembers: Author[] = await getTeamRoster();
+export default async function TeamPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ year?: string }>;
+}) {
+  const { year } = await searchParams;
+  const cohorts = await getTeamCohorts();
+
+  // Prefer the team-cohort model (current year, switchable). Until any cohort
+  // exists, fall back to the legacy roster so the page keeps working.
+  let teamMembers: Author[];
+  let activeLabel: string | null = null;
+  if (cohorts.length > 0) {
+    const selected = cohorts.find((c) => c.label === year) ?? cohorts[0];
+    activeLabel = selected.label;
+    const cohort = await getTeamCohort(selected.label);
+    teamMembers = (cohort?.members ?? []) as Author[];
+  } else {
+    teamMembers = await getTeamRoster();
+  }
+  const isCurrent = (label: string) =>
+    cohorts.length > 0 && label === cohorts[0].label;
 
   return (
     <main className="min-h-screen bg-surface">
@@ -100,6 +125,34 @@ export default async function TeamPage() {
               </p>
             </div>
           </div>
+
+          {cohorts.length > 1 && (
+            <div className="flex flex-wrap items-center gap-2 mb-12">
+              <span className="text-content-muted text-[10px] font-bold uppercase tracking-[2px] mr-2">
+                Team year
+              </span>
+              {cohorts.map((c) => {
+                const active = c.label === activeLabel;
+                return (
+                  <Link
+                    key={c._id}
+                    href={
+                      isCurrent(c.label)
+                        ? PAGES.team
+                        : `${PAGES.team}?year=${encodeURIComponent(c.label)}`
+                    }
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                      active
+                        ? "border-primary text-primary bg-primary/10"
+                        : "border-edge text-content-muted hover:text-content hover:border-edge-strong"
+                    }`}
+                  >
+                    {c.label}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-20">
             {teamMembers.map((member) => {

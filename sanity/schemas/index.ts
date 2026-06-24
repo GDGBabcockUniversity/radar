@@ -3,6 +3,7 @@ import category from "./category";
 import post from "./post";
 import author from "./author";
 import teamMember from "./teamMember";
+import teamCohort from "./teamCohort";
 import series from "./series";
 import episode from "./episode";
 import issue from "./issue";
@@ -19,6 +20,7 @@ export const schemaTypes = [
   signalItem,
   opportunityItem,
   editorial,
+  teamCohort,
   // Shared
   blockContent,
   category,

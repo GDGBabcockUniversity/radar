@@ -460,6 +460,69 @@ interface TeamMemberDoc {
   techPhilosophy?: string;
 }
 
+// All team cohorts, newest first — for the team-page year switcher.
+export async function getTeamCohorts(): Promise<
+  { _id: string; label: string; startYear: number }[]
+> {
+  return client.fetch(
+    `*[_type == "teamCohort"] | order(startYear desc){ _id, label, startYear }`,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+// One cohort's roster, normalised to the same shape the team page already uses.
+// Membership `role`/`order` override the author's defaults (roles rotate yearly).
+// Pass a label to load a specific year; omit it for the current (newest) team.
+export async function getTeamCohort(label?: string) {
+  const query = `
+    *[_type == "teamCohort"${label ? " && label == $label" : ""}]
+      | order(startYear desc)[0]{
+        _id,
+        label,
+        startYear,
+        "members": members[]{
+          role,
+          order,
+          "author": author->{
+            _id, name, slug, image, course, socials,
+            songObsession, tabsCurrentlyOpen, currentlyLearning,
+            unpopularOpinion, techPhilosophy
+          }
+        }
+      }
+  `;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cohort: any = await client.fetch(
+    query,
+    label ? { label } : {},
+    { next: { revalidate: 60 } },
+  );
+  if (!cohort) return null;
+
+  const members = (cohort.members ?? [])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter((m: any) => m.author)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .map((m: any) => ({
+      ...m.author,
+      role: m.role ?? m.author.role,
+      order: m.order ?? 0,
+    }))
+    .sort(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (a: any, b: any) =>
+        (a.order ?? 0) - (b.order ?? 0) || a.name.localeCompare(b.name),
+    );
+
+  return {
+    _id: cohort._id as string,
+    label: cohort.label as string,
+    startYear: cohort.startYear as number,
+    members,
+  };
+}
+
 // The latest issue (highest issue number), for the home featured slot.
 export async function getLatestIssue() {
   return client.fetch(
