@@ -28,6 +28,8 @@ export const PAGES = {
   series: "/series",
   about: "/about",
   issues: "/issues",
+  games: "/games",
+  search: "/search",
   post: (slug: string) => `/posts/${slug}`,
   issue: (slug: string) => `/issues/${slug}`,
   article: (slug: string) => `/articles/${slug}`,

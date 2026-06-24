@@ -124,12 +124,6 @@ export default async function TeamPage({
                 and learning as we go.&quot;
               </p>
             </div>
-            <Link
-              href={PAGES.contributors}
-              className="mt-6 inline-block text-primary text-xs font-bold uppercase tracking-wider hover:text-primary-hover transition-colors"
-            >
-              See all contributors, past &amp; present →
-            </Link>
           </div>
 
           {cohorts.length > 1 && (

@@ -6,8 +6,10 @@ const NAV_LINKS = [
   { label: "Home", href: PAGES.home },
   { label: "Issues", href: PAGES.issues },
   { label: "Series", href: PAGES.series },
+  { label: "Games", href: PAGES.games },
   { label: "About", href: PAGES.about },
   { label: "Team", href: PAGES.team },
+  { label: "Contributors", href: PAGES.contributors },
 ];
 
 const CONNECT_LINKS = [

@@ -1,6 +1,6 @@
 import { createClient } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
-import { CREDENTIALS } from "./constants";
+import { CREDENTIALS, PAGES } from "./constants";
 
 const projectId = CREDENTIALS.sanity_project_id;
 const dataset = CREDENTIALS.sanity_dataset;
@@ -482,6 +482,69 @@ export async function getContributors() {
     {},
     { next: { revalidate: 60 } },
   );
+}
+
+// Global search across content (articles + legacy posts) and authors. Used by
+// the header search → /search. Prefix-matches each query word.
+export async function searchAll(q: string) {
+  const raw = (q ?? "").trim();
+  if (!raw) return { results: [], authors: [] };
+  const term = raw
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => `${w}*`)
+    .join(" ");
+
+  const [articles, posts, authors] = await Promise.all([
+    client.fetch(
+      `*[_type == "article" && (title match $term || excerpt match $term)]
+        | order(publishedAt desc)[0...25]{
+          _id, title, slug, excerpt, coverImage, publishedAt
+        }`,
+      { term },
+      { next: { revalidate: 60 } },
+    ),
+    client.fetch(
+      `*[_type == "post" && hidden != true && (title match $term || description match $term)]
+        | order(publishedAt desc)[0...25]{
+          _id, title, slug, description, mainImage, publishedAt
+        }`,
+      { term },
+      { next: { revalidate: 60 } },
+    ),
+    client.fetch(
+      `*[_type == "author" && name match $term] | order(name asc)[0...25]{
+        _id, name, slug, image, role
+      }`,
+      { term },
+      { next: { revalidate: 60 } },
+    ),
+  ]);
+
+  const results = [
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...(articles as any[]).map((a) => ({
+      kind: "article" as const,
+      _id: a._id,
+      title: a.title,
+      excerpt: a.excerpt,
+      image: a.coverImage,
+      publishedAt: a.publishedAt,
+      href: PAGES.article(a.slug.current),
+    })),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...(posts as any[]).map((p) => ({
+      kind: "post" as const,
+      _id: p._id,
+      title: p.title,
+      excerpt: p.description,
+      image: p.mainImage,
+      publishedAt: p.publishedAt,
+      href: PAGES.post(p.slug.current),
+    })),
+  ].sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
+
+  return { results, authors };
 }
 
 // All team cohorts, newest first — for the team-page year switcher.
