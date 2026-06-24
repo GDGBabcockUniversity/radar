@@ -2,7 +2,7 @@ export const revalidate = 60;
 
 import Link from "next/link";
 import { Header, Footer } from "@/app/components";
-import { getAuthors } from "@/app/lib/sanity";
+import { getAuthors, getTeamCohort } from "@/app/lib/sanity";
 import { buildOgMetadata } from "@/app/lib/metadata";
 import { PAGES, CADENCE_TAGLINE } from "@/app/lib/constants";
 
@@ -14,7 +14,11 @@ interface Author {
 }
 
 export default async function AboutPage() {
-  const authors: Author[] = await getAuthors();
+  // Reflect the current team cohort (per-year roles); fall back to the legacy
+  // author roster until any cohort exists.
+  const cohort = await getTeamCohort();
+  const authors: Author[] = (cohort?.members ??
+    (await getAuthors())) as Author[];
 
   return (
     <>
@@ -42,7 +46,7 @@ export default async function AboutPage() {
 
           <div className="mt-16">
             <h2 className="text-xs font-bold uppercase tracking-[1.4px] text-content-subtle">
-              Masthead
+              Masthead{cohort?.label ? ` · ${cohort.label}` : ""}
             </h2>
             {authors.length === 0 ? (
               <p className="mt-4 text-content-muted">Team coming soon.</p>

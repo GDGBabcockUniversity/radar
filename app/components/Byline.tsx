@@ -53,7 +53,7 @@ export default function Byline({
                 alt={a.image?.alt || a.name}
                 width={32}
                 height={32}
-                className="h-8 w-8 rounded-full border-2 border-black object-cover"
+                className="h-8 w-8 rounded-full border-2 border-surface object-cover"
               />
             ) : null,
           )}
