@@ -74,6 +74,7 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
 
       S.documentTypeListItem("author").title("Authors"),
+      S.documentTypeListItem("teamCohort").title("Team Cohorts"),
 
       S.divider(),
 
