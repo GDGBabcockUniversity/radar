@@ -38,8 +38,8 @@ function generateKey() {
 }
 
 async function main() {
-  // 1. Fetch all authors
-  const authors = await client.fetch(`*[_type == "author" && !(_id in path("drafts.**"))]`);
+  // 1. Fetch all migrated authors
+  const authors = await client.fetch(`*[_type == "author" && _id match "author-from-*"]`);
   console.log(`Found ${authors.length} author document(s).`);
 
   if (authors.length === 0) return;
