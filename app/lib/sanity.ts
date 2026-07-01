@@ -22,7 +22,8 @@ export function urlFor(source: any) {
 
 // Fetch all posts
 export async function getPosts() {
-  return client.fetch(`
+  return client.fetch(
+    `
     *[_type == "post" && hidden != true] | order(publishedAt desc) {
       _id,
       title,
@@ -34,7 +35,10 @@ export async function getPosts() {
       "author": author->{ name, image },
       "categories": categories[]->{ title }
     }
-  `);
+  `,
+    {},
+    { next: { revalidate: 60 } }
+  );
 }
 
 // Fetch a single post by slug
@@ -56,12 +60,14 @@ export async function getPost(slug: string) {
     }
   `,
     { slug },
+    { next: { revalidate: 60 } },
   );
 }
 
 // Fetch featured post
 export async function getFeaturedPost() {
-  return client.fetch(`
+  return client.fetch(
+    `
     *[_type == "post" && featured == true && hidden != true] | order(publishedAt desc)[0] {
       _id,
       title,
@@ -72,12 +78,16 @@ export async function getFeaturedPost() {
       "author": author->{ name, image },
       "categories": categories[]->{ title }
     }
-  `);
+  `,
+    {},
+    { next: { revalidate: 60 } }
+  );
 }
 
 // Fetch recent posts (all posts)
 export async function getRecentPosts() {
-  return client.fetch(`
+  return client.fetch(
+    `
     *[_type == "post" && hidden != true] | order(publishedAt desc) {
       _id,
       title,
@@ -88,7 +98,10 @@ export async function getRecentPosts() {
       "author": author->{ name, image },
       "categories": categories[]->{ title }
     }
-  `);
+  `,
+    {},
+    { next: { revalidate: 60 } }
+  );
 }
 
 // Fetch all team members
