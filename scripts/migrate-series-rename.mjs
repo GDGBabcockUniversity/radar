@@ -48,7 +48,7 @@ function clean(obj) {
 
 function toSeries(group) {
   return clean({
-    _id: `migrated.series.${group._id}`,
+    _id: `migrated-series-${group._id}`,
     _type: "series",
     title: group.title,
     slug: group.slug,
@@ -60,12 +60,12 @@ function toSeries(group) {
 
 function toEpisode(ep) {
   return clean({
-    _id: `migrated.episode.${ep._id}`,
+    _id: `migrated-episode-${ep._id}`,
     _type: "episode",
     title: ep.title,
     slug: ep.slug,
     // group -> series (update the referenced _id to the new migrated series _id)
-    series: ep.group ? { ...ep.group, _ref: `migrated.series.${ep.group._ref}` } : undefined,
+    series: ep.group ? { ...ep.group, _ref: `migrated-series-${ep.group._ref}` } : undefined,
     youtubeUrl: ep.youtubeUrl,
     author: ep.author,
     // mainImage -> coverImage
