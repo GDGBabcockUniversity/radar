@@ -6,7 +6,7 @@ export default function NewsletterSection() {
   return (
     <section
       id="subscribe"
-      className="newsletter-section relative py-24 md:py-32"
+      className="newsletter-section relative py-16 md:py-24"
     >
       <div className="container max-w-2xl mx-auto text-center">
         {/* Envelope Icon */}
@@ -29,17 +29,15 @@ export default function NewsletterSection() {
         </div>
 
         {/* Heading */}
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-content mb-4 flex items-center justify-center gap-4">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-content mb-4">
           Get{" "}
-          <span className="inline-block align-middle">
-            <Image
-              src={IMAGES.radarLogo.src}
-              width={IMAGES.radarLogo.w}
-              height={IMAGES.radarLogo.h}
-              alt="Radar"
-              className="w-24 h-auto inline theme-invert"
-            />
-          </span>{" "}
+          <Image
+            src={IMAGES.radarLogo.src}
+            width={IMAGES.radarLogo.w}
+            height={IMAGES.radarLogo.h}
+            alt="Radar"
+            className="inline-block h-[1em] w-auto align-text-bottom mx-1 theme-invert"
+          />{" "}
           in your inbox
         </h2>
 
