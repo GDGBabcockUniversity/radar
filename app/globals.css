@@ -81,22 +81,30 @@ html.light {
 
   --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
 
-  /* Semantic tokens — light (warm cream) */
+  /* Semantic tokens — light (warm cream). Cards go pure white and deep
+     panels go a genuinely deeper warm tone so the layers actually separate
+     on the cream page (light mode needs tonal jumps, not sibling creams). */
   --color-surface: #fff6e0;
-  --color-surface-raised: #fffdf5;
-  --color-surface-card: #fdf3d6;
-  --color-surface-inset: #f3e7c4;
-  --color-surface-input: #f3e7c4;
+  --color-surface-raised: #ffffff;
+  --color-surface-card: #f8ecc9;
+  --color-surface-inset: #efe2ba;
+  --color-surface-input: #efe2ba;
 
   --color-content: #1c1a14;
   --color-content-secondary: #44403a;
-  --color-content-muted: #6b6557;
-  --color-content-subtle: #8a8475;
+  --color-content-muted: #57503f;
+  --color-content-subtle: #7a7360;
 
-  --color-edge: rgba(28, 26, 20, 0.12);
-  --color-edge-strong: rgba(28, 26, 20, 0.22);
-  --color-overlay: rgba(28, 26, 20, 0.04);
-  --color-overlay-strong: rgba(28, 26, 20, 0.08);
+  --color-edge: rgba(28, 26, 20, 0.18);
+  --color-edge-strong: rgba(28, 26, 20, 0.3);
+  --color-overlay: rgba(28, 26, 20, 0.05);
+  --color-overlay-strong: rgba(28, 26, 20, 0.1);
+}
+
+/* On a light page, borders alone don't create depth — lift white cards with
+   a soft warm shadow. */
+html.light .bg-surface-raised {
+  box-shadow: 0 2px 12px rgba(28, 26, 20, 0.08);
 }
 
 html.light .section-gradient {
@@ -108,11 +116,46 @@ html.light .toc-container {
   border-color: rgba(28, 26, 20, 0.1);
 }
 
+/* ===== Dark anchor bands =====
+   The newsletter CTA and footer stay dark in BOTH themes — a deliberate
+   editorial contrast band that anchors the light page. Re-declaring the
+   semantic tokens here flips every token-driven child back to its dark
+   values without touching any component. */
+html.light .newsletter-section,
+html.light .footer-section {
+  --color-surface: #0a0a0a;
+  --color-surface-raised: #111111;
+  --color-surface-card: #1a1a1a;
+  --color-surface-inset: #161616;
+  --color-surface-input: #2a2a2a;
+
+  --color-content: #ffffff;
+  --color-content-secondary: #d1d5db;
+  --color-content-muted: #9ca3af;
+  --color-content-subtle: #6b7280;
+
+  --color-edge: rgba(255, 255, 255, 0.1);
+  --color-edge-strong: rgba(255, 255, 255, 0.2);
+  --color-overlay: rgba(255, 255, 255, 0.05);
+  --color-overlay-strong: rgba(255, 255, 255, 0.1);
+}
+
 /* Invert brand image assets (white wordmark, dark radar graphic) for light
    mode. invert + hue-rotate flips lightness while preserving hue, so the
    logo's green accent and the radar's blue glow stay on-brand. */
 html.light .theme-invert {
   filter: invert(1) hue-rotate(180deg);
+}
+
+/* Inside the dark anchor bands the white wordmark is already correct —
+   don't invert it, and don't lift cards with the light shadow. */
+html.light .newsletter-section .theme-invert,
+html.light .footer-section .theme-invert {
+  filter: none;
+}
+html.light .newsletter-section .bg-surface-raised,
+html.light .footer-section .bg-surface-raised {
+  box-shadow: none;
 }
 
 /* The radar-signal backdrop has a solid dark fill; once inverted it reads as
@@ -405,7 +448,7 @@ html.light .hero-cone {
 }
 
 html.light .spotlight-section {
-  background: #fdeecb;
+  background: #f3e5be;
 }
 /* ===== New Sections ===== */
 .latest-issue-section {
@@ -425,13 +468,9 @@ html.light .past-editions-section {
 .newsletter-section {
   background: radial-gradient(ellipse at center top, #141828 0%, #0a0a0a 70%);
 }
-html.light .newsletter-section {
-  background: radial-gradient(ellipse at center top, #fff0c8 0%, #fff6e0 70%);
-}
+/* .newsletter-section: no light override — it's a dark anchor band. */
 
 .footer-section {
   background: #0c0c0c;
 }
-html.light .footer-section {
-  background: #fdeecb;
-}
+/* .footer-section: no light override — it's a dark anchor band. */
