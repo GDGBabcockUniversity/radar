@@ -1,12 +1,26 @@
 import Image from "next/image";
 import { Button } from "../components";
-import { IMAGES, LINKS } from "../lib/constants";
+import { IMAGES, LINKS, PAGES } from "../lib/constants";
+
+interface HeroSeries {
+  title: string;
+  slug: { current: string };
+}
 
 interface HeroSectionProps {
   heroHref?: string;
+  series?: HeroSeries | null;
 }
 
-export default function HeroSection({ heroHref }: HeroSectionProps) {
+export default function HeroSection({ heroHref, series }: HeroSectionProps) {
+  // The "Watch" CTA points at the current featured series; falls back to the
+  // YouTube playlist when there's no active series.
+  const watchLabel = series ? `Watch ${series.title}` : "Watch on YouTube";
+  const watchHref = series
+    ? PAGES.seriesShow(series.slug.current)
+    : LINKS.youtubePlaylist;
+  const watchExternal = !series;
+
   return (
     <section className="hero-section relative overflow-hidden flex flex-col items-center justify-center text-center min-h-[90vh] px-4">
       {/* Radar signal background image */}
@@ -66,9 +80,9 @@ export default function HeroSection({ heroHref }: HeroSectionProps) {
           <Button
             variant="outlined"
             size="md"
-            href={LINKS.youtubePlaylist}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={watchHref}
+            target={watchExternal ? "_blank" : undefined}
+            rel={watchExternal ? "noopener noreferrer" : undefined}
             className="bg-white text-black"
           >
             <svg
@@ -80,7 +94,7 @@ export default function HeroSection({ heroHref }: HeroSectionProps) {
             >
               <path d="M8 5v14l11-7z" />
             </svg>
-            Watch Class of 2026
+            {watchLabel}
           </Button>
         </div>
       </div>
