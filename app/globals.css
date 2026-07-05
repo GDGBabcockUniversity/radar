@@ -178,6 +178,14 @@ html.light .dark-card {
   --color-edge-strong: rgba(255, 255, 255, 0.2);
   --color-overlay: rgba(255, 255, 255, 0.05);
   --color-overlay-strong: rgba(255, 255, 255, 0.1);
+
+  /* Legacy tokens (predate the semantic set above) — still used directly by
+     a few older components (e.g. text-foreground, text-(--color-text-muted)).
+     Flip these too or their text goes dark-on-dark inside a dark card. */
+  --color-text-light: #ffffff;
+  --color-text-dark: #171717;
+  --color-text-muted: #9ca3af;
+  --color-text-muted-dark: #6b7280;
 }
 html.light .dark-card.bg-surface-raised {
   box-shadow: 0 10px 30px rgba(28, 26, 20, 0.18);
