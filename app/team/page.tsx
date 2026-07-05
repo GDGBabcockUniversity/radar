@@ -162,7 +162,7 @@ export default async function TeamPage({
               return (
                 <div
                   key={member._id}
-                  className="bg-surface-raised rounded-2xl md:rounded-[48px] p-6 md:p-8 border border-edge"
+                  className="bg-surface-raised dark-card rounded-2xl md:rounded-[48px] p-6 md:p-8 border border-edge"
                 >
                   <div className="flex items-start gap-4 md:gap-6 mb-4">
                     {profileHref ? (

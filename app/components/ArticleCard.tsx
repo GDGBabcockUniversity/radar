@@ -81,7 +81,7 @@ export default function ArticleCard({
     <a
       href={href}
       className={`
-        group block overflow-hidden rounded-2xl bg-surface-raised border border-edge
+        group block overflow-hidden rounded-2xl bg-surface-raised dark-card border border-edge
         transition-all duration-300 ease-out
         hover:border-edge-strong
         ${className}

@@ -34,7 +34,7 @@ export default function GamesPage() {
               <Link
                 key={game.slug}
                 href={`${PAGES.games}/${game.slug}`}
-                className="group flex flex-col rounded-2xl border border-edge bg-surface-raised p-6 hover:border-edge-strong transition-colors"
+                className="group flex flex-col rounded-2xl border border-edge bg-surface-raised dark-card p-6 hover:border-edge-strong transition-colors"
               >
                 <span className="text-[10px] font-bold uppercase tracking-[2px] text-content-subtle mb-4">
                   {game.type}
@@ -53,7 +53,7 @@ export default function GamesPage() {
           </div>
 
           {/* High scores — placeholder until scores accumulate */}
-          <div className="mt-16 rounded-2xl border border-edge bg-surface-raised p-8 text-center">
+          <div className="mt-16 rounded-2xl border border-edge bg-surface-raised dark-card p-8 text-center">
             <h3 className="text-sm font-bold uppercase tracking-[2px] text-content-muted mb-2">
               High Scores
             </h3>

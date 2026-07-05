@@ -93,7 +93,7 @@ export default async function ContributorsPage() {
                   ? PAGES.author(person.slug.current)
                   : null;
                 const card = (
-                  <div className="flex items-center gap-4 bg-surface-raised border border-edge rounded-2xl p-5 h-full transition-colors hover:border-edge-strong">
+                  <div className="flex items-center gap-4 bg-surface-raised dark-card border border-edge rounded-2xl p-5 h-full transition-colors hover:border-edge-strong">
                     <Avatar name={person.name} image={person.image} />
                     <div className="min-w-0">
                       <h2 className="text-lg font-bold text-content truncate">

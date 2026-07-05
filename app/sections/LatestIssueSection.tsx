@@ -209,7 +209,7 @@ export default function LatestIssueSection({
         <div
           className={`grid grid-cols-1 ${
             hasSignals ? "lg:grid-cols-2" : ""
-          } gap-0 border border-edge rounded-sm overflow-hidden`}
+          } gap-0 border border-edge rounded-sm overflow-hidden bg-surface-raised dark-card`}
         >
           {/* Left — Feature Card */}
           <div
@@ -342,7 +342,7 @@ export default function LatestIssueSection({
 
         {/* ===== Bottom Row ===== */}
         {bottomCards.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 border-x border-b border-edge rounded-b-sm overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 border-x border-b border-edge rounded-b-sm overflow-hidden bg-surface-raised dark-card">
             {bottomCards.map((card, i) => (
               <div
                 key={i}

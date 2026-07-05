@@ -158,6 +158,34 @@ html.light .footer-section .bg-surface-raised {
   box-shadow: none;
 }
 
+/* ===== Dark floating cards =====
+   Opt-in per-card version of the anchor-band trick: add `dark-card` to any
+   card element to make it a dark tile floating on the cream page, with every
+   token-driven child (text, borders, nested surfaces) flipping automatically.
+   No effect in dark mode. */
+html.light .dark-card {
+  --color-surface-raised: #111111;
+  --color-surface-card: #1a1a1a;
+  --color-surface-inset: #161616;
+  --color-surface-input: #2a2a2a;
+
+  --color-content: #ffffff;
+  --color-content-secondary: #d1d5db;
+  --color-content-muted: #9ca3af;
+  --color-content-subtle: #6b7280;
+
+  --color-edge: rgba(255, 255, 255, 0.1);
+  --color-edge-strong: rgba(255, 255, 255, 0.2);
+  --color-overlay: rgba(255, 255, 255, 0.05);
+  --color-overlay-strong: rgba(255, 255, 255, 0.1);
+}
+html.light .dark-card.bg-surface-raised {
+  box-shadow: 0 10px 30px rgba(28, 26, 20, 0.18);
+}
+html.light .dark-card .theme-invert {
+  filter: none;
+}
+
 /* The radar-signal backdrop has a solid dark fill; once inverted it reads as
    a light panel, so soften it on cream to keep just the subtle radar motif. */
 html.light .hero-signal {
