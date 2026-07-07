@@ -24,9 +24,9 @@ export default function RelatedPosts({ posts }: RelatedPostsProps) {
   };
 
   return (
-    <section className="py-16 border-t border-white/10">
+    <section className="py-16 border-t border-edge">
       <div className="container">
-        <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-content mb-8">
           More from RADAR
         </h2>
 

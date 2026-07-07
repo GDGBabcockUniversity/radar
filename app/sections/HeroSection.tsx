@@ -1,52 +1,100 @@
-import { LiveBadge, Button } from "../components";
-import { getTodaysDate } from "../lib/utils";
+import Image from "next/image";
+import { Button } from "../components";
+import { IMAGES, LINKS, PAGES } from "../lib/constants";
 
-export default function HeroSection() {
-  const date = getTodaysDate();
+interface HeroSeries {
+  title: string;
+  slug: { current: string };
+}
+
+interface HeroSectionProps {
+  heroHref?: string;
+  series?: HeroSeries | null;
+}
+
+export default function HeroSection({ heroHref, series }: HeroSectionProps) {
+  // The "Watch" CTA points at the current featured series; falls back to the
+  // YouTube playlist when there's no active series.
+  const watchLabel = series ? `Watch ${series.title}` : "Watch on YouTube";
+  const watchHref = series
+    ? PAGES.seriesShow(series.slug.current)
+    : LINKS.youtubePlaylist;
+  const watchExternal = !series;
 
   return (
-    <section
-      className="relative pt-24 pb-16 md:pt-32 md:pb-20"
-      style={{
-        background:
-          "radial-gradient(ellipse at center, #1a2744 0%, #0a0a0a 70%)",
-      }}
-    >
-      <div className="container flex flex-col items-center text-center">
-        {/* Live Badge */}
-        <LiveBadge date={date} className="mb-8" />
+    <section className="hero-section relative overflow-hidden flex flex-col items-center justify-center text-center min-h-[90vh] px-4">
+      {/* Radar signal background image */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <Image
+          src={IMAGES.radarSignalBg.src}
+          width={IMAGES.radarSignalBg.w}
+          height={IMAGES.radarSignalBg.h}
+          alt=""
+          className="w-[90%] max-w-225 h-auto opacity-70 theme-invert hero-signal"
+          priority
+          aria-hidden="true"
+        />
+      </div>
 
-        {/* Main Logo - Space Grotesk */}
-        <h1
-          className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 text-white"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          <span>
-            <span style={{ color: "var(--color-primary)" }}>R</span>
-            <span style={{ color: "var(--color-gdg-red)" }}>A</span>
-            <span style={{ color: "var(--color-gdg-yellow)" }}>D</span>
-            <span style={{ color: "var(--color-gdg-green)" }}>A</span>
-            <span style={{ color: "var(--color-primary)" }}>R.</span>
-          </span>
-        </h1>
+      {/* Blue cone sweep at bottom */}
+      <div className="hero-cone" aria-hidden="true" />
 
-        {/* Tagline - Merriweather (serif) */}
-        <p
-          className="text-xl md:text-2xl text-gray-300 max-w-lg mb-10 leading-relaxed"
-          style={{ fontFamily: "var(--font-serif)" }}
-        >
-          Your signal to{" "}
-          <span className="text-primary font-medium">what&apos;s next</span> in
-          the Babcock tech ecosystem.
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center max-w-3xl mx-auto">
+        {/* Large Radar logo wordmark */}
+        <div className="mb-4">
+          <Image
+            src={IMAGES.radarLogo.src}
+            width={IMAGES.radarLogo.w}
+            height={IMAGES.radarLogo.h}
+            alt="Radar"
+            className="h-24 md:h-32 lg:h-40 w-auto theme-invert"
+            priority
+          />
+        </div>
+
+        {/* Divider + subtitle */}
+        <div className="flex flex-col items-center gap-4 mb-10 md:mb-12">
+          <div className="w-64 md:w-80 h-px bg-content/20" />
+          <p className="text-md md:text-lg uppercase tracking-widest text-content font-medium border-y py-2">
+            The Official Record of the Babcock Tech Ecosystem
+          </p>
+        </div>
+
+        {/* Tagline */}
+        <p className="text-xl md:text-2xl lg:text-3xl italic font-extrabold uppercase leading-snug mb-10 md:mb-12 text-content max-w-2xl">
+          Tracking the signals, projects, and people shaping the Babcock tech
+          ecosystem.
         </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <Button variant="primary" size="sm" href="#featured" showArrow>
-            Read Latest Edition
+          <Button
+            variant="blue"
+            size="md"
+            href={heroHref ?? "#featured"}
+            showArrow
+          >
+            Read Latest Issue
           </Button>
-          <Button variant="ghost" size="sm" href="#editions">
-            Browse Archives
+          <Button
+            variant="outlined"
+            size="md"
+            href={watchHref}
+            target={watchExternal ? "_blank" : undefined}
+            rel={watchExternal ? "noopener noreferrer" : undefined}
+            className="bg-white text-black"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="opacity-80 text-gdg-red"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            {watchLabel}
           </Button>
         </div>
       </div>

@@ -2,7 +2,8 @@ export const BASE_URL = "https://radar.gdgbabcock.com";
 
 export const IMAGES = {
   logo: { src: "/logo.png", w: 390, h: 390 },
-  hero_bg: { src: "/hero-bg.png", w: 1780, h: 1780 },
+  radarLogo: { src: "/radar-logo.png", w: 430, h: 242 },
+  radarSignalBg: { src: "/radar-signal-bg.png", w: 1780, h: 1780 },
 };
 
 export const CREDENTIALS = {
@@ -18,11 +19,37 @@ export const CREDENTIALS = {
 
   upstash_redis_rest_url: process.env.UPSTASH_REDIS_REST_URL!,
   upstash_redis_rest_token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+
+  // Shared GDG auth service (optional — engagement stays anonymous until set).
+  auth_api_url: process.env.AUTH_API_URL,
+  auth_jwt_secret: process.env.AUTH_JWT_SECRET,
+  auth_cookie_name: process.env.AUTH_COOKIE_NAME || "gdg_token",
 };
 
 export const PAGES = {
   home: "/",
   team: "/team",
+  contributors: "/contributors",
   series: "/series",
+  about: "/about",
+  issues: "/issues",
+  games: "/games",
+  search: "/search",
   post: (slug: string) => `/posts/${slug}`,
+  issue: (slug: string) => `/issues/${slug}`,
+  article: (slug: string) => `/articles/${slug}`,
+  author: (slug: string) => `/team/${slug}`,
+  seriesShow: (slug: string) => `/series/${slug}`,
+  episode: (seriesSlug: string, slug: string) =>
+    `/series/${seriesSlug}/${slug}`,
 };
+
+export const LINKS = {
+  youtubePlaylist: "https://www.youtube.com/playlist?list=PLtUz78Yj1nzl2DRvEzS5raH_Jabh0fZ6S",
+  contactEmail: "mailto:gdgbabcock@gmail.com",
+};
+
+// Cadence copy lives here so growing monthly -> bi-weekly -> weekly is a
+// one-line edit, not a hunt through JSX.
+export const CADENCE_TAGLINE =
+  "Issues monthly. Series weekly. Signals continuously.";

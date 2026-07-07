@@ -139,7 +139,7 @@ const components: PortableTextComponents = {
   block: {
     h1: ({ children }) => (
       <h1
-        className="font-bold text-white mt-12 mb-4"
+        className="font-bold text-content mt-12 mb-4"
         style={{
           fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
           lineHeight: 1.2,
@@ -154,7 +154,7 @@ const components: PortableTextComponents = {
       return (
         <h2
           id={id}
-          className="font-bold text-white mt-10 mb-3 group relative"
+          className="font-bold text-content mt-10 mb-3 group relative"
           style={{
             fontSize: "clamp(1.5rem, 3vw, 2rem)",
             lineHeight: 1.3,
@@ -162,7 +162,7 @@ const components: PortableTextComponents = {
         >
           <a
             href={`#${id}`}
-            className="absolute -left-6 opacity-0 group-hover:opacity-100 transition-opacity text-gray-500 hover:text-primary"
+            className="absolute -left-6 opacity-0 group-hover:opacity-100 transition-opacity text-content-subtle hover:text-primary"
             aria-label={`Link to ${text}`}
           >
             #
@@ -173,7 +173,7 @@ const components: PortableTextComponents = {
     },
     h3: ({ children }) => (
       <h3
-        className="font-semibold text-white mt-8 mb-3"
+        className="font-semibold text-content mt-8 mb-3"
         style={{
           fontSize: "clamp(1.25rem, 2.5vw, 1.5rem)",
           lineHeight: 1.3,
@@ -184,7 +184,7 @@ const components: PortableTextComponents = {
     ),
     h4: ({ children }) => (
       <h4
-        className="font-semibold text-white mt-6 mb-2"
+        className="font-semibold text-content mt-6 mb-2"
         style={{
           fontSize: "clamp(1.125rem, 2vw, 1.25rem)",
           lineHeight: 1.4,
@@ -195,7 +195,7 @@ const components: PortableTextComponents = {
     ),
     h5: ({ children }) => (
       <h5
-        className="font-semibold text-white mt-5 mb-2"
+        className="font-semibold text-content mt-5 mb-2"
         style={{
           fontSize: "1.125rem",
           lineHeight: 1.4,
@@ -206,7 +206,7 @@ const components: PortableTextComponents = {
     ),
     h6: ({ children }) => (
       <h6
-        className="font-semibold text-gray-300 mt-4 mb-2 uppercase tracking-wide"
+        className="font-semibold text-content-secondary mt-4 mb-2 uppercase tracking-wide"
         style={{
           fontSize: "0.875rem",
           lineHeight: 1.5,
@@ -217,10 +217,11 @@ const components: PortableTextComponents = {
     ),
     normal: ({ children }) => (
       <div
-        className="text-gray-300 leading-relaxed mb-5"
+        className="text-content-secondary mb-6"
         style={{
-          fontSize: "1rem",
-          lineHeight: 1.75,
+          fontFamily: "var(--font-serif)",
+          fontSize: "1.1875rem",
+          lineHeight: 1.8,
         }}
       >
         {children}
@@ -236,9 +237,10 @@ const components: PortableTextComponents = {
 
       return (
         <blockquote
-          className="border-l-4 pl-5 my-6 italic text-gray-400"
+          className="border-l-4 pl-5 my-8 italic text-content-secondary"
           style={{
-            fontSize: "1rem",
+            fontFamily: "var(--font-serif)",
+            fontSize: "1.3125rem",
             lineHeight: 1.6,
             borderColor,
           }}
@@ -250,12 +252,18 @@ const components: PortableTextComponents = {
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="list-disc list-inside text-gray-300 mb-5 space-y-1.5 ml-2">
+      <ul
+        className="list-disc list-outside text-content-secondary mb-6 space-y-2 pl-6"
+        style={{ fontFamily: "var(--font-serif)", fontSize: "1.1875rem", lineHeight: 1.8 }}
+      >
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="list-decimal list-inside text-gray-300 mb-5 space-y-1.5 ml-2">
+      <ol
+        className="list-decimal list-outside text-content-secondary mb-6 space-y-2 pl-6"
+        style={{ fontFamily: "var(--font-serif)", fontSize: "1.1875rem", lineHeight: 1.8 }}
+      >
         {children}
       </ol>
     ),
@@ -266,11 +274,11 @@ const components: PortableTextComponents = {
   },
   marks: {
     strong: ({ children }) => (
-      <strong className="font-semibold text-white">{children}</strong>
+      <strong className="font-semibold text-content">{children}</strong>
     ),
     em: ({ children }) => <em className="italic">{children}</em>,
     code: ({ children }) => (
-      <code className="bg-white/10 text-primary px-1.5 py-0.5 rounded text-sm font-mono">
+      <code className="bg-overlay-strong text-primary px-1.5 py-0.5 rounded text-sm font-mono">
         {children}
       </code>
     ),
@@ -341,7 +349,7 @@ const components: PortableTextComponents = {
             className="w-full h-auto rounded-lg"
           />
           {value.caption && (
-            <figcaption className="text-gray-500 text-sm mt-2 text-center">
+            <figcaption className="text-content-subtle text-sm mt-2 text-center">
               {value.caption}
             </figcaption>
           )}
@@ -349,9 +357,9 @@ const components: PortableTextComponents = {
       );
     },
     code: ({ value }) => (
-      <pre className="bg-[#1a1a1a] border border-white/10 rounded-lg p-4 overflow-x-auto my-6">
+      <pre className="bg-surface-card border border-edge rounded-lg p-4 overflow-x-auto my-6">
         <code
-          className="text-sm text-gray-300 font-mono"
+          className="text-sm text-content-secondary font-mono"
           data-language={value.language}
         >
           {value.code}
@@ -363,29 +371,29 @@ const components: PortableTextComponents = {
 
       if (style === "dotted") {
         return (
-          <hr className="my-10 border-0 border-t-2 border-dotted border-white/20" />
+          <hr className="my-10 border-0 border-t-2 border-dotted border-edge-strong" />
         );
       }
 
       if (style === "spaced") {
         return (
           <div className="my-10 flex items-center justify-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-white/30" />
-            <span className="w-2 h-2 rounded-full bg-white/30" />
-            <span className="w-2 h-2 rounded-full bg-white/30" />
+            <span className="w-2 h-2 rounded-full bg-content/30" />
+            <span className="w-2 h-2 rounded-full bg-content/30" />
+            <span className="w-2 h-2 rounded-full bg-content/30" />
           </div>
         );
       }
 
       // Default: simple line
-      return <hr className="my-10 border-0 border-t border-white/20" />;
+      return <hr className="my-10 border-0 border-t border-edge-strong" />;
     },
     crossword: ({ value }) => {
       if (!value?.puzzleId) {
         return (
-          <div className="my-8 p-8 bg-[#1a1a1a] border border-white/10 rounded-xl text-center">
+          <div className="my-8 p-8 bg-surface-card border border-edge rounded-xl text-center">
             <span className="text-4xl mb-4 block">🧩</span>
-            <p className="text-gray-400 text-sm">Puzzle ID not configured</p>
+            <p className="text-content-muted text-sm">Puzzle ID not configured</p>
           </div>
         );
       }
@@ -394,9 +402,9 @@ const components: PortableTextComponents = {
     quiz: ({ value }) => {
       if (!value?.quizId) {
         return (
-          <div className="my-8 p-8 bg-[#1a1a1a] border border-white/10 rounded-xl text-center">
+          <div className="my-8 p-8 bg-surface-card border border-edge rounded-xl text-center">
             <span className="text-4xl mb-4 block">💝</span>
-            <p className="text-gray-400 text-sm">Quiz ID not configured</p>
+            <p className="text-content-muted text-sm">Quiz ID not configured</p>
           </div>
         );
       }
@@ -407,7 +415,7 @@ const components: PortableTextComponents = {
 
 export default function PostBody({ body }: PostBodyProps) {
   return (
-    <article className="max-w-4xl py-8">
+    <article className="py-8 max-w-[68ch]">
       <PortableText value={body} components={components} />
     </article>
   );

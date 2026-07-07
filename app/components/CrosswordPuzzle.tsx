@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { track } from "../lib/track";
 
 // Puzzle data for "new-year-new-lies"
 // Grid: 25 columns × 19 rows (converted to 0-based indexing)
@@ -258,6 +259,15 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
     return true;
   }, [grid]);
 
+  // Report completion once (engagement tracking).
+  const reportedComplete = useRef(false);
+  useEffect(() => {
+    if (isComplete && !reportedComplete.current) {
+      reportedComplete.current = true;
+      track("game.played", { gameId: `crossword:${puzzleId}`, solved: true });
+    }
+  }, [isComplete, puzzleId]);
+
   const handleCellInput = (row: number, col: number, value: string) => {
     if (grid[row][col].isBlocked) return;
     const newGrid = [...grid];
@@ -374,14 +384,14 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
   if (grid.length === 0) return null;
 
   return (
-    <div className="my-8 p-4 sm:p-6 bg-[#0f0f0f] border border-white/10 rounded-xl">
+    <div className="my-8 p-4 sm:p-6 bg-surface-inset border border-edge rounded-xl">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h3 className="text-lg sm:text-xl font-bold text-white">
+        <h3 className="text-lg sm:text-xl font-bold text-content">
           🧩 Crossword Puzzle
         </h3>
         <button
           onClick={resetPuzzle}
-          className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+          className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-overlay-strong hover:bg-overlay-strong text-content rounded-lg transition-colors"
         >
           Reset
         </button>
@@ -398,7 +408,7 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
       <div className="flex flex-col xl:flex-row gap-4 sm:gap-6">
         <div className="overflow-x-auto pb-2">
           <div
-            className="inline-grid gap-0 border border-white/20 rounded-lg overflow-hidden"
+            className="inline-grid gap-0 border border-edge-strong rounded-lg overflow-hidden"
             style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 20px)` }}
           >
             {grid.map((row, rowIndex) =>
@@ -406,14 +416,14 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
                 <div
                   key={`${rowIndex}-${colIndex}`}
                   className={`
-                    relative w-5 h-5 border border-white/5
-                    ${cell.isBlocked ? "bg-[#1a1a1a]" : "bg-[#2a2a2a]"}
+                    relative w-5 h-5 border border-edge
+                    ${cell.isBlocked ? "bg-surface-card" : "bg-surface-input"}
                     ${highlightedCells.has(`${rowIndex}-${colIndex}`) ? "bg-blue-900/50!" : ""}
                     ${selectedCell?.row === rowIndex && selectedCell?.col === colIndex ? "bg-primary/40!" : ""}
                   `}
                 >
                   {cell.number && (
-                    <span className="absolute top-0 left-px text-[5px] text-gray-400 font-medium leading-none">
+                    <span className="absolute top-0 left-px text-[5px] text-content-muted font-medium leading-none">
                       {cell.number}
                     </span>
                   )}
@@ -427,7 +437,7 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
                       }
                       onClick={() => handleCellClick(rowIndex, colIndex)}
                       onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)}
-                      className="w-full h-full flex items-center justify-center text-center text-[10px] font-bold uppercase bg-transparent text-white focus:outline-none leading-none p-0"
+                      className="w-full h-full flex items-center justify-center text-center text-[10px] font-bold uppercase bg-transparent text-content focus:outline-none leading-none p-0"
                       maxLength={1}
                     />
                   )}
@@ -439,22 +449,22 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
 
         <div className="flex-1 grid sm:grid-cols-2 gap-4 sm:gap-6 text-xs sm:text-sm">
           <div>
-            <h4 className="font-bold text-white mb-2 sm:mb-3">Across</h4>
+            <h4 className="font-bold text-content mb-2 sm:mb-3">Across</h4>
             <ul className="space-y-1.5 sm:space-y-2">
               {acrossClues.map((clue) => (
-                <li key={clue.id} className="text-gray-300">
-                  <span className="font-semibold text-white">{clue.id}.</span>{" "}
+                <li key={clue.id} className="text-content-secondary">
+                  <span className="font-semibold text-content">{clue.id}.</span>{" "}
                   {clue.clue}
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h4 className="font-bold text-white mb-2 sm:mb-3">Down</h4>
+            <h4 className="font-bold text-content mb-2 sm:mb-3">Down</h4>
             <ul className="space-y-1.5 sm:space-y-2">
               {downClues.map((clue) => (
-                <li key={clue.id} className="text-gray-300">
-                  <span className="font-semibold text-white">{clue.id}.</span>{" "}
+                <li key={clue.id} className="text-content-secondary">
+                  <span className="font-semibold text-content">{clue.id}.</span>{" "}
                   {clue.clue}
                 </li>
               ))}
@@ -463,7 +473,7 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
         </div>
       </div>
 
-      <p className="mt-3 sm:mt-4 text-[10px] sm:text-xs text-gray-500 text-center">
+      <p className="mt-3 sm:mt-4 text-[10px] sm:text-xs text-content-subtle text-center">
         Click a cell and type. Click again to switch direction. Progress saves
         automatically.
       </p>

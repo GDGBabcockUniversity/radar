@@ -88,15 +88,15 @@ export default function TweetEmbed({ tweetId }: TweetEmbedProps) {
       `}</style>
       <div ref={containerRef} className="tweet-container">
         {/* Skeleton placeholder while loading */}
-        <div className="animate-pulse rounded-xl border border-white/10 bg-white/5 p-4 w-full">
+        <div className="animate-pulse rounded-xl border border-edge bg-overlay p-4 w-full">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-white/10" />
+            <div className="w-10 h-10 rounded-full bg-overlay-strong" />
             <div className="flex-1 space-y-1.5">
-              <div className="h-3 w-24 rounded bg-white/10" />
-              <div className="h-2.5 w-16 rounded bg-white/10" />
+              <div className="h-3 w-24 rounded bg-overlay-strong" />
+              <div className="h-2.5 w-16 rounded bg-overlay-strong" />
             </div>
             <svg
-              className="w-5 h-5 text-white/20"
+              className="w-5 h-5 text-content/20"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
@@ -104,9 +104,9 @@ export default function TweetEmbed({ tweetId }: TweetEmbedProps) {
             </svg>
           </div>
           <div className="space-y-2">
-            <div className="h-3 w-full rounded bg-white/10" />
-            <div className="h-3 w-4/5 rounded bg-white/10" />
-            <div className="h-3 w-3/5 rounded bg-white/10" />
+            <div className="h-3 w-full rounded bg-overlay-strong" />
+            <div className="h-3 w-4/5 rounded bg-overlay-strong" />
+            <div className="h-3 w-3/5 rounded bg-overlay-strong" />
           </div>
         </div>
       </div>

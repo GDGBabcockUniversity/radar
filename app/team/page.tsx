@@ -1,26 +1,30 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 import Image from "next/image";
+import Link from "next/link";
 import { Header, Footer } from "../components";
-import { getTeamMembers, urlFor } from "../lib/sanity";
+import {
+  getTeamRoster,
+  getTeamCohorts,
+  getTeamCohort,
+  urlFor,
+} from "../lib/sanity";
+import { PAGES } from "../lib/constants";
 
-interface SocialLinks {
-  email?: string;
-  medium?: string;
-  snapchat?: string;
-  substack?: string;
-  x?: string;
-  instagram?: string;
+interface Social {
+  label: string;
+  url: string;
 }
 
-interface TeamMember {
+interface Author {
   _id: string;
   name: string;
-  role: string;
-  course: string;
+  slug?: { current: string };
+  role?: string;
+  course?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   image?: any;
-  socialLinks?: SocialLinks;
+  socials?: Social[];
   songObsession?: string;
   tabsCurrentlyOpen?: string;
   currentlyLearning?: string;
@@ -33,7 +37,7 @@ function MemberAvatar({
   image,
 }: {
   name: string;
-  image?: TeamMember["image"];
+  image?: Author["image"];
 }) {
   const initials = name
     .split(" ")
@@ -43,10 +47,10 @@ function MemberAvatar({
 
   if (image) {
     return (
-      <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-white/5 relative">
+      <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-overlay relative">
         <Image
           src={urlFor(image).width(140).height(140).url()}
-          alt={name}
+          alt={image?.alt || name}
           fill
           className="object-cover"
         />
@@ -55,7 +59,7 @@ function MemberAvatar({
   }
 
   return (
-    <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-white/5 relative">
+    <div className="w-20 md:w-35 h-20 md:h-35 rounded-lg overflow-hidden shrink-0 bg-overlay relative">
       <div className="w-full h-full bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
         <span className="text-2xl font-bold text-primary">{initials}</span>
       </div>
@@ -63,17 +67,37 @@ function MemberAvatar({
   );
 }
 
-export default async function TeamPage() {
-  const teamMembers: TeamMember[] = await getTeamMembers();
+export default async function TeamPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ year?: string }>;
+}) {
+  const { year } = await searchParams;
+  const cohorts = await getTeamCohorts();
+
+  // Prefer the team-cohort model (current year, switchable). Until any cohort
+  // exists, fall back to the legacy roster so the page keeps working.
+  let teamMembers: Author[];
+  let activeLabel: string | null = null;
+  if (cohorts.length > 0) {
+    const selected = cohorts.find((c) => c.label === year) ?? cohorts[0];
+    activeLabel = selected.label;
+    const cohort = await getTeamCohort(selected.label);
+    teamMembers = (cohort?.members ?? []) as Author[];
+  } else {
+    teamMembers = await getTeamRoster();
+  }
+  const isCurrent = (label: string) =>
+    cohorts.length > 0 && label === cohorts[0].label;
 
   return (
-    <main className="min-h-screen bg-[#0B0D0F]">
+    <main className="min-h-screen bg-surface">
       <Header />
 
       <section className="py-20 px-4">
         <div className="container max-w-275 mx-auto">
           <div className="mb-16">
-            <p className="text-[#9CA3AF] text-[10px] font-bold uppercase leading-3.75 tracking-[4px] mb-6 flex items-center justify-center gap-3 bg-[#FFFFFF0D] border border-[#FFFFFF1A] rounded-[9999px] w-[291.5px] h-9.25 text-center">
+            <p className="text-content-muted text-[10px] font-bold uppercase leading-3.75 tracking-[4px] mb-6 flex items-center justify-center gap-3 bg-overlay border border-edge rounded-[9999px] w-[291.5px] h-9.25 text-center">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-hover opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
@@ -94,7 +118,7 @@ export default async function TeamPage() {
               </span>
             </h1>
             <div className="border-l-4 border-primary pl-6 max-w-2xl">
-              <p className="text-[#CBD5E1] text-base md:text-2xl leading-[48.75px] italic">
+              <p className="text-content-secondary text-base md:text-2xl leading-[48.75px] italic">
                 &quot;Behind every word, line of statement and piece,
                 there&apos;s a voice — a person. This is us — unfiltered, human,
                 and learning as we go.&quot;
@@ -102,157 +126,169 @@ export default async function TeamPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-20">
-            {teamMembers.map((member) => (
-              <div
-                key={member._id}
-                className="bg-[#16181D] rounded-2xl md:rounded-[48px] p-6 md:p-8 border border-[#FFFFFF0F]"
-              >
-                <div className="flex items-start gap-4 md:gap-6 mb-4">
-                  <MemberAvatar name={member.name} image={member.image} />
+          {cohorts.length > 1 && (
+            <div className="flex flex-wrap items-center gap-2 mb-12">
+              <span className="text-content-muted text-[10px] font-bold uppercase tracking-[2px] mr-2">
+                Team year
+              </span>
+              {cohorts.map((c) => {
+                const active = c.label === activeLabel;
+                return (
+                  <Link
+                    key={c._id}
+                    href={
+                      isCurrent(c.label)
+                        ? PAGES.team
+                        : `${PAGES.team}?year=${encodeURIComponent(c.label)}`
+                    }
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                      active
+                        ? "border-primary text-primary bg-primary/10"
+                        : "border-edge text-content-muted hover:text-content hover:border-edge-strong"
+                    }`}
+                  >
+                    {c.label}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
 
-                  <div className="flex-1">
-                    <h3 className="text-lg md:text-3xl leading-9 tracking-[-0.75px] font-bold text-white mb-1">
-                      {member.name}
-                    </h3>
-                    <p className="text-primary text-[10px] md:text-sm leading-5 tracking-[1.4px] font-bold uppercase mb-2">
-                      {member.role}
-                    </p>
-                    <p className="text-[#94A3B8] text-[8px] md:text-[10px] leading-3.75 tracking-[1.4px] font-semibold uppercase mb-2">
-                      {member.course}
-                    </p>
-                    {member.socialLinks && (
-                      <div className="flex gap-2 flex-wrap font-bold text-[10px] leading-3.75 underline decoration-[#FFFFFF1A] decoration-0 underline-offset-4">
-                        {member.socialLinks.email && (
-                          <a
-                            href={member.socialLinks.email}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#94A3B8] hover:text-primary transition-colors"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-20">
+            {teamMembers.map((member) => {
+              const profileHref = member.slug?.current
+                ? PAGES.author(member.slug.current)
+                : null;
+              return (
+                <div
+                  key={member._id}
+                  className="bg-surface-raised dark-card rounded-2xl md:rounded-[48px] p-6 md:p-8 border border-edge"
+                >
+                  <div className="flex items-start gap-4 md:gap-6 mb-4">
+                    {profileHref ? (
+                      <Link href={profileHref}>
+                        <MemberAvatar name={member.name} image={member.image} />
+                      </Link>
+                    ) : (
+                      <MemberAvatar name={member.name} image={member.image} />
+                    )}
+
+                    <div className="flex-1">
+                      <h3 className="text-lg md:text-3xl leading-9 tracking-[-0.75px] font-bold text-content mb-1">
+                        {profileHref ? (
+                          <Link
+                            href={profileHref}
+                            className="hover:text-primary transition-colors"
                           >
-                            Email
-                          </a>
+                            {member.name}
+                          </Link>
+                        ) : (
+                          member.name
                         )}
-                        {member.socialLinks.medium && (
-                          <a
-                            href={member.socialLinks.medium}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#94A3B8] hover:text-primary transition-colors"
-                          >
-                            Medium
-                          </a>
-                        )}
-                        {member.socialLinks.snapchat && (
-                          <a
-                            href={member.socialLinks.snapchat}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#94A3B8] hover:text-primary transition-colors"
-                          >
-                            Snapchat
-                          </a>
-                        )}
-                        {member.socialLinks.substack && (
-                          <a
-                            href={member.socialLinks.substack}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#94A3B8] hover:text-primary transition-colors"
-                          >
-                            Substack
-                          </a>
-                        )}
-                        {member.socialLinks.x && (
-                          <a
-                            href={member.socialLinks.x}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#94A3B8] hover:text-primary transition-colors"
-                          >
-                            X
-                          </a>
-                        )}
-                        {member.socialLinks.instagram && (
-                          <a
-                            href={member.socialLinks.instagram}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#94A3B8] hover:text-primary transition-colors"
-                          >
-                            Instagram
-                          </a>
-                        )}
+                      </h3>
+                      {member.role && (
+                        <p className="text-primary text-[10px] md:text-sm leading-5 tracking-[1.4px] font-bold uppercase mb-2">
+                          {member.role}
+                        </p>
+                      )}
+                      {member.course && (
+                        <p className="text-content-muted text-[8px] md:text-[10px] leading-3.75 tracking-[1.4px] font-semibold uppercase mb-2">
+                          {member.course}
+                        </p>
+                      )}
+                      {member.socials && member.socials.length > 0 && (
+                        <div className="flex gap-2 flex-wrap font-bold text-[10px] leading-3.75 underline decoration-[#FFFFFF1A] decoration-0 underline-offset-4">
+                          {member.socials.map((social) => (
+                            <a
+                              key={`${social.label}-${social.url}`}
+                              href={social.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-content-muted hover:text-primary transition-colors"
+                            >
+                              {social.label}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <hr className="mb-6 md:mb-8 text-edge" />
+
+                  <div className="grid grid-cols-2 gap-4 md:gap-6 text-xs">
+                    {member.songObsession && (
+                      <div>
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                          NEW SONG OBSESSION
+                        </p>
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
+                          {member.songObsession}
+                        </p>
+                      </div>
+                    )}
+
+                    {member.tabsCurrentlyOpen && (
+                      <div>
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                          TABS CURRENTLY OPEN
+                        </p>
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
+                          {member.tabsCurrentlyOpen}
+                        </p>
+                      </div>
+                    )}
+
+                    {member.currentlyLearning && (
+                      <div>
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                          WHAT I&apos;M LEARNING RIGHT NOW
+                        </p>
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
+                          {member.currentlyLearning}
+                        </p>
+                      </div>
+                    )}
+
+                    {member.unpopularOpinion && (
+                      <div>
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                          UNPOPULAR DEV OPINION / HOT TAKE
+                        </p>
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
+                          {member.unpopularOpinion}
+                        </p>
+                      </div>
+                    )}
+
+                    {member.techPhilosophy && (
+                      <div>
+                        <p className="text-content-muted uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
+                          TECH PHILOSOPHY
+                        </p>
+                        <p className="text-content-secondary font-medium text-[13px] leading-[19.5px]">
+                          {member.techPhilosophy}
+                        </p>
                       </div>
                     )}
                   </div>
-                </div>
 
-                <hr className="mb-6 md:mb-8 text-[#FFFFFF0D]" />
-
-                <div className="grid grid-cols-2 gap-4 md:gap-6 text-xs">
-                  {member.songObsession && (
-                    <div>
-                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                        NEW SONG OBSESSION
-                      </p>
-                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                        {member.songObsession}
-                      </p>
-                    </div>
-                  )}
-
-                  {member.tabsCurrentlyOpen && (
-                    <div>
-                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                        TABS CURRENTLY OPEN
-                      </p>
-                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                        {member.tabsCurrentlyOpen}
-                      </p>
-                    </div>
-                  )}
-
-                  {member.currentlyLearning && (
-                    <div>
-                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                        WHAT I&apos;M LEARNING RIGHT NOW
-                      </p>
-                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                        {member.currentlyLearning}
-                      </p>
-                    </div>
-                  )}
-
-                  {member.unpopularOpinion && (
-                    <div>
-                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                        UNPOPULAR DEV OPINION / HOT TAKE
-                      </p>
-                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                        {member.unpopularOpinion}
-                      </p>
-                    </div>
-                  )}
-
-                  {member.techPhilosophy && (
-                    <div>
-                      <p className="text-[#94A3B8] uppercase leading-[13.5px] tracking-[1.8PX] font-bold text-[9px] mb-1.5">
-                        TECH PHILOSOPHY
-                      </p>
-                      <p className="text-[#E2E8F0] font-medium text-[13px] leading-[19.5px]">
-                        {member.techPhilosophy}
-                      </p>
-                    </div>
+                  {profileHref && (
+                    <Link
+                      href={profileHref}
+                      className="mt-6 inline-block text-primary text-xs font-bold uppercase tracking-wider hover:text-primary-hover transition-colors"
+                    >
+                      View profile &amp; articles →
+                    </Link>
                   )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
-        <div className="bg-[#16181D] border border-[#FFFFFF0D] rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
+        <div className="bg-surface-raised border border-edge rounded-3xl mx-auto max-w-346 md:h-[967.78px] flex flex-col justify-center p-12 mb-12">
           <p
-            className="text-[#94A3B8] text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
+            className="text-content-muted text-lg md:text-4xl leading-[48.75px] text-center max-w-265.75 mx-auto italic mb-12"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             &quot;What stands out isn&apos;t just what we study or what we
@@ -274,7 +310,7 @@ export default async function TeamPage() {
             >
               Commit & Push
             </h2>
-            <p className="text-[#6b7280] font-bold text-xs leading-4.5 uppercase tracking-[7.2px]">
+            <p className="text-content-subtle font-bold text-xs leading-4.5 uppercase tracking-[7.2px]">
               THE GDG CREATIVE WRITING TEAM
             </p>
           </div>

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Google_Sans_Flex, Caveat, Merriweather } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { cn } from "./lib/utils";
 import ThemeProvider from "./components/ThemeProvider";
+import ThemedToaster from "./components/ThemedToaster";
 
 const googleSansFlex = Google_Sans_Flex({
   variable: "--font-google-sans-flex",
@@ -62,20 +62,7 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider>
-          <Toaster
-            theme="dark"
-            position="top-right"
-            toastOptions={{
-              style: {
-                background: "#000",
-                color: "#fff",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: "6px",
-                fontSize: "14px",
-                fontWeight: 500,
-              },
-            }}
-          />
+          <ThemedToaster />
           {children}
           <Analytics />
         </ThemeProvider>

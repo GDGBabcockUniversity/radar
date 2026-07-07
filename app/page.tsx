@@ -1,25 +1,55 @@
-export const dynamic = "force-dynamic";
-
 import { Header, Footer } from "./components";
 import {
   HeroSection,
-  FeaturedSection,
+  LatestIssueSection,
+  SpotlightSection,
+  SeriesSection,
   PastEditionsSection,
   NewsletterSection,
 } from "./sections";
-import { getFeaturedPost, getRecentPosts } from "./lib/sanity";
+import {
+  getRecentPosts,
+  getArchive,
+  getLatestIssue,
+  getHomeSpotlight,
+  getFeaturedSeries,
+  getLatestEpisodes,
+} from "./lib/sanity";
+import { PAGES } from "./lib/constants";
 
 export default async function Home() {
-  const featuredPost = await getFeaturedPost();
-  const recentPosts = await getRecentPosts();
+  const [
+    posts,
+    archive,
+    latestIssue,
+    spotlight,
+    featuredSeries,
+    latestEpisodes,
+  ] = await Promise.all([
+    getRecentPosts(),
+    getArchive(),
+    getLatestIssue(),
+    getHomeSpotlight(),
+    getFeaturedSeries(),
+    getLatestEpisodes(3),
+  ]);
+
+  // Hero CTA points at the newest edition: prefer a new issue, else latest post.
+  const heroHref = latestIssue
+    ? PAGES.issue(latestIssue.slug.current)
+    : posts && posts.length > 0
+      ? PAGES.post(posts[0].slug.current)
+      : undefined;
 
   return (
     <>
       <Header />
       <main>
-        <HeroSection />
-        <FeaturedSection post={featuredPost} />
-        <PastEditionsSection posts={recentPosts} />
+        <HeroSection heroHref={heroHref} series={featuredSeries} />
+        <LatestIssueSection posts={posts} issue={latestIssue} />
+        <SpotlightSection article={spotlight} />
+        <SeriesSection series={featuredSeries} episodes={latestEpisodes} />
+        <PastEditionsSection entries={archive} />
         <NewsletterSection />
       </main>
       <Footer />

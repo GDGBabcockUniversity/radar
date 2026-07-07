@@ -1,25 +1,29 @@
 import { ArticleCard } from "../components";
 import { urlFor } from "../lib/sanity";
+import { PAGES } from "../lib/constants";
 
-interface Post {
+// Unified archive entry: a new `issue` or a legacy `post`, normalised by
+// getArchive() so both eras render together (brief §5 — two eras, one archive).
+interface ArchiveEntry {
   _id: string;
+  kind: "issue" | "post";
   title: string;
   slug: { current: string };
-  description?: string;
   publishedAt?: string;
+  issueNumber?: number;
+  excerpt?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mainImage?: any;
-  categories?: { title: string }[];
+  image?: any;
 }
 
 interface PastEditionsSectionProps {
-  posts: Post[];
+  entries: ArchiveEntry[];
 }
 
 export default function PastEditionsSection({
-  posts,
+  entries,
 }: PastEditionsSectionProps) {
-  if (!posts || posts.length === 0) return null;
+  if (!entries || entries.length === 0) return null;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -30,34 +34,45 @@ export default function PastEditionsSection({
   };
 
   return (
-    <section id="editions" className="bg-black py-20 md:py-28">
+    <section id="issues" className="past-editions-section py-20 md:py-28">
       <div className="container">
         {/* Section Header */}
         <div className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-content mb-2">
             Past Editions
           </h2>
-          <p className="text-gray-400">
+          <p className="text-content-muted">
             The history of GDG Babcock, documented.
           </p>
         </div>
 
         {/* Editions Grid */}
         <div className="grid gap-6 sm:grid-cols-2 max-w-7xl">
-          {posts.map((post) => {
-            const imageUrl = post.mainImage
-              ? urlFor(post.mainImage).width(600).height(450).url()
+          {entries.map((entry) => {
+            const imageUrl = entry.image
+              ? urlFor(entry.image).width(600).height(450).url()
               : "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=450&fit=crop";
+
+            const href =
+              entry.kind === "issue"
+                ? PAGES.issue(entry.slug.current)
+                : PAGES.post(entry.slug.current);
+
+            const editionNumber =
+              entry.kind === "issue" && entry.issueNumber
+                ? `Issue #${entry.issueNumber}`
+                : undefined;
 
             return (
               <ArticleCard
-                key={post._id}
+                key={entry._id}
                 variant="default"
                 image={imageUrl}
-                date={post.publishedAt ? formatDate(post.publishedAt) : ""}
-                title={post.title}
-                description={post.description}
-                href={`/posts/${post.slug.current}`}
+                editionNumber={editionNumber}
+                date={entry.publishedAt ? formatDate(entry.publishedAt) : ""}
+                title={entry.title}
+                description={entry.excerpt}
+                href={href}
               />
             );
           })}

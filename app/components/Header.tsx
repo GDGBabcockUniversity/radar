@@ -1,76 +1,164 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import Button from "./Button";
 import Image from "next/image";
-import { IMAGES, PAGES } from "../lib/constants";
-import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
+import { useRouter } from "next/navigation";
+import Button from "./Button";
+import { IMAGES, PAGES, LINKS } from "../lib/constants";
+import {
+  IoMoonOutline,
+  IoSunnyOutline,
+  IoSearch,
+  IoMenu,
+  IoClose,
+} from "react-icons/io5";
 import { useTheme } from "./ThemeProvider";
+
+const NAV_LINKS = [
+  { label: "Issues", href: PAGES.issues },
+  { label: "Series", href: PAGES.series },
+  { label: "Games", href: PAGES.games },
+  { label: "About", href: PAGES.about },
+  { label: "Team", href: PAGES.team },
+  { label: "Submit a Signal", href: LINKS.contactEmail },
+];
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
+  const router = useRouter();
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const submitSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (!q) return;
+    setSearchOpen(false);
+    setMenuOpen(false);
+    router.push(`${PAGES.search}?q=${encodeURIComponent(q)}`);
+  };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-transparent backdrop-blur-md">
-      <div className="container flex h-16 items-center justify-between gap-8">
+    <header className="sticky top-0 z-50 w-full border-b border-edge bg-surface/80 backdrop-blur-md">
+      <div className="container flex h-16 items-center justify-between gap-6">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group mr-auto">
-          {/* Signal Icon */}
-          {/* <div className="flex h-10 w-10 items-center justify-center rounded-lg"> */}
+        <Link href="/" className="flex items-center shrink-0">
           <Image
-            src={IMAGES.logo.src}
-            width={IMAGES.logo.w}
-            height={IMAGES.logo.h}
-            alt="Logo"
-            className="w-10 h-10"
+            src={IMAGES.radarLogo.src}
+            width={IMAGES.radarLogo.w}
+            height={IMAGES.radarLogo.h}
+            alt="Radar"
+            className="w-20 h-auto theme-invert"
+            priority
           />
-          {/* </div> */}
-          <div className="flex flex-col">
-            <span className="text-sm font-bold tracking-tight text-white">
-              RADAR
-            </span>
-            <span className="text-[9px] uppercase tracking-wider text-gray-400">
-              By GDG Babcock
-            </span>
-          </div>
         </Link>
 
-        {/* Navigation */}
-        <nav className="hidden items-center gap-8 md:flex">
-          <Link
-            href={PAGES.series}
-            className="text-sm font-medium text-white hover:text-primary transition-colors"
-          >
-            Series
-          </Link>
-          <Link
-            href={PAGES.team}
-            className="text-sm font-medium text-white hover:text-primary transition-colors"
-          >
-            Team
-          </Link>
+        {/* Desktop navigation */}
+        <nav className="hidden items-center gap-7 lg:flex">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="text-sm font-normal text-content-secondary hover:text-content transition-colors whitespace-nowrap"
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
-        {/* Theme Toggle */}
-        <button
-          onClick={toggleTheme}
-          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-          className="flex items-center justify-center w-9 h-9 rounded-full text-lg text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer"
-        >
-          {isDark ? <IoMoonOutline /> : <IoSunnyOutline />}
-        </button>
+        {/* Right side actions */}
+        <div className="flex items-center gap-2 sm:gap-3 ml-auto lg:ml-0">
+          {/* Search toggle */}
+          <button
+            onClick={() => setSearchOpen((v) => !v)}
+            aria-label="Search"
+            aria-expanded={searchOpen}
+            className="flex items-center justify-center w-9 h-9 rounded-full text-lg text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer"
+          >
+            <IoSearch />
+          </button>
 
-        {/* Subscribe Button */}
-        <Button
-          variant="primary"
-          size="sm"
-          href="#subscribe"
-          className="text-black"
-        >
-          Subscribe
-        </Button>
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className="flex items-center justify-center w-9 h-9 rounded-full text-lg text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer"
+          >
+            {isDark ? <IoMoonOutline /> : <IoSunnyOutline />}
+          </button>
+
+          {/* Subscribe Button (hidden on smallest screens to save room) */}
+          <div className="hidden sm:block">
+            <Button variant="blue" size="sm" href="/#subscribe">
+              Subscribe
+            </Button>
+          </div>
+
+          {/* Hamburger (mobile only) */}
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className="flex lg:hidden items-center justify-center w-9 h-9 rounded-full text-xl text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer"
+          >
+            {menuOpen ? <IoClose /> : <IoMenu />}
+          </button>
+        </div>
       </div>
+
+      {/* Search bar (toggled) */}
+      {searchOpen && (
+        <div className="border-t border-edge bg-surface/95 backdrop-blur-md">
+          <form
+            onSubmit={submitSearch}
+            className="container flex items-center gap-3 py-3"
+          >
+            <IoSearch className="text-content-muted text-lg shrink-0" />
+            <input
+              autoFocus
+              type="search"
+              name="q"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search articles and contributors…"
+              className="flex-1 bg-transparent text-content placeholder:text-content-subtle focus:outline-none text-sm"
+            />
+            <button
+              type="submit"
+              className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary-hover transition-colors"
+            >
+              Search
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Mobile menu (toggled) */}
+      {menuOpen && (
+        <div className="lg:hidden border-t border-edge bg-surface/95 backdrop-blur-md">
+          <nav className="container flex flex-col py-4">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="py-2.5 text-sm font-medium text-content-secondary hover:text-content transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="pt-3">
+              <Button variant="blue" size="sm" href="/#subscribe">
+                Subscribe
+              </Button>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
