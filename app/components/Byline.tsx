@@ -53,7 +53,7 @@ export default function Byline({
                 alt={a.image?.alt || a.name}
                 width={32}
                 height={32}
-                className="h-8 w-8 rounded-full border-2 border-black object-cover"
+                className="h-8 w-8 rounded-full border-2 border-surface object-cover"
               />
             ) : null,
           )}
@@ -61,20 +61,20 @@ export default function Byline({
       )}
 
       {valid.length > 0 && (
-        <p className="text-sm text-gray-300">
-          <span className="text-gray-500">By </span>
+        <p className="text-sm text-content-secondary">
+          <span className="text-content-subtle">By </span>
           {valid.map((a, i) => {
             const sep =
               i === 0 ? "" : i === valid.length - 1 ? " and " : ", ";
             const node = a.slug?.current ? (
               <Link
                 href={PAGES.author(a.slug.current)}
-                className="font-semibold text-white hover:text-primary transition-colors"
+                className="font-semibold text-content hover:text-primary transition-colors"
               >
                 {a.name}
               </Link>
             ) : (
-              <span className="font-semibold text-white">{a.name}</span>
+              <span className="font-semibold text-content">{a.name}</span>
             );
             return (
               <span key={a._id ?? a.name}>
@@ -87,7 +87,7 @@ export default function Byline({
       )}
 
       {(date || readingTime) && (
-        <span className="flex items-center gap-3 text-xs text-gray-500">
+        <span className="flex items-center gap-3 text-xs text-content-subtle">
           {date && <span>{date}</span>}
           {readingTime ? (
             <span>

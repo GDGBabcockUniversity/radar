@@ -48,7 +48,7 @@ function clean(obj) {
 
 function toSeries(group) {
   return clean({
-    _id: group._id,
+    _id: `migrated-series-${group._id}`,
     _type: "series",
     title: group.title,
     slug: group.slug,
@@ -60,12 +60,12 @@ function toSeries(group) {
 
 function toEpisode(ep) {
   return clean({
-    _id: ep._id,
+    _id: `migrated-episode-${ep._id}`,
     _type: "episode",
     title: ep.title,
     slug: ep.slug,
-    // group -> series (same referenced _id, just the field name changes)
-    series: ep.group,
+    // group -> series (update the referenced _id to the new migrated series _id)
+    series: ep.group ? { ...ep.group, _ref: `migrated-series-${ep.group._ref}` } : undefined,
     youtubeUrl: ep.youtubeUrl,
     author: ep.author,
     // mainImage -> coverImage
@@ -107,9 +107,17 @@ async function main() {
   }
 
   let tx = client.transaction();
+  
+  // First create the new documents
   [...newSeries, ...newEpisodes].forEach((doc) => {
-    tx = tx.createOrReplace(doc);
+    tx.create(doc);
   });
+  
+  // Then delete the old documents
+  [...groups, ...episodes].forEach((doc) => {
+    tx.delete(doc._id);
+  });
+  
   const res = await tx.commit();
   console.log(
     `\nDone. Rewrote ${newSeries.length} series + ${newEpisodes.length} episode docs.`,

@@ -31,20 +31,20 @@ export default async function IssuesArchivePage() {
   return (
     <>
       <Header />
-      <main className="bg-black min-h-screen text-white pt-20 pb-24">
+      <main className="bg-surface min-h-screen text-content pt-20 pb-24">
         <div className="container">
           <div className="mb-16">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
               Issues
             </h1>
-            <p className="text-gray-400 text-lg max-w-2xl">
+            <p className="text-content-muted text-lg max-w-2xl">
               Every edition of RADAR — the monthly read on the Babcock tech
               ecosystem.
             </p>
           </div>
 
           {entries.length === 0 ? (
-            <p className="text-gray-400">No issues published yet.</p>
+            <p className="text-content-muted">No issues published yet.</p>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {entries.map((entry) => {

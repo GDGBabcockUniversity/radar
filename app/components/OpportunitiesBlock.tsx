@@ -38,24 +38,24 @@ export default function OpportunitiesBlock({
                 href={opp.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col gap-2 rounded-2xl border border-white/10 bg-[#111] p-5 transition-colors hover:border-primary md:flex-row md:items-center md:justify-between"
+                className="group flex flex-col gap-2 rounded-2xl border border-edge bg-surface-raised p-5 transition-colors hover:border-primary md:flex-row md:items-center md:justify-between"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                    <span className="rounded-full bg-overlay px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
                       {opp.type}
                     </span>
                     {deadline && (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-content-subtle">
                         Deadline {deadline}
                       </span>
                     )}
                   </div>
-                  <h3 className="mt-2 text-lg font-semibold text-white group-hover:text-primary transition-colors">
+                  <h3 className="mt-2 text-lg font-semibold text-content group-hover:text-primary transition-colors">
                     {opp.title}
                   </h3>
                   {opp.description && (
-                    <p className="mt-1 text-sm leading-relaxed text-gray-400">
+                    <p className="mt-1 text-sm leading-relaxed text-content-muted">
                       {opp.description}
                     </p>
                   )}

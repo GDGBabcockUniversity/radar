@@ -75,6 +75,11 @@ export default defineType({
       of: [{ type: "opportunityItem" }],
     }),
     defineField({
+      name: "editorial",
+      title: "Editorial",
+      type: "editorial",
+    }),
+    defineField({
       name: "previewUrl",
       title: "Preview URL",
       type: "string",

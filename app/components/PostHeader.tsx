@@ -28,7 +28,7 @@ export default function PostHeader({
               {categories.map((cat) => (
                 <span
                   key={cat.title}
-                  className="px-2.5 py-1 text-xs font-medium uppercase tracking-wide rounded-full bg-white/10 text-white/80"
+                  className="px-2.5 py-1 text-xs font-medium uppercase tracking-wide rounded-full bg-overlay-strong text-content"
                 >
                   {cat.title}
                 </span>
@@ -37,13 +37,13 @@ export default function PostHeader({
           )}
 
           {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight max-w-3xl">
+          <h1 className="text-2xl md:text-3xl font-bold text-content leading-tight max-w-3xl">
             {title}
           </h1>
 
           {/* Description */}
           {description && (
-            <p className="mt-3 text-base md:text-lg text-gray-400 max-w-2xl leading-relaxed">
+            <p className="mt-3 text-base md:text-lg text-content-muted max-w-2xl leading-relaxed">
               {description}
             </p>
           )}
@@ -77,7 +77,7 @@ export default function PostHeader({
                 {categories.map((cat) => (
                   <span
                     key={cat.title}
-                    className="px-2.5 py-1 text-xs font-medium uppercase tracking-wide rounded-full bg-white/10 text-white/80 backdrop-blur-sm"
+                    className="px-2.5 py-1 text-xs font-medium uppercase tracking-wide rounded-full bg-white/10 text-white backdrop-blur-sm"
                   >
                     {cat.title}
                   </span>
@@ -92,7 +92,7 @@ export default function PostHeader({
 
             {/* Description */}
             {description && (
-              <p className="mt-3 text-sm md:text-base text-gray-300 max-w-2xl leading-relaxed">
+              <p className="mt-3 text-sm md:text-base text-white/80 max-w-2xl leading-relaxed">
                 {description}
               </p>
             )}

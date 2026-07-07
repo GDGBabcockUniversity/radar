@@ -58,7 +58,7 @@ export default function ShareButtons({
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 mr-1">
+      <span className="text-xs font-semibold uppercase tracking-wider text-content-subtle mr-1">
         Share
       </span>
       {targets.map(({ label, icon: Icon, href }) => (
@@ -68,7 +68,7 @@ export default function ShareButtons({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={label}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-300 transition-colors hover:border-primary hover:text-primary"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-edge bg-overlay text-content-secondary transition-colors hover:border-primary hover:text-primary"
         >
           <Icon className="h-4 w-4" />
         </a>
@@ -77,7 +77,7 @@ export default function ShareButtons({
         type="button"
         onClick={handleCopy}
         aria-label="Copy link"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-300 transition-colors hover:border-primary hover:text-primary"
+        className="flex h-9 w-9 items-center justify-center rounded-full border border-edge bg-overlay text-content-secondary transition-colors hover:border-primary hover:text-primary"
       >
         <FaLink className="h-4 w-4" />
       </button>

@@ -42,13 +42,13 @@ export default function Button({
       active:scale-[0.98]
     `,
     outlined: `
-      border border-white/20 text-white bg-white/5
-      hover:bg-white/10 hover:border-white/30
+      border border-edge-strong text-content bg-overlay
+      hover:bg-overlay-strong hover:border-edge-strong
       active:scale-[0.98]
     `,
     ghost: `
-      text-gray-400 uppercase tracking-wider text-sm
-      hover:text-white
+      text-content-muted uppercase tracking-wider text-sm
+      hover:text-content
     `,
   };
 

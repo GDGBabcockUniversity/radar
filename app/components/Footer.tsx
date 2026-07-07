@@ -6,8 +6,10 @@ const NAV_LINKS = [
   { label: "Home", href: PAGES.home },
   { label: "Issues", href: PAGES.issues },
   { label: "Series", href: PAGES.series },
+  { label: "Games", href: PAGES.games },
   { label: "About", href: PAGES.about },
   { label: "Team", href: PAGES.team },
+  { label: "Contributors", href: PAGES.contributors },
 ];
 
 const CONNECT_LINKS = [
@@ -64,11 +66,11 @@ export default function Footer() {
                 width={IMAGES.radarLogo.w}
                 height={IMAGES.radarLogo.h}
                 alt="Radar"
-                className="w-40 h-auto"
+                className="w-40 h-auto theme-invert"
               />
             </Link>
 
-            <p className="text-sm text-gray-400 leading-relaxed">
+            <p className="text-sm text-content-muted leading-relaxed">
               Your Signal to What&apos;s Next. Documenting the journey of
               Babcock&apos;s tech ecosystem, one edition at a time.
             </p>
@@ -82,7 +84,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="flex items-center justify-center w-9 h-9 rounded-full border border-white/10 text-gray-500 hover:text-white hover:border-white/25 transition-colors"
+                  className="flex items-center justify-center w-9 h-9 rounded-full border border-edge text-content-subtle hover:text-content hover:border-edge-strong transition-colors"
                 >
                   {social.icon}
                 </a>
@@ -92,7 +94,7 @@ export default function Footer() {
 
           {/* Column 2: Navigation */}
           <div>
-            <h4 className="mb-5 text-sm font-semibold text-white">
+            <h4 className="mb-5 text-sm font-semibold text-content">
               Navigation
             </h4>
             <ul className="space-y-3">
@@ -100,7 +102,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                    className="text-sm text-content-muted hover:text-content transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -111,13 +113,13 @@ export default function Footer() {
 
           {/* Column 3: Connect */}
           <div>
-            <h4 className="mb-5 text-sm font-semibold text-white">Connect</h4>
+            <h4 className="mb-5 text-sm font-semibold text-content">Connect</h4>
             <ul className="space-y-3">
               {CONNECT_LINKS.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                    className="text-sm text-content-muted hover:text-content transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -128,10 +130,10 @@ export default function Footer() {
 
           {/* Column 4: Stay in the Loop */}
           <div>
-            <h4 className="mb-5 text-sm font-semibold text-white">
+            <h4 className="mb-5 text-sm font-semibold text-content">
               Stay in the Loop
             </h4>
-            <p className="text-sm text-gray-400 leading-relaxed mb-4">
+            <p className="text-sm text-content-muted leading-relaxed mb-4">
               {CADENCE_TAGLINE}
             </p>
 
@@ -160,11 +162,11 @@ export default function Footer() {
 
         {/* Copyright bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-content-subtle">
             © {currentYear} GDG Babcock. All rights reserved.
           </p>
-          <p className="text-xs text-gray-500">
-            Designed by <span className="text-gray-400">Daddy D.</span>
+          <p className="text-xs text-content-subtle">
+            Designed by <span className="text-content-muted">Daddy D.</span>
           </p>
         </div>
       </div>

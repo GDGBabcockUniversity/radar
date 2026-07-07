@@ -44,13 +44,15 @@ export default defineType({
       name: "role",
       title: "Team Role",
       type: "string",
-      description: "e.g., RADAR Team Lead, Writer, Editor",
+      description:
+        "Legacy default. For team display, set the role per year on the Team Cohort.",
     }),
     defineField({
       name: "course",
       title: "Course",
       type: "string",
-      description: "e.g., Computer Science, Software Engineering",
+      description:
+        "Legacy default. For team display, set the course per year on the Team Cohort.",
     }),
     defineField({
       name: "socials",
@@ -81,7 +83,8 @@ export default defineType({
         },
       ],
     }),
-    // --- Personality fields (consolidated from teamMember) ---
+    // --- Personality fields (legacy default; the live snapshot is now frozen
+    // per year on each Team Cohort membership, falling back to these). ---
     defineField({
       name: "songObsession",
       title: "New Song Obsession",

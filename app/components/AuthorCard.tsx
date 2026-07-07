@@ -27,7 +27,7 @@ export default function AuthorCard({
   };
 
   return (
-    <div className="flex items-center justify-start gap-4 py-6 border-b border-white/10">
+    <div className="flex items-center justify-start gap-4 py-6 border-b border-edge">
       {/* Author Avatar */}
       {author?.image ? (
         <Image
@@ -47,19 +47,19 @@ export default function AuthorCard({
 
       {/* Author Info */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
-        <span className="text-white font-medium">
+        <span className="text-content font-medium">
           {author?.name || "RADAR Team"}
         </span>
-        <span className="hidden sm:block text-gray-500 mx-2">•</span>
+        <span className="hidden sm:block text-content-subtle mx-2">•</span>
         {publishedAt && (
           <>
-            <span className="text-gray-400 text-sm">
+            <span className="text-content-muted text-sm">
               {formatDate(publishedAt)}
             </span>
             {readingTime && (
               <>
-                <span className="hidden sm:block text-gray-500 mx-2">•</span>
-                <span className="text-gray-400 text-sm">
+                <span className="hidden sm:block text-content-subtle mx-2">•</span>
+                <span className="text-content-muted text-sm">
                   {readingTime} min read
                 </span>
               </>

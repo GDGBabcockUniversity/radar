@@ -1,12 +1,26 @@
 import Image from "next/image";
 import { Button } from "../components";
-import { IMAGES, LINKS } from "../lib/constants";
+import { IMAGES, LINKS, PAGES } from "../lib/constants";
+
+interface HeroSeries {
+  title: string;
+  slug: { current: string };
+}
 
 interface HeroSectionProps {
   heroHref?: string;
+  series?: HeroSeries | null;
 }
 
-export default function HeroSection({ heroHref }: HeroSectionProps) {
+export default function HeroSection({ heroHref, series }: HeroSectionProps) {
+  // The "Watch" CTA points at the current featured series; falls back to the
+  // YouTube playlist when there's no active series.
+  const watchLabel = series ? `Watch ${series.title}` : "Watch on YouTube";
+  const watchHref = series
+    ? PAGES.seriesShow(series.slug.current)
+    : LINKS.youtubePlaylist;
+  const watchExternal = !series;
+
   return (
     <section className="hero-section relative overflow-hidden flex flex-col items-center justify-center text-center min-h-[90vh] px-4">
       {/* Radar signal background image */}
@@ -16,7 +30,7 @@ export default function HeroSection({ heroHref }: HeroSectionProps) {
           width={IMAGES.radarSignalBg.w}
           height={IMAGES.radarSignalBg.h}
           alt=""
-          className="w-[90%] max-w-225 h-auto opacity-70"
+          className="w-[90%] max-w-225 h-auto opacity-70 theme-invert hero-signal"
           priority
           aria-hidden="true"
         />
@@ -34,21 +48,21 @@ export default function HeroSection({ heroHref }: HeroSectionProps) {
             width={IMAGES.radarLogo.w}
             height={IMAGES.radarLogo.h}
             alt="Radar"
-            className="h-24 md:h-32 lg:h-40 w-auto"
+            className="h-24 md:h-32 lg:h-40 w-auto theme-invert"
             priority
           />
         </div>
 
         {/* Divider + subtitle */}
         <div className="flex flex-col items-center gap-4 mb-10 md:mb-12">
-          <div className="w-64 md:w-80 h-px bg-white/20" />
-          <p className="text-md md:text-lg uppercase tracking-widest text-white font-medium border-y py-2">
+          <div className="w-64 md:w-80 h-px bg-content/20" />
+          <p className="text-md md:text-lg uppercase tracking-widest text-content font-medium border-y py-2">
             The Official Record of the Babcock Tech Ecosystem
           </p>
         </div>
 
         {/* Tagline */}
-        <p className="text-xl md:text-2xl lg:text-3xl italic font-extrabold uppercase leading-snug mb-10 md:mb-12 text-white max-w-2xl">
+        <p className="text-xl md:text-2xl lg:text-3xl italic font-extrabold uppercase leading-snug mb-10 md:mb-12 text-content max-w-2xl">
           Tracking the signals, projects, and people shaping the Babcock tech
           ecosystem.
         </p>
@@ -66,9 +80,9 @@ export default function HeroSection({ heroHref }: HeroSectionProps) {
           <Button
             variant="outlined"
             size="md"
-            href={LINKS.youtubePlaylist}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={watchHref}
+            target={watchExternal ? "_blank" : undefined}
+            rel={watchExternal ? "noopener noreferrer" : undefined}
             className="bg-white text-black"
           >
             <svg
@@ -80,7 +94,7 @@ export default function HeroSection({ heroHref }: HeroSectionProps) {
             >
               <path d="M8 5v14l11-7z" />
             </svg>
-            Watch Class of 2026
+            {watchLabel}
           </Button>
         </div>
       </div>

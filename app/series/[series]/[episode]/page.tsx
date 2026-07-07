@@ -36,12 +36,12 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
   return (
     <>
       <Header />
-      <main className="bg-black min-h-screen pt-16">
+      <main className="bg-surface min-h-screen pt-16">
         <div className="container max-w-4xl mx-auto py-12">
           {episode.series && (
             <Link
               href={PAGES.seriesShow(seriesSlugCurrent)}
-              className="mb-6 inline-flex items-center text-sm font-medium text-primary transition-colors hover:text-white"
+              className="mb-6 inline-flex items-center text-sm font-medium text-primary transition-colors hover:text-content"
             >
               <svg
                 className="mr-2 h-4 w-4"
@@ -60,11 +60,11 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
             </Link>
           )}
 
-          <h1 className="mb-6 text-3xl font-bold tracking-tight text-white md:text-5xl">
+          <h1 className="mb-6 text-3xl font-bold tracking-tight text-content md:text-5xl">
             {episode.title}
           </h1>
 
-          <div className="mb-8 flex flex-col gap-4 border-b border-white/10 pb-6 md:flex-row md:items-center md:justify-between">
+          <div className="mb-8 flex flex-col gap-4 border-b border-edge pb-6 md:flex-row md:items-center md:justify-between">
             <Byline
               authors={episode.author ? [episode.author] : []}
               publishedAt={episode.publishedAt}
@@ -74,7 +74,7 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           </div>
 
           {ytId && (
-            <div className="relative mb-12 aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl">
+            <div className="relative mb-12 aspect-video w-full overflow-hidden rounded-2xl border border-edge bg-overlay shadow-2xl">
               <iframe
                 src={`https://www.youtube.com/embed/${ytId}?autoplay=0&rel=0`}
                 title={episode.title}
@@ -90,14 +90,14 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
               {episode.body ? (
                 <PostBody body={episode.body} />
               ) : (
-                <p className="italic text-gray-400">
+                <p className="italic text-content-muted">
                   No write-up provided for this episode.
                 </p>
               )}
             </div>
           </div>
 
-          <div className="border-t border-white/10 py-8">
+          <div className="border-t border-edge py-8">
             <ShareButtons path={path} title={episode.title} />
           </div>
         </div>

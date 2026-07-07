@@ -26,18 +26,18 @@ export default function SignalsBlock({ signals }: { signals?: SignalItem[] }) {
           {signals.map((signal, i) => {
             const color = LABEL_COLORS[signal.label] ?? "#ea4335";
             const card = (
-              <div className="h-full rounded-2xl border border-white/10 bg-[#111] p-5 transition-colors hover:border-white/20">
+              <div className="h-full rounded-2xl border border-edge bg-surface-raised p-5 transition-colors hover:border-edge-strong">
                 <span
-                  className="inline-block rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white"
+                  className="inline-block rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-content"
                   style={{ backgroundColor: color }}
                 >
                   {signal.label}
                 </span>
-                <h3 className="mt-3 text-lg font-semibold leading-snug text-white">
+                <h3 className="mt-3 text-lg font-semibold leading-snug text-content">
                   {signal.headline}
                 </h3>
                 {signal.blurb && (
-                  <p className="mt-2 text-sm leading-relaxed text-gray-400">
+                  <p className="mt-2 text-sm leading-relaxed text-content-muted">
                     {signal.blurb}
                   </p>
                 )}

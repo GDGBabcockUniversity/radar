@@ -73,7 +73,7 @@ function mapSocials(socialLinks) {
 
 function toAuthor(tm) {
   const author = {
-    _id: `author.from.${tm._id.replace(/^drafts\./, "")}`,
+    _id: `author-from-${tm._id.replace(/^drafts\./, "")}`,
     _type: "author",
     name: tm.name,
     // author.slug is now required; derive one from the name if the legacy

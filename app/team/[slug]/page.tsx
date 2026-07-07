@@ -43,20 +43,20 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
   const articles: AuthoredArticle[] = author.articles || [];
 
   return (
-    <main className="min-h-screen bg-[#0B0D0F]">
+    <main className="min-h-screen bg-surface">
       <Header />
 
       <section className="py-16 md:py-24 px-4">
         <div className="container max-w-4xl mx-auto">
           <Link
             href={PAGES.team}
-            className="text-xs font-bold uppercase tracking-wider text-gray-500 hover:text-primary transition-colors"
+            className="text-xs font-bold uppercase tracking-wider text-content-subtle hover:text-primary transition-colors"
           >
             ← Back to team
           </Link>
 
           <div className="mt-8 flex flex-col gap-6 md:flex-row md:items-center">
-            <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl bg-white/5">
+            <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl bg-overlay">
               {author.image ? (
                 <Image
                   src={urlFor(author.image).width(224).height(224).url()}
@@ -74,7 +74,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
             </div>
 
             <div>
-              <h1 className="text-3xl md:text-5xl font-bold text-white">
+              <h1 className="text-3xl md:text-5xl font-bold text-content">
                 {author.name}
               </h1>
               {author.role && (
@@ -83,7 +83,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                 </p>
               )}
               {author.course && (
-                <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-content-subtle">
                   {author.course}
                 </p>
               )}
@@ -91,7 +91,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
           </div>
 
           {author.bio && (
-            <p className="mt-8 max-w-2xl text-base leading-relaxed text-gray-300">
+            <p className="mt-8 max-w-2xl text-base leading-relaxed text-content-secondary">
               {author.bio}
             </p>
           )}
@@ -104,7 +104,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-gray-300 transition-colors hover:border-primary hover:text-primary"
+                  className="rounded-full border border-edge bg-overlay px-3 py-1.5 text-xs font-semibold text-content-secondary transition-colors hover:border-primary hover:text-primary"
                 >
                   {social.label}
                 </a>
@@ -113,12 +113,12 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
           )}
 
           <div className="mt-16">
-            <h2 className="mb-6 text-2xl font-bold text-white">
+            <h2 className="mb-6 text-2xl font-bold text-content">
               Articles by {author.name}
             </h2>
 
             {articles.length === 0 ? (
-              <p className="text-gray-500">No articles yet.</p>
+              <p className="text-content-subtle">No articles yet.</p>
             ) : (
               <div className="flex flex-col gap-3">
                 {articles.map((article) => {
@@ -129,9 +129,9 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                     <Link
                       key={article._id}
                       href={PAGES.article(article.slug.current)}
-                      className="group rounded-2xl border border-white/10 bg-[#111] p-5 transition-colors hover:border-primary"
+                      className="group rounded-2xl border border-edge bg-surface-raised p-5 transition-colors hover:border-primary"
                     >
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-content-subtle">
                         {sectionLabel && (
                           <span className="font-semibold uppercase tracking-wider text-primary">
                             {sectionLabel}
@@ -142,11 +142,11 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                         )}
                         {date && <span>· {date}</span>}
                       </div>
-                      <h3 className="mt-2 text-xl font-semibold text-white group-hover:text-primary transition-colors">
+                      <h3 className="mt-2 text-xl font-semibold text-content group-hover:text-primary transition-colors">
                         {article.title}
                       </h3>
                       {article.excerpt && (
-                        <p className="mt-1 line-clamp-2 text-sm text-gray-400">
+                        <p className="mt-1 line-clamp-2 text-sm text-content-muted">
                           {article.excerpt}
                         </p>
                       )}

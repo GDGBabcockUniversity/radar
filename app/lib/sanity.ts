@@ -1,6 +1,6 @@
 import { createClient } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
-import { CREDENTIALS } from "./constants";
+import { CREDENTIALS, PAGES } from "./constants";
 
 const projectId = CREDENTIALS.sanity_project_id;
 const dataset = CREDENTIALS.sanity_dataset;
@@ -22,7 +22,8 @@ export function urlFor(source: any) {
 
 // Fetch all posts
 export async function getPosts() {
-  return client.fetch(`
+  return client.fetch(
+    `
     *[_type == "post" && hidden != true] | order(publishedAt desc) {
       _id,
       title,
@@ -34,7 +35,10 @@ export async function getPosts() {
       "author": author->{ name, image },
       "categories": categories[]->{ title }
     }
-  `);
+  `,
+    {},
+    { next: { revalidate: 60 } }
+  );
 }
 
 // Fetch a single post by slug
@@ -56,12 +60,14 @@ export async function getPost(slug: string) {
     }
   `,
     { slug },
+    { next: { revalidate: 60 } },
   );
 }
 
 // Fetch featured post
 export async function getFeaturedPost() {
-  return client.fetch(`
+  return client.fetch(
+    `
     *[_type == "post" && featured == true && hidden != true] | order(publishedAt desc)[0] {
       _id,
       title,
@@ -72,12 +78,16 @@ export async function getFeaturedPost() {
       "author": author->{ name, image },
       "categories": categories[]->{ title }
     }
-  `);
+  `,
+    {},
+    { next: { revalidate: 60 } }
+  );
 }
 
 // Fetch recent posts (all posts)
 export async function getRecentPosts() {
-  return client.fetch(`
+  return client.fetch(
+    `
     *[_type == "post" && hidden != true] | order(publishedAt desc) {
       _id,
       title,
@@ -88,7 +98,10 @@ export async function getRecentPosts() {
       "author": author->{ name, image },
       "categories": categories[]->{ title }
     }
-  `);
+  `,
+    {},
+    { next: { revalidate: 60 } }
+  );
 }
 
 // Fetch all team members
@@ -460,6 +473,172 @@ interface TeamMemberDoc {
   techPhilosophy?: string;
 }
 
+// Every author who has ever published — bylined on an article or a legacy post,
+// regardless of team/cohort membership. The permanent, ever-growing record of
+// contributors (past and present). Ordered by name.
+export async function getContributors() {
+  return client.fetch(
+    `
+    *[_type == "author" && (
+      count(*[_type == "article" && references(^._id)]) +
+      count(*[_type == "post" && references(^._id)]) > 0
+    )] | order(name asc){
+      _id,
+      name,
+      slug,
+      image,
+      role,
+      "count": count(*[_type == "article" && references(^._id)]) +
+               count(*[_type == "post" && references(^._id)])
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+// Global search across content (articles + legacy posts) and authors. Used by
+// the header search → /search. Prefix-matches each query word.
+export async function searchAll(q: string) {
+  const raw = (q ?? "").trim();
+  if (!raw) return { results: [], authors: [] };
+  const term = raw
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => `${w}*`)
+    .join(" ");
+
+  const [articles, posts, authors] = await Promise.all([
+    client.fetch(
+      `*[_type == "article" && (title match $term || excerpt match $term)]
+        | order(publishedAt desc)[0...25]{
+          _id, title, slug, excerpt, coverImage, publishedAt
+        }`,
+      { term },
+      { next: { revalidate: 60 } },
+    ),
+    client.fetch(
+      `*[_type == "post" && hidden != true && (title match $term || description match $term)]
+        | order(publishedAt desc)[0...25]{
+          _id, title, slug, description, mainImage, publishedAt
+        }`,
+      { term },
+      { next: { revalidate: 60 } },
+    ),
+    client.fetch(
+      `*[_type == "author" && name match $term] | order(name asc)[0...25]{
+        _id, name, slug, image, role
+      }`,
+      { term },
+      { next: { revalidate: 60 } },
+    ),
+  ]);
+
+  const results = [
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...(articles as any[]).map((a) => ({
+      kind: "article" as const,
+      _id: a._id,
+      title: a.title,
+      excerpt: a.excerpt,
+      image: a.coverImage,
+      publishedAt: a.publishedAt,
+      href: PAGES.article(a.slug.current),
+    })),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...(posts as any[]).map((p) => ({
+      kind: "post" as const,
+      _id: p._id,
+      title: p.title,
+      excerpt: p.description,
+      image: p.mainImage,
+      publishedAt: p.publishedAt,
+      href: PAGES.post(p.slug.current),
+    })),
+  ].sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
+
+  return { results, authors };
+}
+
+// All team cohorts, newest first — for the team-page year switcher.
+export async function getTeamCohorts(): Promise<
+  { _id: string; label: string; startYear: number }[]
+> {
+  return client.fetch(
+    `*[_type == "teamCohort"] | order(startYear desc){ _id, label, startYear }`,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+// One cohort's roster, normalised to the same shape the team page already uses.
+// Membership `role`/`order` override the author's defaults (roles rotate yearly).
+// Pass a label to load a specific year; omit it for the current (newest) team.
+export async function getTeamCohort(label?: string) {
+  const query = `
+    *[_type == "teamCohort"${label ? " && label == $label" : ""}]
+      | order(startYear desc)[0]{
+        _id,
+        label,
+        startYear,
+        "members": members[]{
+          role,
+          order,
+          course,
+          image,
+          songObsession,
+          tabsCurrentlyOpen,
+          currentlyLearning,
+          unpopularOpinion,
+          techPhilosophy,
+          "author": author->{
+            _id, name, slug, image, course, socials,
+            songObsession, tabsCurrentlyOpen, currentlyLearning,
+            unpopularOpinion, techPhilosophy
+          }
+        }
+      }
+  `;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cohort: any = await client.fetch(
+    query,
+    label ? { label } : {},
+    { next: { revalidate: 60 } },
+  );
+  if (!cohort) return null;
+
+  const members = (cohort.members ?? [])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter((m: any) => m.author)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .map((m: any) => ({
+      // Author is the permanent identity; per-year fields override it (with a
+      // fallback to the author level for not-yet-migrated cohorts).
+      ...m.author,
+      role: m.role ?? m.author.role,
+      order: m.order ?? 0,
+      course: m.course ?? m.author.course,
+      image: m.image ?? m.author.image,
+      songObsession: m.songObsession ?? m.author.songObsession,
+      tabsCurrentlyOpen: m.tabsCurrentlyOpen ?? m.author.tabsCurrentlyOpen,
+      currentlyLearning: m.currentlyLearning ?? m.author.currentlyLearning,
+      unpopularOpinion: m.unpopularOpinion ?? m.author.unpopularOpinion,
+      techPhilosophy: m.techPhilosophy ?? m.author.techPhilosophy,
+    }))
+    .sort(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (a: any, b: any) =>
+        (a.order ?? 0) - (b.order ?? 0) || a.name.localeCompare(b.name),
+    );
+
+  return {
+    _id: cohort._id as string,
+    label: cohort.label as string,
+    startYear: cohort.startYear as number,
+    members,
+  };
+}
+
 // The latest issue (highest issue number), for the home featured slot.
 export async function getLatestIssue() {
   return client.fetch(
@@ -471,7 +650,10 @@ export async function getLatestIssue() {
       slug,
       publishedAt,
       coverImage,
-      excerpt
+      excerpt,
+      signals,
+      opportunities,
+      editorial
     }
     `,
     {},
