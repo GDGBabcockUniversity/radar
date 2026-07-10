@@ -16,7 +16,6 @@ import {
 } from "react-icons/io5";
 import { useTheme } from "./ThemeProvider";
 import { useAuth } from "./AuthProvider";
-import { cn } from "../lib/utils";
 
 const NAV_LINKS = [
   { label: "Issues", href: PAGES.issues },
@@ -36,6 +35,7 @@ export default function Header() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [query, setQuery] = useState("");
 
   const submitSearch = (e: React.FormEvent) => {
@@ -97,23 +97,65 @@ export default function Header() {
           </button>
 
           {/* Account */}
-          {!authLoading && (
+          {!authLoading && !isAuthenticated && (
             <button
-              onClick={() => (isAuthenticated ? signOut() : openSignIn())}
-              aria-label={isAuthenticated ? `Sign out (${member?.name || member?.email})` : "Sign in"}
-              title={isAuthenticated ? `Signed in as ${member?.name || member?.email} — click to sign out` : "Sign in"}
-              className={cn(
-                "flex items-center gap-1.5 h-9 rounded-full text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer",
-                isAuthenticated ? "w-9 justify-center text-lg" : "px-3 text-lg"
-              )}
+              onClick={() => openSignIn()}
+              aria-label="Sign in"
+              title="Sign in"
+              className="flex items-center gap-1.5 h-9 rounded-full px-3 text-lg text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer"
             >
-              <IoPersonCircleOutline
-                className={isAuthenticated ? "text-primary" : undefined}
-              />
-              {!isAuthenticated && (
-                <span className="text-sm font-medium">Sign in</span>
-              )}
+              <IoPersonCircleOutline />
+              <span className="text-sm font-medium">Sign in</span>
             </button>
+          )}
+          {!authLoading && isAuthenticated && (
+            <div className="relative">
+              <button
+                onClick={() => setAccountOpen((v) => !v)}
+                aria-label={`Account (${member?.name || member?.email})`}
+                aria-expanded={accountOpen}
+                className="flex items-center gap-1.5 h-9 rounded-full px-2 sm:px-3 text-lg text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer"
+              >
+                <IoPersonCircleOutline className="text-primary" />
+                <span className="hidden sm:inline text-sm font-medium text-content max-w-24 truncate">
+                  {member?.name?.split(" ")[0] || "Account"}
+                </span>
+              </button>
+              {accountOpen && (
+                <>
+                  <button
+                    aria-label="Close account menu"
+                    onClick={() => setAccountOpen(false)}
+                    className="fixed inset-0 z-40 cursor-default"
+                  />
+                  <div className="absolute right-0 top-11 z-50 w-56 rounded-xl border border-edge bg-surface p-2 shadow-xl">
+                    <p className="px-3 py-2 text-xs text-content-subtle">
+                      Signed in as
+                      <span className="mt-0.5 block truncate text-sm font-medium text-content">
+                        {member?.name || member?.email}
+                      </span>
+                    </p>
+                    <a
+                      href="https://gdgbabcock.com/profile"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block rounded-lg px-3 py-2 text-sm text-content-secondary hover:bg-overlay-strong hover:text-content transition-colors"
+                    >
+                      Your profile
+                    </a>
+                    <button
+                      onClick={() => {
+                        setAccountOpen(false);
+                        signOut();
+                      }}
+                      className="block w-full rounded-lg px-3 py-2 text-left text-sm text-content-secondary hover:bg-overlay-strong hover:text-content transition-colors"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           )}
 
           {/* Subscribe Button (hidden on smallest screens to save room) */}
