@@ -9,9 +9,17 @@ import { cn } from "../lib/utils";
 interface SignInModalProps {
   isOpen: boolean;
   onClose: () => void;
+  /** Situational copy (e.g. the post-game prompt); defaults are generic. */
+  title?: string;
+  message?: string;
 }
 
-export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
+export default function SignInModal({
+  isOpen,
+  onClose,
+  title,
+  message,
+}: SignInModalProps) {
   const { signInWithGoogle, signInWithEmail, error, clearError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,11 +70,11 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       <div className="relative z-[10000] flex min-h-full items-center justify-center p-4">
         <div className="w-full max-w-sm rounded-2xl border border-edge bg-surface p-8 shadow-2xl">
           <h2 className="text-xl font-semibold text-content">
-            Sign in to RADAR
+            {title ?? "Sign in to RADAR"}
           </h2>
           <p className="mt-2 text-sm text-content-muted">
-            Use your GDG Babcock account to track reads and game scores on
-            your profile.
+            {message ??
+              "Use your GDG Babcock account to track reads and game scores on your profile."}
           </p>
 
           <button

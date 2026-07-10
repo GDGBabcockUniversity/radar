@@ -8,6 +8,8 @@ import {
   PersonalityQuiz,
   SignalWordle,
   CrosslinksGame,
+  CrypticDaily,
+  RapidFireGame,
 } from "../../components";
 import { getGame, type Game } from "../../lib/games";
 import { PAGES } from "../../lib/constants";
@@ -24,6 +26,10 @@ function renderGame(game: Game) {
       return <SignalWordle />;
     case "connections":
       return <CrosslinksGame />;
+    case "cryptic":
+      return <CrypticDaily />;
+    case "arcade":
+      return <RapidFireGame />;
     default: {
       const exhausted: never = game.type;
       return exhausted;

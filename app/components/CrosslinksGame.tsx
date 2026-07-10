@@ -11,7 +11,11 @@ import {
 } from "../lib/gamesData/crosslinksBoards";
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
+import { queuePendingScore } from "../lib/pendingScores";
+import { nudgeSignInAfterGame } from "../lib/signInNudge";
+import { computeDailyGameStats, type GameStats } from "../lib/gameStats";
 import { useAuth } from "./AuthProvider";
+import GameInfoModal from "./GameInfoModal";
 
 // Crosslinks — RADAR's daily grouping game (Connections-style). Sixteen
 // terms, four hidden groups, four mistakes. Score = solvedGroups×100 +
@@ -119,8 +123,17 @@ export default function CrosslinksGame() {
   const [pastGuesses, setPastGuesses] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [stats, setStats] = useState<GameStats | null>(null);
   const reported = useRef(false);
   const { isAuthenticated, openSignIn } = useAuth();
+
+  const openInfo = useCallback(() => {
+    setStats(
+      computeDailyGameStats("crosslinks", localDateKey(), yesterdayDateKey())
+    );
+    setInfoOpen(true);
+  }, []);
 
   // Mount hydration — deferred out of the synchronous effect body (same
   // pattern and reasoning as SignalWordle): dates/localStorage never run
@@ -139,6 +152,11 @@ export default function CrosslinksGame() {
 
       let restored: SavedDay | null = null;
       try {
+        // First-ever visit: open the how-to-play modal before play starts.
+        if (!localStorage.getItem("howto-seen-crosslinks")) {
+          localStorage.setItem("howto-seen-crosslinks", "1");
+          openInfo();
+        }
         const raw = localStorage.getItem(`crosslinks-${key}`);
         if (raw) {
           const saved: SavedDay = JSON.parse(raw);
@@ -188,7 +206,7 @@ export default function CrosslinksGame() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [openInfo]);
 
   const persist = useCallback(
     (state: Omit<SavedDay, "boardId">, boardId: string, key: string) => {
@@ -328,21 +346,25 @@ export default function CrosslinksGame() {
     if (!reported.current) {
       reported.current = true;
       const score = solvedCount * 100 + (MAX_MISTAKES - finalMistakes) * 50;
-      track("game.played", {
+      const payload = {
         gameId: leaderboardId(GAME, dayKey),
+        baseId: leaderboardId(GAME),
+        streakEligible: true,
         solved: won,
         score,
         mistakes: finalMistakes,
         day: dayKey,
-      });
+      };
+      track("game.played", payload);
       if (won) {
         setStreak(recordWinStreak(dayKey));
         if (finalMistakes === 0) burstConfetti();
       }
       if (!isAuthenticated) {
-        toast("Sign in to save this score to the leaderboard", {
-          action: { label: "Sign in", onClick: openSignIn },
-        });
+        // Anonymous emits are dropped server-side; the queue is what lets
+        // this result transition to the account after sign-in.
+        queuePendingScore(payload);
+        nudgeSignInAfterGame(openSignIn, dayKey);
       }
     }
     setPhase(won ? "won" : "lost");
@@ -398,15 +420,24 @@ export default function CrosslinksGame() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <p className="text-sm text-content-muted mb-6">
-        Find four groups of four related terms. Watch out — some words fit
-        more than one group.
-        {streak > 0 && (
-          <span className="ml-2 font-semibold text-gdg-yellow">
-            🔥 {streak}-day streak
-          </span>
-        )}
-      </p>
+      <div className="mb-6 flex items-start justify-between gap-3">
+        <p className="text-sm text-content-muted">
+          Find four groups of four related terms. Watch out — some words fit
+          more than one group.
+          {streak > 0 && (
+            <span className="ml-2 font-semibold text-gdg-yellow">
+              🔥 {streak}-day streak
+            </span>
+          )}
+        </p>
+        <button
+          onClick={openInfo}
+          aria-label="How to play and your stats"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-edge text-xs font-bold text-content-muted hover:border-primary hover:text-primary transition-colors"
+        >
+          ?
+        </button>
+      </div>
 
       {/* Solved / revealed group rails */}
       {rails.length > 0 && (
@@ -520,6 +551,36 @@ export default function CrosslinksGame() {
           </button>
         </div>
       )}
+
+      <GameInfoModal
+        isOpen={infoOpen}
+        onClose={() => setInfoOpen(false)}
+        title={GAME_NAME}
+        stats={stats}
+      >
+        <p>
+          Sixteen terms hide four groups of four. Find every group before you
+          run out of mistakes — a new board drops daily.
+        </p>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>Select four terms you think belong together, then hit Submit.</li>
+          <li>Wrong combos cost one of your four mistakes; “One away!” means three of the four were right.</li>
+          <li>Some words look like they fit two groups — that&apos;s the trap.</li>
+          <li>Score: 100 per solved group plus 50 per mistake you didn&apos;t use.</li>
+        </ul>
+        <div className="flex items-center gap-2 pt-1">
+          {(["yellow", "green", "blue", "purple"] as const).map((d) => (
+            <span
+              key={d}
+              className="h-5 w-5 rounded"
+              style={{ backgroundColor: DIFFICULTY_COLOR[d] }}
+            />
+          ))}
+          <span className="text-xs text-content-muted">
+            Group colors run easiest to trickiest.
+          </span>
+        </div>
+      </GameInfoModal>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { CREDENTIALS } from "@/app/lib/constants";
 import { resend } from "@/app/lib/resend";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
@@ -63,4 +64,8 @@ export async function handler(request: NextRequest) {
   }
 }
 
-export const POST = verifySignatureAppRouter(handler);
+export const POST = verifySignatureAppRouter(handler, {
+  currentSigningKey: CREDENTIALS.qstash_current_signing_key || "sig_dummy_current",
+  nextSigningKey: CREDENTIALS.qstash_next_signing_key || "sig_dummy_next",
+});
+

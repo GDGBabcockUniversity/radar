@@ -18,6 +18,8 @@ export { default as AuthProvider, useAuth } from "./AuthProvider";
 export { default as SignInModal } from "./SignInModal";
 export { default as SignalWordle } from "./SignalWordle";
 export { default as CrosslinksGame } from "./CrosslinksGame";
+export { default as CrypticDaily } from "./CrypticDaily";
+export { default as RapidFireGame } from "./RapidFireGame";
 export { default as ShareButtons } from "./ShareButtons";
 export { default as Byline } from "./Byline";
 export { default as SectionHeading } from "./SectionHeading";

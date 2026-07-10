@@ -10,11 +10,17 @@ import {
   type FirebaseUser,
 } from "../lib/firebase";
 import SignInModal from "./SignInModal";
+import { flushPendingScores } from "../lib/pendingScores";
 
 interface Member {
   memberId: string;
   name?: string;
   email?: string;
+}
+
+export interface SignInContext {
+  title?: string;
+  message?: string;
 }
 
 interface AuthContextType {
@@ -26,8 +32,11 @@ interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   clearError: () => void;
-  /** Opens the sign-in modal from anywhere in the tree — not just the header. */
-  openSignIn: () => void;
+  /**
+   * Opens the sign-in modal from anywhere in the tree — not just the header.
+   * Optional context swaps in situational copy (e.g. the post-game prompt).
+   */
+  openSignIn: (context?: SignInContext) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -55,9 +64,17 @@ export default function AuthProvider({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [signInOpen, setSignInOpen] = useState(false);
+  const [signInContext, setSignInContext] = useState<SignInContext | null>(null);
 
   const clearError = useCallback(() => setError(null), []);
-  const openSignIn = useCallback(() => setSignInOpen(true), []);
+  const openSignIn = useCallback((context?: SignInContext) => {
+    setSignInContext(context ?? null);
+    setSignInOpen(true);
+  }, []);
+  const closeSignIn = useCallback(() => {
+    setSignInOpen(false);
+    setSignInContext(null);
+  }, []);
 
   // On mount: ask the server whether the gdg_token cookie is present and
   // valid — avoids re-verifying against Firebase on every load.
@@ -66,7 +83,12 @@ export default function AuthProvider({
     fetch("/api/auth/session")
       .then((res) => res.json())
       .then((data) => {
-        if (!cancelled) setMember(data.authenticated ? data.member : null);
+        if (!cancelled) {
+          setMember(data.authenticated ? data.member : null);
+          // Anything played anonymously on this device gets claimed as soon
+          // as a signed-in session is confirmed.
+          if (data.authenticated) flushPendingScores();
+        }
       })
       .catch(() => {
         if (!cancelled) setMember(null);
@@ -91,6 +113,9 @@ export default function AuthProvider({
       throw new Error(data.error || "Sign-in failed");
     }
     setMember(data.member);
+    // The session cookie is set now, so queued anonymous scores can land
+    // under this member.
+    flushPendingScores();
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
@@ -153,7 +178,12 @@ export default function AuthProvider({
       }}
     >
       {children}
-      <SignInModal isOpen={signInOpen} onClose={() => setSignInOpen(false)} />
+      <SignInModal
+        isOpen={signInOpen}
+        onClose={closeSignIn}
+        title={signInContext?.title}
+        message={signInContext?.message}
+      />
     </AuthContext.Provider>
   );
 }
