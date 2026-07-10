@@ -16,6 +16,7 @@ export { default as TableOfContents } from "./TableOfContents";
 export { default as ThemeProvider, useTheme } from "./ThemeProvider";
 export { default as AuthProvider, useAuth } from "./AuthProvider";
 export { default as SignInModal } from "./SignInModal";
+export { default as SignalWordle } from "./SignalWordle";
 export { default as ShareButtons } from "./ShareButtons";
 export { default as Byline } from "./Byline";
 export { default as SectionHeading } from "./SectionHeading";
