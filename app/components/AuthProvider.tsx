@@ -90,6 +90,9 @@ export default function AuthProvider({
   const signInWithGoogle = useCallback(async () => {
     setError(null);
     try {
+      if (!auth || !googleProvider) {
+        throw new Error("Sign-in is not configured on this deployment");
+      }
       const result = await signInWithPopup(auth, googleProvider);
       await exchangeToken(result.user);
     } catch (err: unknown) {
@@ -104,6 +107,9 @@ export default function AuthProvider({
     async (email: string, password: string) => {
       setError(null);
       try {
+        if (!auth) {
+          throw new Error("Sign-in is not configured on this deployment");
+        }
         const result = await signInWithEmailAndPassword(auth, email, password);
         await exchangeToken(result.user);
       } catch (err: unknown) {
@@ -118,7 +124,7 @@ export default function AuthProvider({
   const signOut = useCallback(async () => {
     try {
       await fetch("/api/auth/session", { method: "DELETE" });
-      await firebaseSignOut(auth);
+      if (auth) await firebaseSignOut(auth);
     } catch {
       // best effort
     } finally {

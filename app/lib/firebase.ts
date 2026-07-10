@@ -22,16 +22,25 @@ const firebaseConfig = {
 };
 
 let app: FirebaseApp | undefined;
-let auth: Auth;
-let googleProvider: GoogleAuthProvider;
+let auth: Auth | undefined;
+let googleProvider: GoogleAuthProvider | undefined;
 
-// Only initialize on the client — avoids SSR/build-time errors when the env
-// vars aren't set (auth stays a no-op, matching the rest of the CREDENTIALS
-// pattern in app/lib/constants.ts).
+// Only initialize on the client, and never let a missing/invalid Firebase
+// config crash the site: getAuth() throws auth/invalid-api-key at module
+// evaluation, and this module is imported from the root layout via
+// AuthProvider. RADAR must keep working anonymously when auth env isn't
+// set (same philosophy as app/lib/member.ts) — sign-in just stays
+// unavailable.
 if (typeof window !== "undefined") {
-  app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  googleProvider = new GoogleAuthProvider();
+  try {
+    app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    googleProvider = new GoogleAuthProvider();
+  } catch {
+    app = undefined;
+    auth = undefined;
+    googleProvider = undefined;
+  }
 }
 
 export {
