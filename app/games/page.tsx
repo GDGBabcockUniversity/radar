@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Header, Footer } from "../components";
-import { GAMES } from "../lib/games";
+import { GAMES, isDailyGame, leaderboardId, type Game } from "../lib/games";
+import { getLeaderboard, type LeaderboardEntry } from "../lib/engagement";
+import { publicDisplayName } from "../lib/displayName";
 import { PAGES } from "../lib/constants";
 
 export const metadata: Metadata = {
@@ -9,7 +11,33 @@ export const metadata: Metadata = {
   description: "Crosswords, quizzes and more from the RADAR desk.",
 };
 
-export default function GamesPage() {
+// Redis reads make this page dynamic; 60s ISR keeps it fast while scores
+// stay fresh enough for bragging rights.
+export const revalidate = 60;
+
+interface GameBoard {
+  game: Game;
+  top: LeaderboardEntry[];
+}
+
+// One top-5 board per game. Defensive by design: a Redis hiccup renders as
+// empty boards, never a 500 on the hub.
+async function fetchBoards(): Promise<GameBoard[]> {
+  const results = await Promise.allSettled(
+    GAMES.map(async (game) => ({
+      game,
+      top: await getLeaderboard(leaderboardId(game), 5),
+    }))
+  );
+  const boards = results.map((r, i) =>
+    r.status === "fulfilled" ? r.value : { game: GAMES[i], top: [] }
+  );
+  // Lead the section with boards that have life in them.
+  return boards.sort((a, b) => Number(b.top.length > 0) - Number(a.top.length > 0));
+}
+
+export default async function GamesPage() {
+  const boards = await fetchBoards();
   return (
     <main className="min-h-screen bg-surface">
       <Header />
@@ -36,8 +64,15 @@ export default function GamesPage() {
                 href={`${PAGES.games}/${game.slug}`}
                 className="group flex flex-col rounded-2xl border border-edge bg-surface-raised dark-card p-6 hover:border-edge-strong transition-colors"
               >
-                <span className="text-[10px] font-bold uppercase tracking-[2px] text-content-subtle mb-4">
-                  {game.type}
+                <span className="mb-4 flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-[2px] text-content-subtle">
+                    {game.type}
+                  </span>
+                  {isDailyGame(game) && (
+                    <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                      Daily
+                    </span>
+                  )}
                 </span>
                 <h2 className="text-xl font-bold text-content leading-snug mb-2 group-hover:text-primary transition-colors">
                   {game.title}
@@ -52,14 +87,56 @@ export default function GamesPage() {
             ))}
           </div>
 
-          {/* High scores — placeholder until scores accumulate */}
-          <div className="mt-16 rounded-2xl border border-edge bg-surface-raised dark-card p-8 text-center">
-            <h3 className="text-sm font-bold uppercase tracking-[2px] text-content-muted mb-2">
+          {/* High scores — live top-5 per game */}
+          <div className="mt-16">
+            <h3 className="text-sm font-bold uppercase tracking-[2px] text-content-muted mb-6">
               High Scores
             </h3>
-            <p className="text-content-subtle text-sm">
-              Leaderboards light up here once members start playing.
-            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {boards.map(({ game, top }) => (
+                <div
+                  key={game.slug}
+                  className="rounded-2xl border border-edge bg-surface-raised dark-card p-6"
+                >
+                  <Link
+                    href={`${PAGES.games}/${game.slug}`}
+                    className="text-base font-bold text-content hover:text-primary transition-colors"
+                  >
+                    {game.title}
+                  </Link>
+                  {top.length === 0 ? (
+                    <p className="mt-4 text-sm text-content-subtle">
+                      No scores yet — be the first.
+                    </p>
+                  ) : (
+                    <ol className="mt-4 space-y-2.5">
+                      {top.map((entry, i) => (
+                        <li
+                          key={entry.member}
+                          className="flex items-center gap-3 text-sm"
+                        >
+                          <span
+                            className={
+                              i === 0
+                                ? "font-mono text-xs font-bold text-gdg-yellow"
+                                : "font-mono text-xs text-content-subtle"
+                            }
+                          >
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          <span className="flex-1 truncate text-content-secondary">
+                            {publicDisplayName(entry.name, entry.member)}
+                          </span>
+                          <span className="font-bold text-primary">
+                            {entry.score}
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

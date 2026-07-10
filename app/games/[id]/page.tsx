@@ -1,9 +1,35 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Header, Footer, CrosswordPuzzle, PersonalityQuiz } from "../../components";
-import { getGame } from "../../lib/games";
+import {
+  Header,
+  Footer,
+  CrosswordPuzzle,
+  PersonalityQuiz,
+  SignalWordle,
+  CrosslinksGame,
+} from "../../components";
+import { getGame, type Game } from "../../lib/games";
 import { PAGES } from "../../lib/constants";
+
+// Exhaustive game-type → component mapping; the `never` default makes
+// forgetting a case a compile error when the Game type union grows.
+function renderGame(game: Game) {
+  switch (game.type) {
+    case "crossword":
+      return <CrosswordPuzzle puzzleId={game.refId} />;
+    case "quiz":
+      return <PersonalityQuiz quizId={game.refId} />;
+    case "wordle":
+      return <SignalWordle />;
+    case "connections":
+      return <CrosslinksGame />;
+    default: {
+      const exhausted: never = game.type;
+      return exhausted;
+    }
+  }
+}
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -42,11 +68,7 @@ export default async function GamePlayPage({ params }: PageProps) {
             {game.title}
           </h1>
 
-          {game.type === "crossword" ? (
-            <CrosswordPuzzle puzzleId={game.refId} />
-          ) : (
-            <PersonalityQuiz quizId={game.refId} />
-          )}
+          {renderGame(game)}
         </div>
       </section>
 

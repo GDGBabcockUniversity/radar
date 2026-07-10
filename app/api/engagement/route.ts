@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { getMember } from "@/app/lib/member";
 import { emit, type EngagementType } from "@/app/lib/engagement";
+import { CREDENTIALS } from "@/app/lib/constants";
 
 const VALID_TYPES: EngagementType[] = ["article.read", "game.played"];
 
@@ -32,7 +33,16 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    await emit(type, payload, { memberId: member?.memberId ?? null, anonId });
+    // Raw token (not just the decoded member) — needed to call the auth
+    // service's authenticated /radar/* endpoints on the member's behalf.
+    const platformToken = req.cookies.get(CREDENTIALS.auth_cookie_name)?.value;
+
+    await emit(type, payload, {
+      memberId: member?.memberId ?? null,
+      anonId,
+      platformToken,
+      memberName: member?.name,
+    });
     return res;
   } catch {
     // Never surface tracking failures to the client.
