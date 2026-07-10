@@ -1,16 +1,23 @@
 import { redis } from "./redis";
+import { CREDENTIALS } from "./constants";
 
 // The single engagement write seam. Every tracked action funnels through
-// `emit()`. Today it writes to RADAR's own Redis (the system of record for
-// RADAR features like leaderboards and "your stats"). Later, a central-events
-// push can be added inside `sink` WITHOUT touching any caller — that is the
-// whole point of routing everything through here.
+// `emit()`. It writes to two places in parallel: RADAR's own Redis (the
+// system of record for RADAR features like leaderboards and "your stats")
+// and the shared auth service's Postgres (radar_game_scores / radar_reads —
+// what the cross-product profile reads via GET /auth/me). Each sink is
+// isolated so one failing never skips or breaks the other.
 
 export type EngagementType = "article.read" | "game.played";
 
 export interface Identity {
   memberId: string | null;
   anonId?: string;
+  // The raw platform JWT, when the request carried a valid session cookie —
+  // needed to call the auth service's authenticated /radar/* endpoints on
+  // the member's behalf. Absent for anonymous visitors (authServiceSink
+  // then simply no-ops, same as redisSink already does without an id).
+  platformToken?: string;
 }
 
 export interface EngagementEvent extends Identity {
@@ -32,13 +39,11 @@ export async function emit(
     ts: Date.now(),
     memberId: identity.memberId,
     anonId: identity.anonId,
+    platformToken: identity.platformToken,
   };
-  try {
-    await redisSink(event);
-    // Future: await centralSink(event) to push into the cross-product Wrapped.
-  } catch {
-    // fail-silent — engagement is non-critical and must never break a request
-  }
+  // allSettled: engagement is non-critical and must never break a request,
+  // and a failure in one sink must not prevent the other from running.
+  await Promise.allSettled([redisSink(event), authServiceSink(event)]);
 }
 
 async function redisSink(e: EngagementEvent): Promise<void> {
@@ -60,6 +65,52 @@ async function redisSink(e: EngagementEvent): Promise<void> {
       // keep each member's best score (gt = only update when greater)
       await redis.zadd(`radar:lb:${gameId}`, { gt: true }, { score, member: id });
     }
+  }
+}
+
+// Forwards the same event to the auth service so it lands in Postgres
+// (radar_game_scores / radar_reads) — the source GET /auth/me reads from
+// for the shared profile. Requires both a known member and their platform
+// JWT; anonymous events, or events from a session with no/expired token,
+// simply aren't forwarded (RADAR's own Redis stats still capture them).
+async function authServiceSink(e: EngagementEvent): Promise<void> {
+  const authApiUrl = CREDENTIALS.auth_api_url;
+  if (!e.memberId || !e.platformToken || !authApiUrl) return;
+
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${e.platformToken}`,
+  };
+
+  if (e.type === "article.read") {
+    const slug = String(e.payload.slug ?? "");
+    const seconds = Math.round(Number(e.payload.seconds ?? 0));
+    if (!slug || seconds <= 0) return;
+    await fetch(`${authApiUrl}/radar/reads`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ slug, seconds }),
+      signal: AbortSignal.timeout(5000),
+    });
+  } else if (e.type === "game.played") {
+    const gameId = String(e.payload.gameId ?? "");
+    const score = Number(e.payload.score);
+    if (!gameId || !Number.isFinite(score)) return;
+    // gameId is "crossword:new-year-new-lies" — split into game + puzzle_id
+    // to match the auth service's radar_game_scores columns.
+    const [game, ...rest] = gameId.split(":");
+    const puzzleId = rest.length > 0 ? rest.join(":") : undefined;
+    await fetch(`${authApiUrl}/radar/scores`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        game,
+        puzzle_id: puzzleId,
+        score: Math.round(score),
+        meta: e.payload,
+      }),
+      signal: AbortSignal.timeout(5000),
+    });
   }
 }
 
