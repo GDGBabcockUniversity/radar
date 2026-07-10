@@ -125,6 +125,15 @@ interface CrosswordPuzzleProps {
 
 export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
   const storageKey = `crossword-${puzzleId}`;
+  // Puzzle "start" = mount time — matches the "beat the clock" framing.
+  // Set in an effect (not the useRef initializer) since Date.now() is
+  // impure and useRef's initial value would otherwise be read at render.
+  const startTimeRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (startTimeRef.current === null) {
+      startTimeRef.current = Date.now();
+    }
+  }, []);
 
   // Initialize grid with saved progress using lazy initializer
   const [grid, setGrid] = useState<CellData[][]>(() => {
@@ -259,12 +268,22 @@ export default function CrosswordPuzzle({ puzzleId }: CrosswordPuzzleProps) {
     return true;
   }, [grid]);
 
-  // Report completion once (engagement tracking).
+  // Report completion once (engagement tracking). Score rewards speed: a
+  // 100-point floor so every finisher is on the board, minus 2 points per
+  // elapsed second — no timer UI needed, just the mount → completion delta.
   const reportedComplete = useRef(false);
   useEffect(() => {
     if (isComplete && !reportedComplete.current) {
       reportedComplete.current = true;
-      track("game.played", { gameId: `crossword:${puzzleId}`, solved: true });
+      const elapsedSeconds = Math.round(
+        (Date.now() - (startTimeRef.current ?? Date.now())) / 1000,
+      );
+      const score = Math.max(100, 1000 - elapsedSeconds * 2);
+      track("game.played", {
+        gameId: `crossword:${puzzleId}`,
+        solved: true,
+        score,
+      });
     }
   }, [isComplete, puzzleId]);
 

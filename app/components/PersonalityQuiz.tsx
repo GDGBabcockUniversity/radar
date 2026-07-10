@@ -472,9 +472,14 @@ export default function PersonalityQuiz({ quizId }: { quizId?: string }) {
     }
 
     setResult(results[finalResultKey]);
+    // No right/wrong answers here, so "score" is how decisively the
+    // answers leaned toward one trait — the dominant letter's share of
+    // all responses, as a 0-100 strength.
+    const score = Math.round((maxCount / questions.length) * 100);
     track("game.played", {
       gameId: `quiz:${quizId ?? "unknown"}`,
       resultKey: finalResultKey,
+      score,
     });
 
     // Custom pure DOM confetti
