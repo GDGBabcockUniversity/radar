@@ -1,12 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
 import { track } from "../lib/track";
 import { cn } from "../lib/utils";
 import { SIGNAL_ANSWERS } from "../lib/gamesData/signalWords";
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
+import { queuePendingScore } from "../lib/pendingScores";
+import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { useAuth } from "./AuthProvider";
 
 // Signal — RADAR's daily five-letter word game. One word per local day for
@@ -240,7 +241,7 @@ export default function SignalWordle() {
       reported.current = true;
       if (won) {
         const g = nextGuesses.length;
-        track("game.played", {
+        const payload = {
           gameId: leaderboardId(GAME, dayKey),
           baseId: leaderboardId(GAME),
           streakEligible: true,
@@ -248,12 +249,14 @@ export default function SignalWordle() {
           guesses: g,
           day: dayKey,
           score: 700 - (g - 1) * 100,
-        });
+        };
+        track("game.played", payload);
         setStreak(recordWinStreak(dayKey));
         if (!isAuthenticated) {
-          toast("Sign in to save this score to the leaderboard", {
-            action: { label: "Sign in", onClick: openSignIn },
-          });
+          // Anonymous emits are dropped server-side; the queue is what lets
+          // this result transition to the account after sign-in.
+          queuePendingScore(payload);
+          nudgeSignInAfterGame(openSignIn, dayKey);
         }
       } else {
         track("game.played", {

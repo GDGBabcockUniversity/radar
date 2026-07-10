@@ -11,6 +11,8 @@ import {
 } from "../lib/gamesData/crosslinksBoards";
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
+import { queuePendingScore } from "../lib/pendingScores";
+import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { useAuth } from "./AuthProvider";
 
 // Crosslinks — RADAR's daily grouping game (Connections-style). Sixteen
@@ -328,7 +330,7 @@ export default function CrosslinksGame() {
     if (!reported.current) {
       reported.current = true;
       const score = solvedCount * 100 + (MAX_MISTAKES - finalMistakes) * 50;
-      track("game.played", {
+      const payload = {
         gameId: leaderboardId(GAME, dayKey),
         baseId: leaderboardId(GAME),
         streakEligible: true,
@@ -336,15 +338,17 @@ export default function CrosslinksGame() {
         score,
         mistakes: finalMistakes,
         day: dayKey,
-      });
+      };
+      track("game.played", payload);
       if (won) {
         setStreak(recordWinStreak(dayKey));
         if (finalMistakes === 0) burstConfetti();
       }
       if (!isAuthenticated) {
-        toast("Sign in to save this score to the leaderboard", {
-          action: { label: "Sign in", onClick: openSignIn },
-        });
+        // Anonymous emits are dropped server-side; the queue is what lets
+        // this result transition to the account after sign-in.
+        queuePendingScore(payload);
+        nudgeSignInAfterGame(openSignIn, dayKey);
       }
     }
     setPhase(won ? "won" : "lost");
