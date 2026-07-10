@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Header, Footer } from "../components";
-import { GAMES } from "../lib/games";
+import { GAMES, isDailyGame } from "../lib/games";
 import { PAGES } from "../lib/constants";
 
 export const metadata: Metadata = {
@@ -36,8 +36,15 @@ export default function GamesPage() {
                 href={`${PAGES.games}/${game.slug}`}
                 className="group flex flex-col rounded-2xl border border-edge bg-surface-raised dark-card p-6 hover:border-edge-strong transition-colors"
               >
-                <span className="text-[10px] font-bold uppercase tracking-[2px] text-content-subtle mb-4">
-                  {game.type}
+                <span className="mb-4 flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-[2px] text-content-subtle">
+                    {game.type}
+                  </span>
+                  {isDailyGame(game) && (
+                    <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                      Daily
+                    </span>
+                  )}
                 </span>
                 <h2 className="text-xl font-bold text-content leading-snug mb-2 group-hover:text-primary transition-colors">
                   {game.title}

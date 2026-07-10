@@ -6,12 +6,33 @@
 export interface Game {
   slug: string; // route: /games/[slug]
   title: string;
-  type: "crossword" | "quiz";
+  type: "crossword" | "quiz" | "wordle" | "connections";
   refId: string; // puzzleId / quizId passed to the component
   blurb: string;
 }
 
+/** Daily games rotate their content at the player's local midnight. */
+export function isDailyGame(game: Game): boolean {
+  return game.type === "wordle" || game.type === "connections";
+}
+
 export const GAMES: Game[] = [
+  {
+    slug: "signal",
+    title: "Signal",
+    type: "wordle",
+    refId: "signal",
+    blurb:
+      "The daily five-letter word from the RADAR desk. Six guesses, one signal.",
+  },
+  {
+    slug: "crosslinks",
+    title: "Crosslinks",
+    type: "connections",
+    refId: "crosslinks",
+    blurb:
+      "Sixteen terms, four hidden groups, four mistakes. Find the connections.",
+  },
   {
     slug: "new-year-new-lies",
     title: "New Year, New Lies",
