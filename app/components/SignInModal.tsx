@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { useAuth } from "./AuthProvider";
 import { cn } from "../lib/utils";
@@ -15,8 +16,14 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) return null;
+  // Portals need a real `document`, which doesn't exist during SSR.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   const handleGoogle = async () => {
     setLoading(true);
@@ -43,8 +50,8 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[100] overflow-y-auto">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] overflow-y-auto">
       <div
         className="fixed inset-0 bg-black/70 backdrop-blur-sm"
         onClick={() => {
@@ -52,7 +59,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
           onClose();
         }}
       />
-      <div className="relative z-[101] flex min-h-full items-center justify-center p-4">
+      <div className="relative z-[10000] flex min-h-full items-center justify-center p-4">
         <div className="w-full max-w-sm rounded-2xl border border-edge bg-surface p-8 shadow-2xl">
           <h2 className="text-xl font-semibold text-content">
             Sign in to RADAR
@@ -118,6 +125,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
