@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
       memberId: member?.memberId ?? null,
       anonId,
       platformToken,
+      memberName: member?.name,
     });
     return res;
   } catch {

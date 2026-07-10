@@ -18,6 +18,10 @@ export interface Identity {
   // the member's behalf. Absent for anonymous visitors (authServiceSink
   // then simply no-ops, same as redisSink already does without an id).
   platformToken?: string;
+  // Display name from the JWT — persisted opportunistically so leaderboards
+  // can show people instead of UUIDs. Never forwarded to the auth service
+  // (it owns its own profile names).
+  memberName?: string;
 }
 
 export interface EngagementEvent extends Identity {
@@ -40,6 +44,7 @@ export async function emit(
     memberId: identity.memberId,
     anonId: identity.anonId,
     platformToken: identity.platformToken,
+    memberName: identity.memberName,
   };
   // allSettled: engagement is non-critical and must never break a request,
   // and a failure in one sink must not prevent the other from running.
@@ -48,6 +53,11 @@ export async function emit(
 
 async function redisSink(e: EngagementEvent): Promise<void> {
   const id = e.memberId; // member-keyed aggregates only when we know who it is
+  // Keep the UUID → display-name map fresh from any signed-in activity, so
+  // leaderboards (and future member-facing surfaces) can resolve names.
+  if (id && e.memberName) {
+    await redis.hset("radar:member_names", { [id]: e.memberName });
+  }
   if (e.type === "article.read") {
     const slug = String(e.payload.slug ?? "");
     if (id && slug) {
@@ -133,17 +143,32 @@ export async function getMemberStats(memberId: string): Promise<MemberStats> {
   };
 }
 
+export interface LeaderboardEntry {
+  member: string;
+  name: string | null;
+  score: number;
+}
+
 export async function getLeaderboard(
   gameId: string,
   n = 10,
-): Promise<{ member: string; score: number }[]> {
+): Promise<LeaderboardEntry[]> {
   const flat = (await redis.zrange(`radar:lb:${gameId}`, 0, n - 1, {
     rev: true,
     withScores: true,
   })) as (string | number)[];
-  const out: { member: string; score: number }[] = [];
+  const out: LeaderboardEntry[] = [];
   for (let i = 0; i < flat.length; i += 2) {
-    out.push({ member: String(flat[i]), score: Number(flat[i + 1]) });
+    out.push({ member: String(flat[i]), name: null, score: Number(flat[i + 1]) });
+  }
+  if (out.length > 0) {
+    const names = await redis.hmget<Record<string, string>>(
+      "radar:member_names",
+      ...out.map((e) => e.member),
+    );
+    for (const entry of out) {
+      entry.name = names?.[entry.member] ?? null;
+    }
   }
   return out;
 }
