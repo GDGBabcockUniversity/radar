@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { CREDENTIALS } from "@/app/lib/constants";
-import { getMember } from "@/app/lib/member";
+import { getMember, verifyPlatformToken } from "@/app/lib/member";
 
 // Session bridge: exchanges a Firebase ID token for the shared platform JWT
 // (via the auth service's own /auth/login) and stores it as the httpOnly
@@ -50,6 +50,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { success: false, error: "Unexpected auth response" },
         { status: 502 }
+      );
+    }
+
+    // A cookie that getMember() can't verify is worse than no cookie:
+    // sign-in appears to work, then every later request is anonymous —
+    // sessions vanish on refresh and scores silently drop. Catch a
+    // mismatched AUTH_JWT_SECRET here, the only moment it's diagnosable.
+    if (!verifyPlatformToken(accessToken)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Server auth misconfigured: AUTH_JWT_SECRET does not match the auth service",
+        },
+        { status: 500 }
       );
     }
 

@@ -42,13 +42,20 @@ function verifyHS256(
   }
 }
 
+/** Verifies a platform JWT with AUTH_JWT_SECRET. Null when unconfigured/invalid. */
+export function verifyPlatformToken(
+  token: string,
+): Record<string, unknown> | null {
+  if (!CREDENTIALS.auth_jwt_secret) return null;
+  return verifyHS256(token, CREDENTIALS.auth_jwt_secret);
+}
+
 export async function getMember(): Promise<Member | null> {
   try {
-    if (!CREDENTIALS.auth_jwt_secret) return null;
     const store = await cookies();
     const token = store.get(CREDENTIALS.auth_cookie_name)?.value;
     if (!token) return null;
-    const payload = verifyHS256(token, CREDENTIALS.auth_jwt_secret);
+    const payload = verifyPlatformToken(token);
     if (!payload) return null;
     // The auth service's JWT payload carries `user_id`/`full_name`
     // (see auth/src/services/authService.js) — check that shape first,

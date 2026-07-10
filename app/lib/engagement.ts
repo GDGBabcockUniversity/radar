@@ -48,7 +48,20 @@ export async function emit(
   };
   // allSettled: engagement is non-critical and must never break a request,
   // and a failure in one sink must not prevent the other from running.
-  await Promise.allSettled([redisSink(event), authServiceSink(event)]);
+  // Failures still get logged — a misconfigured Redis or auth URL otherwise
+  // drops every score with no trace anywhere.
+  const results = await Promise.allSettled([
+    redisSink(event),
+    authServiceSink(event),
+  ]);
+  results.forEach((r, i) => {
+    if (r.status === "rejected") {
+      console.error(
+        `engagement ${i === 0 ? "redis" : "auth-service"} sink failed:`,
+        r.reason,
+      );
+    }
+  });
 }
 
 async function redisSink(e: EngagementEvent): Promise<void> {
