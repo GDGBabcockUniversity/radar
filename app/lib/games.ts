@@ -56,9 +56,13 @@ export const GAMES: Game[] = [
   },
 ];
 
-// Leaderboard key — matches the gameId emitted by the components.
-export function leaderboardId(game: Game): string {
-  return `${game.type}:${game.refId}`;
+// Leaderboard key — matches the gameId emitted by the components. Daily
+// games get a per-day bucket (reset at local midnight, same boundary the
+// content rotation already uses) so "today's" leaderboard actually means
+// today; one-off/seasonal games keep a single permanent bucket.
+export function leaderboardId(game: Game, date?: string): string {
+  const base = `${game.type}:${game.refId}`;
+  return isDailyGame(game) && date ? `${base}:${date}` : base;
 }
 
 export function getGame(slug: string): Game | undefined {

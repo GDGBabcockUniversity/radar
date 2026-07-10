@@ -16,7 +16,7 @@ import {
 } from "react-icons/io5";
 import { useTheme } from "./ThemeProvider";
 import { useAuth } from "./AuthProvider";
-import SignInModal from "./SignInModal";
+import { cn } from "../lib/utils";
 
 const NAV_LINKS = [
   { label: "Issues", href: PAGES.issues },
@@ -31,12 +31,12 @@ export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
   const router = useRouter();
-  const { member, isAuthenticated, loading: authLoading, signOut } = useAuth();
+  const { member, isAuthenticated, loading: authLoading, signOut, openSignIn } =
+    useAuth();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [signInOpen, setSignInOpen] = useState(false);
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,16 +99,20 @@ export default function Header() {
           {/* Account */}
           {!authLoading && (
             <button
-              onClick={() =>
-                isAuthenticated ? signOut() : setSignInOpen(true)
-              }
+              onClick={() => (isAuthenticated ? signOut() : openSignIn())}
               aria-label={isAuthenticated ? `Sign out (${member?.name || member?.email})` : "Sign in"}
               title={isAuthenticated ? `Signed in as ${member?.name || member?.email} — click to sign out` : "Sign in"}
-              className="flex items-center justify-center w-9 h-9 rounded-full text-lg text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer"
+              className={cn(
+                "flex items-center gap-1.5 h-9 rounded-full text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer",
+                isAuthenticated ? "w-9 justify-center text-lg" : "px-3 text-lg"
+              )}
             >
               <IoPersonCircleOutline
                 className={isAuthenticated ? "text-primary" : undefined}
               />
+              {!isAuthenticated && (
+                <span className="text-sm font-medium">Sign in</span>
+              )}
             </button>
           )}
 
@@ -180,8 +184,6 @@ export default function Header() {
           </nav>
         </div>
       )}
-
-      <SignInModal isOpen={signInOpen} onClose={() => setSignInOpen(false)} />
     </header>
   );
 }
