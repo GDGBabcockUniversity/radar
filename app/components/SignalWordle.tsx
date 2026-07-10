@@ -8,7 +8,9 @@ import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily
 import { getGame, leaderboardId } from "../lib/games";
 import { queuePendingScore } from "../lib/pendingScores";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
+import { computeDailyGameStats, type GameStats } from "../lib/gameStats";
 import { useAuth } from "./AuthProvider";
+import GameInfoModal from "./GameInfoModal";
 
 // Signal — RADAR's daily five-letter word game. One word per local day for
 // everyone; six guesses. Scoring is guess-count based (700 − (g−1)×100),
@@ -70,6 +72,42 @@ const TILE_EMOJI: Record<TileState, string> = {
   absent: "⬛",
 };
 
+const EXAMPLE_TILE_CLASS: Record<TileState, string> = {
+  correct: "bg-gdg-green border-gdg-green text-white",
+  present: "bg-gdg-yellow border-gdg-yellow text-black",
+  absent: "bg-surface-input border-surface-input text-content-subtle",
+};
+
+// Static tile row for the how-to-play modal, mirroring the board's look.
+function ExampleTiles({
+  word,
+  states,
+  note,
+}: {
+  word: string;
+  states: TileState[];
+  note: string;
+}) {
+  return (
+    <div>
+      <div className="flex gap-1">
+        {word.split("").map((letter, i) => (
+          <span
+            key={i}
+            className={cn(
+              "flex h-8 w-8 items-center justify-center rounded-md border-2 text-sm font-bold uppercase",
+              EXAMPLE_TILE_CLASS[states[i]]
+            )}
+          >
+            {letter}
+          </span>
+        ))}
+      </div>
+      <p className="mt-1.5 text-xs text-content-muted">{note}</p>
+    </div>
+  );
+}
+
 function buildShareText(dayKey: string, guesses: string[], answer: string, won: boolean): string {
   const header = `${GAME_NAME} ${dayKey} ${won ? guesses.length : "X"}/${MAX_GUESSES}`;
   const grid = guesses
@@ -130,8 +168,26 @@ export default function SignalWordle() {
   const [shakeRow, setShakeRow] = useState(false);
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [stats, setStats] = useState<GameStats | null>(null);
   const reported = useRef(false);
   const { isAuthenticated, openSignIn } = useAuth();
+
+  const openInfo = useCallback(() => {
+    setStats(
+      computeDailyGameStats(
+        "signal",
+        localDateKey(),
+        yesterdayDateKey(),
+        (saved) =>
+          saved.status === "won" && Array.isArray(saved.guesses)
+            ? String(saved.guesses.length)
+            : null,
+        ["1", "2", "3", "4", "5", "6"]
+      )
+    );
+    setInfoOpen(true);
+  }, []);
 
   // Mount: everything date/localStorage lives here — never in render, both
   // for SSR-hydration safety (server timezone ≠ player timezone) and the
@@ -150,6 +206,11 @@ export default function SignalWordle() {
       setAnswer(todaysAnswer);
 
       try {
+        // First-ever visit: open the how-to-play modal before play starts.
+        if (!localStorage.getItem("howto-seen-signal")) {
+          localStorage.setItem("howto-seen-signal", "1");
+          openInfo();
+        }
         const rawStreak = localStorage.getItem("signal-streak");
         if (rawStreak) {
           const s: Streak = JSON.parse(rawStreak);
@@ -182,7 +243,7 @@ export default function SignalWordle() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [openInfo]);
 
   const persist = useCallback(
     (nextGuesses: string[], status: SavedDay["status"], key: string) => {
@@ -380,15 +441,24 @@ export default function SignalWordle() {
 
   return (
     <div className="mx-auto max-w-md">
-      <p className="text-sm text-content-muted mb-6">
-        Guess the five-letter word in six tries. Same word for everyone —
-        new signal at midnight.
-        {streak > 0 && (
-          <span className="ml-2 font-semibold text-gdg-yellow">
-            🔥 {streak}-day streak
-          </span>
-        )}
-      </p>
+      <div className="mb-6 flex items-start justify-between gap-3">
+        <p className="text-sm text-content-muted">
+          Guess the five-letter word in six tries. Same word for everyone —
+          new signal at midnight.
+          {streak > 0 && (
+            <span className="ml-2 font-semibold text-gdg-yellow">
+              🔥 {streak}-day streak
+            </span>
+          )}
+        </p>
+        <button
+          onClick={openInfo}
+          aria-label="How to play and your stats"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-edge text-xs font-bold text-content-muted hover:border-primary hover:text-primary transition-colors"
+        >
+          ?
+        </button>
+      </div>
 
       {/* Board */}
       <div className="grid grid-rows-6 gap-1.5 mb-6" role="grid" aria-label={`${GAME_NAME} board`}>
@@ -457,6 +527,40 @@ export default function SignalWordle() {
           </button>
         </div>
       )}
+
+      <GameInfoModal
+        isOpen={infoOpen}
+        onClose={() => setInfoOpen(false)}
+        title={GAME_NAME}
+        stats={stats}
+      >
+        <p>
+          Guess the five-letter word in six tries. Everyone gets the same
+          word — a new signal drops at midnight.
+        </p>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>Type a five-letter word and press Enter.</li>
+          <li>Tile colors show how close your guess was.</li>
+          <li>Fewer guesses means a higher score.</li>
+        </ul>
+        <div className="space-y-3 pt-1">
+          <ExampleTiles
+            word="RADIO"
+            states={["correct", "absent", "absent", "absent", "absent"]}
+            note="R is in the word and in the right spot."
+          />
+          <ExampleTiles
+            word="CLOUD"
+            states={["absent", "absent", "present", "absent", "absent"]}
+            note="O is in the word but in the wrong spot."
+          />
+          <ExampleTiles
+            word="STACK"
+            states={["absent", "absent", "absent", "absent", "absent"]}
+            note="None of these letters are in the word."
+          />
+        </div>
+      </GameInfoModal>
 
       {/* Keyboard */}
       <div className="space-y-1.5" aria-label="On-screen keyboard">
