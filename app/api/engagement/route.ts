@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getMember } from "@/app/lib/member";
 import { emit, type EngagementType } from "@/app/lib/engagement";
 import { CREDENTIALS } from "@/app/lib/constants";
@@ -43,6 +44,17 @@ export async function POST(req: NextRequest) {
       platformToken,
       memberName: member?.name,
     });
+
+    if (type === "game.played") {
+      try {
+        // Force the hub's ISR cache to regenerate on the next request
+        // instead of waiting out its revalidate window.
+        revalidatePath("/games");
+      } catch {
+        /* best-effort cache invalidation — never break tracking */
+      }
+    }
+
     return res;
   } catch {
     // Never surface tracking failures to the client.

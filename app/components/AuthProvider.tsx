@@ -9,6 +9,7 @@ import {
   firebaseSignOut,
   type FirebaseUser,
 } from "../lib/firebase";
+import SignInModal from "./SignInModal";
 
 interface Member {
   memberId: string;
@@ -25,6 +26,8 @@ interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   clearError: () => void;
+  /** Opens the sign-in modal from anywhere in the tree — not just the header. */
+  openSignIn: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -36,6 +39,7 @@ const AuthContext = createContext<AuthContextType>({
   signInWithEmail: async () => {},
   signOut: async () => {},
   clearError: () => {},
+  openSignIn: () => {},
 });
 
 export function useAuth() {
@@ -50,8 +54,10 @@ export default function AuthProvider({
   const [member, setMember] = useState<Member | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [signInOpen, setSignInOpen] = useState(false);
 
   const clearError = useCallback(() => setError(null), []);
+  const openSignIn = useCallback(() => setSignInOpen(true), []);
 
   // On mount: ask the server whether the gdg_token cookie is present and
   // valid — avoids re-verifying against Firebase on every load.
@@ -143,9 +149,11 @@ export default function AuthProvider({
         signInWithEmail,
         signOut,
         clearError,
+        openSignIn,
       }}
     >
       {children}
+      <SignInModal isOpen={signInOpen} onClose={() => setSignInOpen(false)} />
     </AuthContext.Provider>
   );
 }

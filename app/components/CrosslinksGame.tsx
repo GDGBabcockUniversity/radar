@@ -10,6 +10,8 @@ import {
   type CrosslinksDifficulty,
 } from "../lib/gamesData/crosslinksBoards";
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
+import { getGame, leaderboardId } from "../lib/games";
+import { useAuth } from "./AuthProvider";
 
 // Crosslinks — RADAR's daily grouping game (Connections-style). Sixteen
 // terms, four hidden groups, four mistakes. Score = solvedGroups×100 +
@@ -18,7 +20,7 @@ import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily
 // leaderboard (600 ceiling, aligned with Signal's).
 
 const GAME_NAME = "Crosslinks"; // working title — change here only
-const GAME_ID = "connections:crosslinks";
+const GAME = getGame("crosslinks")!;
 const MAX_MISTAKES = 4;
 
 const DIFFICULTY_COLOR: Record<CrosslinksDifficulty, string> = {
@@ -118,6 +120,7 @@ export default function CrosslinksGame() {
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
   const reported = useRef(false);
+  const { isAuthenticated, openSignIn } = useAuth();
 
   // Mount hydration — deferred out of the synchronous effect body (same
   // pattern and reasoning as SignalWordle): dates/localStorage never run
@@ -326,7 +329,7 @@ export default function CrosslinksGame() {
       reported.current = true;
       const score = solvedCount * 100 + (MAX_MISTAKES - finalMistakes) * 50;
       track("game.played", {
-        gameId: GAME_ID,
+        gameId: leaderboardId(GAME, dayKey),
         solved: won,
         score,
         mistakes: finalMistakes,
@@ -335,6 +338,11 @@ export default function CrosslinksGame() {
       if (won) {
         setStreak(recordWinStreak(dayKey));
         if (finalMistakes === 0) burstConfetti();
+      }
+      if (!isAuthenticated) {
+        toast("Sign in to save this score to the leaderboard", {
+          action: { label: "Sign in", onClick: openSignIn },
+        });
       }
     }
     setPhase(won ? "won" : "lost");

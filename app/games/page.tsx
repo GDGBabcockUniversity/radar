@@ -4,6 +4,7 @@ import { Header, Footer } from "../components";
 import { GAMES, isDailyGame, leaderboardId, type Game } from "../lib/games";
 import { getLeaderboard, type LeaderboardEntry } from "../lib/engagement";
 import { publicDisplayName } from "../lib/displayName";
+import { localDateKey } from "../lib/gamesData/daily";
 import { PAGES } from "../lib/constants";
 
 export const metadata: Metadata = {
@@ -20,17 +21,20 @@ interface GameBoard {
   top: LeaderboardEntry[];
 }
 
-// One top-5 board per game. Defensive by design: a Redis hiccup renders as
-// empty boards, never a 500 on the hub.
+// One top-5 board per daily game only — a permanent leaderboard doesn't mean
+// anything for a one-off/seasonal puzzle, so non-daily games don't get one.
+// Defensive by design: a Redis hiccup renders as empty boards, never a 500.
 async function fetchBoards(): Promise<GameBoard[]> {
+  const dailyGames = GAMES.filter(isDailyGame);
+  const today = localDateKey();
   const results = await Promise.allSettled(
-    GAMES.map(async (game) => ({
+    dailyGames.map(async (game) => ({
       game,
-      top: await getLeaderboard(leaderboardId(game), 5),
+      top: await getLeaderboard(leaderboardId(game, today), 5),
     }))
   );
   const boards = results.map((r, i) =>
-    r.status === "fulfilled" ? r.value : { game: GAMES[i], top: [] }
+    r.status === "fulfilled" ? r.value : { game: dailyGames[i], top: [] }
   );
   // Lead the section with boards that have life in them.
   return boards.sort((a, b) => Number(b.top.length > 0) - Number(a.top.length > 0));

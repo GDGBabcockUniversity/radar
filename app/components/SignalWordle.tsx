@@ -1,10 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { track } from "../lib/track";
 import { cn } from "../lib/utils";
 import { SIGNAL_ANSWERS } from "../lib/gamesData/signalWords";
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
+import { getGame, leaderboardId } from "../lib/games";
+import { useAuth } from "./AuthProvider";
 
 // Signal — RADAR's daily five-letter word game. One word per local day for
 // everyone; six guesses. Scoring is guess-count based (700 − (g−1)×100),
@@ -14,7 +17,7 @@ import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily
 // for leaderboards.
 
 const GAME_NAME = "Signal"; // working title — change here only
-const GAME_ID = "wordle:signal";
+const GAME = getGame("signal")!;
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 6;
 
@@ -127,6 +130,7 @@ export default function SignalWordle() {
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
   const reported = useRef(false);
+  const { isAuthenticated, openSignIn } = useAuth();
 
   // Mount: everything date/localStorage lives here — never in render, both
   // for SSR-hydration safety (server timezone ≠ player timezone) and the
@@ -237,16 +241,21 @@ export default function SignalWordle() {
       if (won) {
         const g = nextGuesses.length;
         track("game.played", {
-          gameId: GAME_ID,
+          gameId: leaderboardId(GAME, dayKey),
           solved: true,
           guesses: g,
           day: dayKey,
           score: 700 - (g - 1) * 100,
         });
         setStreak(recordWinStreak(dayKey));
+        if (!isAuthenticated) {
+          toast("Sign in to save this score to the leaderboard", {
+            action: { label: "Sign in", onClick: openSignIn },
+          });
+        }
       } else {
         track("game.played", {
-          gameId: GAME_ID,
+          gameId: leaderboardId(GAME, dayKey),
           solved: false,
           guesses: nextGuesses.length,
           day: dayKey,
@@ -265,7 +274,18 @@ export default function SignalWordle() {
         setPhase("lost");
       }
     }, revealMs);
-  }, [phase, revealingRow, current, guesses, answer, dayKey, persist, recordWinStreak]);
+  }, [
+    phase,
+    revealingRow,
+    current,
+    guesses,
+    answer,
+    dayKey,
+    persist,
+    recordWinStreak,
+    isAuthenticated,
+    openSignIn,
+  ]);
 
   const handleKey = useCallback(
     (key: string) => {
