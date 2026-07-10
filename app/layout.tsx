@@ -4,6 +4,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { cn } from "./lib/utils";
 import ThemeProvider from "./components/ThemeProvider";
+import AuthProvider from "./components/AuthProvider";
 import ThemedToaster from "./components/ThemedToaster";
 
 const googleSansFlex = Google_Sans_Flex({
@@ -62,9 +63,11 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider>
-          <ThemedToaster />
-          {children}
-          <Analytics />
+          <AuthProvider>
+            <ThemedToaster />
+            {children}
+            <Analytics />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
