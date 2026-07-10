@@ -242,6 +242,8 @@ export default function SignalWordle() {
         const g = nextGuesses.length;
         track("game.played", {
           gameId: leaderboardId(GAME, dayKey),
+          baseId: leaderboardId(GAME),
+          streakEligible: true,
           solved: true,
           guesses: g,
           day: dayKey,

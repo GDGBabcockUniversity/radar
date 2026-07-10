@@ -88,7 +88,44 @@ async function redisSink(e: EngagementEvent): Promise<void> {
       // keep each member's best score (gt = only update when greater)
       await redis.zadd(`radar:lb:${gameId}`, { gt: true }, { score, member: id });
     }
+
+    // Server-side daily win streaks. Only daily games opt in (via
+    // streakEligible) — a replayable arcade run isn't a streak. baseId is the
+    // undated game key, so the streak survives the daily leaderboard rotation.
+    // The lastWinDate guard makes re-sends of the same day a no-op, which is
+    // what lets sign-in claims of an earlier anonymous play stay idempotent.
+    const baseId = String(e.payload.baseId ?? "");
+    const day = String(e.payload.day ?? "");
+    if (
+      id &&
+      baseId &&
+      day &&
+      e.payload.solved === true &&
+      e.payload.streakEligible === true
+    ) {
+      const streakKey = `radar:streak:${baseId}:${id}`;
+      const prev = await redis.hgetall<{ count: string; lastWinDate: string }>(
+        streakKey,
+      );
+      if (prev?.lastWinDate !== day) {
+        const next =
+          prev?.lastWinDate === prevDateKey(day) ? Number(prev.count) + 1 : 1;
+        await redis.hset(streakKey, { count: next, lastWinDate: day });
+        await redis.zadd(
+          `radar:lb:streak:${baseId}`,
+          { gt: true },
+          { score: next, member: id },
+        );
+      }
+    }
   }
+}
+
+// "YYYY-MM-DD" minus one day. UTC math on the date string, so the server's
+// timezone can never shift a player-local day key across midnight.
+function prevDateKey(day: string): string {
+  const [y, m, d] = day.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d - 1)).toISOString().slice(0, 10);
 }
 
 // Forwards the same event to the auth service so it lands in Postgres

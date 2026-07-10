@@ -330,6 +330,8 @@ export default function CrosslinksGame() {
       const score = solvedCount * 100 + (MAX_MISTAKES - finalMistakes) * 50;
       track("game.played", {
         gameId: leaderboardId(GAME, dayKey),
+        baseId: leaderboardId(GAME),
+        streakEligible: true,
         solved: won,
         score,
         mistakes: finalMistakes,
