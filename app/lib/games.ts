@@ -6,14 +6,18 @@
 export interface Game {
   slug: string; // route: /games/[slug]
   title: string;
-  type: "crossword" | "quiz" | "wordle" | "connections";
+  type: "crossword" | "quiz" | "wordle" | "connections" | "cryptic";
   refId: string; // puzzleId / quizId passed to the component
   blurb: string;
 }
 
 /** Daily games rotate their content at the player's local midnight. */
 export function isDailyGame(game: Game): boolean {
-  return game.type === "wordle" || game.type === "connections";
+  return (
+    game.type === "wordle" ||
+    game.type === "connections" ||
+    game.type === "cryptic"
+  );
 }
 
 export const GAMES: Game[] = [
@@ -32,6 +36,13 @@ export const GAMES: Game[] = [
     refId: "crosslinks",
     blurb:
       "Sixteen terms, four hidden groups, four mistakes. Find the connections.",
+  },
+  {
+    slug: "cryptic",
+    title: "Cryptic",
+    type: "cryptic",
+    refId: "cryptic",
+    blurb: "One cryptic clue a day. Crack the wordplay, beat the clock.",
   },
   {
     slug: "new-year-new-lies",
