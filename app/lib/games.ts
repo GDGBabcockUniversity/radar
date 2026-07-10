@@ -6,7 +6,7 @@
 export interface Game {
   slug: string; // route: /games/[slug]
   title: string;
-  type: "crossword" | "quiz" | "wordle" | "connections" | "cryptic";
+  type: "crossword" | "quiz" | "wordle" | "connections" | "cryptic" | "arcade";
   refId: string; // puzzleId / quizId passed to the component
   blurb: string;
 }
@@ -18,6 +18,15 @@ export function isDailyGame(game: Game): boolean {
     game.type === "connections" ||
     game.type === "cryptic"
   );
+}
+
+/**
+ * Games whose leaderboard resets each local day: all daily games, plus
+ * replayable arcade games (fresh content isn't what rotates there — the
+ * competition does, with each member's best run of the day on the board).
+ */
+export function hasDailyLeaderboard(game: Game): boolean {
+  return isDailyGame(game) || game.type === "arcade";
 }
 
 export const GAMES: Game[] = [
@@ -45,6 +54,13 @@ export const GAMES: Game[] = [
     blurb: "One cryptic clue a day. Crack the wordplay, beat the clock.",
   },
   {
+    slug: "rapid-fire",
+    title: "Rapid Fire",
+    type: "arcade",
+    refId: "rapid-fire",
+    blurb: "Sixty seconds, endless questions. Replay all day — best run counts.",
+  },
+  {
     slug: "new-year-new-lies",
     title: "New Year, New Lies",
     type: "crossword",
@@ -67,13 +83,13 @@ export const GAMES: Game[] = [
   },
 ];
 
-// Leaderboard key — matches the gameId emitted by the components. Daily
-// games get a per-day bucket (reset at local midnight, same boundary the
-// content rotation already uses) so "today's" leaderboard actually means
+// Leaderboard key — matches the gameId emitted by the components. Daily and
+// arcade games get a per-day bucket (reset at local midnight, same boundary
+// the content rotation already uses) so "today's" leaderboard actually means
 // today; one-off/seasonal games keep a single permanent bucket.
 export function leaderboardId(game: Game, date?: string): string {
   const base = `${game.type}:${game.refId}`;
-  return isDailyGame(game) && date ? `${base}:${date}` : base;
+  return hasDailyLeaderboard(game) && date ? `${base}:${date}` : base;
 }
 
 export function getGame(slug: string): Game | undefined {

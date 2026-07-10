@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Header, Footer } from "../components";
-import { GAMES, isDailyGame, leaderboardId, type Game } from "../lib/games";
+import {
+  GAMES,
+  isDailyGame,
+  hasDailyLeaderboard,
+  leaderboardId,
+  type Game,
+} from "../lib/games";
 import { getLeaderboard, type LeaderboardEntry } from "../lib/engagement";
 import { publicDisplayName } from "../lib/displayName";
 import { localDateKey } from "../lib/gamesData/daily";
@@ -26,7 +32,7 @@ interface GameBoard {
 // anything for a one-off/seasonal puzzle, so non-daily games don't get one.
 // Defensive by design: a Redis hiccup renders as empty boards, never a 500.
 async function fetchBoards(): Promise<GameBoard[]> {
-  const dailyGames = GAMES.filter(isDailyGame);
+  const dailyGames = GAMES.filter(hasDailyLeaderboard);
   const today = localDateKey();
   const results = await Promise.allSettled(
     dailyGames.map(async (game) => {
@@ -81,6 +87,11 @@ export default async function GamesPage() {
                   {isDailyGame(game) && (
                     <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
                       Daily
+                    </span>
+                  )}
+                  {game.type === "arcade" && (
+                    <span className="rounded-full bg-gdg-yellow/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gdg-yellow">
+                      Replayable
                     </span>
                   )}
                 </span>
