@@ -253,4 +253,246 @@ export const CRYPTIC_CLUES: CrypticClue[] = [
     explanation:
       "Double definition: a MONITOR is a school supervisor and the display you stare at all day.",
   },
+  // ——— Batch two: heavier devices (containers, deletions, nested reversals,
+  // initial/final letters, compound anagrams). Skews harder on purpose.
+  {
+    clue: "Tramline rebuilt — the end of the line for your commands (8)",
+    answer: "TERMINAL",
+    explanation:
+      "Anagram: \"rebuilt\" rearranges TRAMLINE into TERMINAL — both the end of a line and where your commands go.",
+  },
+  {
+    clue: "Complier converted into a code translator (8)",
+    answer: "COMPILER",
+    explanation:
+      "Anagram: \"converted\" rearranges COMPLIER into COMPILER — the program that translates your code.",
+  },
+  {
+    clue: "Gateman sent back with your conference ID (7)",
+    answer: "NAMETAG",
+    explanation:
+      "Reversal: \"sent back\" reverses GATEMAN into NAMETAG — the ID you wear at a conference.",
+  },
+  {
+    clue: "Pots upturned over a gap — a temporary fix (7)",
+    answer: "STOPGAP",
+    explanation:
+      "Reversal in a charade: POTS \"upturned\" becomes STOP, then + GAP = STOPGAP, a temporary fix.",
+  },
+  {
+    clue: "One caught up in a scheme flies the plane (5)",
+    answer: "PILOT",
+    explanation:
+      "Container: I (one) is \"caught up in\" PLOT (a scheme) — P-I-LOT — giving PILOT, who flies the plane.",
+  },
+  {
+    clue: "Bin holds the Egyptian sun god — it does your thinking (5)",
+    answer: "BRAIN",
+    explanation:
+      "Container: BIN \"holds\" RA (the Egyptian sun god) — B-RA-IN — giving BRAIN, the thinking organ.",
+  },
+  {
+    clue: "Chat about ecstasy? That's dishonest (5)",
+    answer: "CHEAT",
+    explanation:
+      "Container: CHAT placed \"about\" E (the standard abbreviation for ecstasy) — CH-E-AT — gives CHEAT, dishonest play.",
+  },
+  {
+    clue: "Learner boards a boat as the software swells (5)",
+    answer: "BLOAT",
+    explanation:
+      "Container: L (learner, as on a driving plate) \"boards\" BOAT — B-L-OAT — giving BLOAT, what swollen software does.",
+  },
+  {
+    clue: "Programmer drops his last — what's left is what he writes (4)",
+    answer: "CODE",
+    explanation:
+      "Deletion: CODER (programmer) \"drops his last\" letter, leaving CODE — what he writes.",
+  },
+  {
+    clue: "Planet cut short still flies (5)",
+    answer: "PLANE",
+    explanation:
+      "Deletion: PLANET \"cut short\" loses its final letter, leaving PLANE — which flies.",
+  },
+  {
+    clue: "Unfinished brandy marks your identity (5)",
+    answer: "BRAND",
+    explanation:
+      "Deletion: BRANDY left \"unfinished\" loses its last letter, giving BRAND — an identity mark.",
+  },
+  {
+    clue: "Router loses its head — it's external (5)",
+    answer: "OUTER",
+    explanation:
+      "Deletion: ROUTER \"loses its head\" (first letter), leaving OUTER — external.",
+  },
+  {
+    clue: "Endlessly classy set of students (5)",
+    answer: "CLASS",
+    explanation:
+      "Deletion: CLASSY \"endlessly\" (without its end letter) gives CLASS — a set of students.",
+  },
+  {
+    clue: "Japan awaits promising arrivals, initially — the great escape (4)",
+    answer: "JAPA",
+    explanation:
+      "Initial letters: \"initially\" takes the first letters of Japan Awaits Promising Arrivals — JAPA, the slang for relocating abroad.",
+  },
+  {
+    clue: "Gossip in student town, at the start — the full story (4)",
+    answer: "GIST",
+    explanation:
+      "Initial letters: \"at the start\" takes the first letters of Gossip In Student Town — GIST, the full story.",
+  },
+  {
+    clue: "Savings accounts permanently absent, at first — broke season (4)",
+    answer: "SAPA",
+    explanation:
+      "Initial letters: \"at first\" takes the first letters of Savings Accounts Permanently Absent — SAPA, the season of being broke.",
+  },
+  {
+    clue: "Ends of grand place calm solo — a product preview (4)",
+    answer: "DEMO",
+    explanation:
+      "Final letters: \"ends of\" takes the last letters of granD placE calM solO — DEMO, a product preview.",
+  },
+  {
+    clue: "Brief fault served in smug litchi pudding (6)",
+    answer: "GLITCH",
+    explanation:
+      "Hidden word: \"served in\" points inside the phrase — smu-G LITCH-i conceals GLITCH, a brief fault.",
+  },
+  {
+    clue: "Cash stashed inside a banana, irate vendor says (5)",
+    answer: "NAIRA",
+    explanation:
+      "Hidden word: \"stashed inside\" points into the phrase — bana-NA IRA-te conceals NAIRA, the cash in question.",
+  },
+  {
+    clue: "Bike taxi flagged down as you book a date (5)",
+    answer: "OKADA",
+    explanation:
+      "Hidden word: the bike taxi is sitting inside the phrase — bo-OK A DA-te conceals OKADA.",
+  },
+  {
+    clue: "Fresher's number buried in cinema tricks (6)",
+    answer: "MATRIC",
+    explanation:
+      "Hidden word: \"buried in\" points inside the phrase — cine-MA TRIC-ks conceals MATRIC, the number every fresher gets.",
+  },
+  {
+    clue: "Your online face peeking out of Java tariffs (6)",
+    answer: "AVATAR",
+    explanation:
+      "Hidden word: \"peeking out of\" points inside the phrase — J-AVA TAR-iffs conceals AVATAR, your online face.",
+  },
+  {
+    clue: "Web diary planted in herb logic (4)",
+    answer: "BLOG",
+    explanation:
+      "Hidden word: \"planted in\" points inside the phrase — her-B LOG-ic conceals BLOG, the web diary.",
+  },
+  {
+    clue: "Goals scattered across the city of hustle (5)",
+    answer: "LAGOS",
+    explanation:
+      "Anagram: \"scattered\" rearranges GOALS into LAGOS — the city of hustle.",
+  },
+  {
+    clue: "Hawala deal gone wrong — pure trouble (6)",
+    answer: "WAHALA",
+    explanation:
+      "Anagram: \"gone wrong\" rearranges HAWALA (the informal money-transfer system) into WAHALA — trouble.",
+  },
+  {
+    clue: "Fonda touring Lagos in a yellow bus (5)",
+    answer: "DANFO",
+    explanation:
+      "Anagram: \"touring\" rearranges FONDA into DANFO — the yellow Lagos bus.",
+  },
+  {
+    clue: "Rustle the papers for your exam outcome (6)",
+    answer: "RESULT",
+    explanation:
+      "Anagram: \"rustle\" is both the fodder and the story — RUSTLE rearranges into RESULT, your exam outcome.",
+  },
+  {
+    clue: "Top shot repositioned where the Wi-Fi flows (7)",
+    answer: "HOTSPOT",
+    explanation:
+      "Anagram: \"repositioned\" rearranges TOP SHOT into HOTSPOT — where the Wi-Fi flows.",
+  },
+  {
+    clue: "Botch at rewiring an artificial conversationalist (7)",
+    answer: "CHATBOT",
+    explanation:
+      "Compound anagram: \"rewiring\" mixes BOTCH + AT into CHATBOT — the artificial conversationalist.",
+  },
+  {
+    clue: "Loops wound back to feed the printer (5)",
+    answer: "SPOOL",
+    explanation:
+      "Reversal: \"wound back\" reverses LOOPS into SPOOL — the print queue that feeds the printer.",
+  },
+  {
+    clue: "Send money abroad, then send it back for the countdown (5)",
+    answer: "TIMER",
+    explanation:
+      "Reversal: REMIT (send money abroad) \"sent back\" reads TIMER — the countdown device.",
+  },
+  {
+    clue: "Diaper recycled, debt settled (6)",
+    answer: "REPAID",
+    explanation:
+      "Reversal: \"recycled\" turns DIAPER around into REPAID — a debt settled.",
+  },
+  {
+    clue: "Confronted, then turned away — a weaker brew (5)",
+    answer: "DECAF",
+    explanation:
+      "Reversal: FACED (confronted) \"turned away\" reads DECAF — the weaker brew.",
+  },
+  {
+    clue: "Angling for credentials, by the sound of it (8)",
+    answer: "PHISHING",
+    explanation:
+      "Homophone: \"by the sound of it\" — PHISHING sounds exactly like FISHING (angling); the definition is angling for credentials.",
+  },
+  {
+    clue: "Sounds sugary — a set of matching apps (5)",
+    answer: "SUITE",
+    explanation:
+      "Homophone: SUITE sounds like SWEET (sugary); the definition is a set of matching apps, like an office suite.",
+  },
+  {
+    clue: "Succeed in the exam, give your word — keep it secret (8)",
+    answer: "PASSWORD",
+    explanation:
+      "Charade: PASS (succeed in the exam) + WORD (give your word) = PASSWORD — the thing you keep secret.",
+  },
+  {
+    clue: "Grit and a fistfight make a safe place to test code (7)",
+    answer: "SANDBOX",
+    explanation:
+      "Charade: SAND (grit) + BOX (to fistfight) = SANDBOX — the safe, isolated place to test code.",
+  },
+  {
+    clue: "Loose stones head north to reach the display (6)",
+    answer: "SCREEN",
+    explanation:
+      "Charade: SCREE (loose stones on a mountainside) + N (north) = SCREEN — the display.",
+  },
+  {
+    clue: "Saint joins the gang — a run of characters (6)",
+    answer: "STRING",
+    explanation:
+      "Charade: ST (saint) + RING (a gang) = STRING — a run of characters.",
+  },
+  {
+    clue: "On time, awaiting your command (6)",
+    answer: "PROMPT",
+    explanation:
+      "Double definition: PROMPT means on time, and the PROMPT is what sits blinking, awaiting your command.",
+  },
 ];

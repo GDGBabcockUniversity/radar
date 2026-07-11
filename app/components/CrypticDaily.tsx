@@ -68,7 +68,7 @@ function burstConfetti() {
 }
 
 function crypticScore(hintsUsed: number, seconds: number): number {
-  return Math.max(50, 400 - hintsUsed * 100 - Math.floor(seconds / 15) * 5);
+  return Math.max(50, 400 - hintsUsed * 100 - Math.floor(seconds / 12) * 5);
 }
 
 export default function CrypticDaily() {
