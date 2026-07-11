@@ -10,6 +10,9 @@ export interface CrypticClue {
   clue: string;
   answer: string; // uppercase A–Z only, 4–8 letters
   explanation: string;
+  // Credited name for community-submitted clues. Existing clues leave this
+  // unset and read as "the RADAR desk".
+  author?: string;
 }
 
 export const CRYPTIC_CLUES: CrypticClue[] = [

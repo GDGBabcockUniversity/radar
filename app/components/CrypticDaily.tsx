@@ -10,6 +10,7 @@ import { getGame, leaderboardId } from "../lib/games";
 import { queuePendingScore } from "../lib/pendingScores";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { shareResult } from "../lib/shareResult";
+import { LINKS } from "../lib/constants";
 import { computeDailyGameStats, type GameStats } from "../lib/gameStats";
 import { useAuth } from "./AuthProvider";
 import GameInfoModal from "./GameInfoModal";
@@ -293,6 +294,9 @@ export default function CrypticDaily() {
                   ` · ${hintsUsed} hint${hintsUsed === 1 ? "" : "s"} used`}
               </p>
             )}
+            <p className="mt-3 text-xs text-content-subtle">
+              Clue by {clue.author ?? "the RADAR desk"}
+            </p>
           </div>
 
           {/* Letter slots — hints reveal from the left */}
@@ -390,6 +394,18 @@ export default function CrypticDaily() {
                   {copied ? "Copied!" : "Share result"}
                 </button>
               </div>
+              {LINKS.submitClue && (
+                <p className="mt-3 text-center text-sm">
+                  <a
+                    href={LINKS.submitClue}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-primary hover:underline"
+                  >
+                    Think you can write a better one? Submit a clue →
+                  </a>
+                </p>
+              )}
               <PostGameLoop gameSlug="cryptic" day={dayKey} />
             </div>
           )}
@@ -415,7 +431,7 @@ export default function CrypticDaily() {
             a sound-alike, &quot;sent back&quot; a reversal.
           </li>
           <li>Stuck? Reveal up to three letters — each costs 100 points.</li>
-          <li>Solve fast: the clock trims 5 points every 15 seconds.</li>
+          <li>Solve fast: the clock trims 5 points every 12 seconds.</li>
           <li>After you finish, the wordplay is explained — that&apos;s how you get better.</li>
         </ul>
         <div className="rounded-xl border border-edge bg-overlay p-3 text-xs leading-relaxed">
@@ -427,6 +443,18 @@ export default function CrypticDaily() {
             &quot;sweet courses&quot; is the definition. Answer: DESSERTS.
           </p>
         </div>
+        {LINKS.submitClue && (
+          <p className="text-sm">
+            <a
+              href={LINKS.submitClue}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-primary hover:underline"
+            >
+              Think you can write a better one? Submit a clue →
+            </a>
+          </p>
+        )}
       </GameInfoModal>
     </div>
   );

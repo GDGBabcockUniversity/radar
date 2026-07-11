@@ -47,6 +47,9 @@ export const PAGES = {
 export const LINKS = {
   youtubePlaylist: "https://www.youtube.com/playlist?list=PLtUz78Yj1nzl2DRvEzS5raH_Jabh0fZ6S",
   contactEmail: "mailto:gdgbabcock@gmail.com",
+  // Community clue submissions (Google Form). Empty until the owner sets
+  // NEXT_PUBLIC_SUBMIT_CLUE_URL in Vercel — the link only renders when set.
+  submitClue: process.env.NEXT_PUBLIC_SUBMIT_CLUE_URL || "",
 };
 
 // Cadence copy lives here so growing monthly -> bi-weekly -> weekly is a
