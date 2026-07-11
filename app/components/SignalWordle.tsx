@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { track } from "../lib/track";
 import { cn } from "../lib/utils";
 import { SIGNAL_ANSWERS } from "../lib/gamesData/signalWords";
+import { SIGNAL_GUESSES } from "../lib/gamesData/signalGuessList";
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
 import { queuePendingScore } from "../lib/pendingScores";
@@ -23,6 +24,11 @@ const GAME_NAME = "Signal"; // working title — change here only
 const GAME = getGame("signal")!;
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 6;
+// Any real five-letter word is a legal guess; the answer pool is unioned in
+// because it's curated separately and must always be accepted.
+const GUESS_SET = new Set([...SIGNAL_GUESSES, ...SIGNAL_ANSWERS]);
+const HARDMODE_KEY = "signal-hardmode";
+const HARDMODE_BONUS = 50;
 
 const KEYBOARD_ROWS = [
   ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -166,6 +172,8 @@ export default function SignalWordle() {
   const [current, setCurrent] = useState("");
   const [revealingRow, setRevealingRow] = useState<number | null>(null);
   const [shakeRow, setShakeRow] = useState(false);
+  const [boardMessage, setBoardMessage] = useState<string | null>(null);
+  const [hardMode, setHardMode] = useState(false);
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -211,6 +219,7 @@ export default function SignalWordle() {
           localStorage.setItem("howto-seen-signal", "1");
           openInfo();
         }
+        setHardMode(localStorage.getItem(HARDMODE_KEY) === "1");
         const rawStreak = localStorage.getItem("signal-streak");
         if (rawStreak) {
           const s: Streak = JSON.parse(rawStreak);
@@ -277,13 +286,44 @@ export default function SignalWordle() {
     return next;
   }, []);
 
+  // Shake + inline message without consuming a guess — the dictionary and
+  // hard-mode rejections both route through here.
+  const rejectGuess = useCallback((message: string | null) => {
+    setBoardMessage(message);
+    setShakeRow(true);
+    setTimeout(() => setShakeRow(false), 500);
+  }, []);
+
   const submitGuess = useCallback(() => {
     if (phase !== "playing" || revealingRow !== null) return;
     if (current.length !== WORD_LENGTH || !/^[A-Z]{5}$/.test(current)) {
-      setShakeRow(true);
-      setTimeout(() => setShakeRow(false), 500);
+      rejectGuess(null);
       return;
     }
+    if (!GUESS_SET.has(current)) {
+      rejectGuess("Not in word list");
+      return;
+    }
+    if (hardMode) {
+      // Every revealed hint must be honored: greens stay put, yellows must
+      // reappear somewhere.
+      for (const prev of guesses) {
+        const evals = evaluateGuess(prev, answer);
+        for (let i = 0; i < WORD_LENGTH; i++) {
+          if (evals[i] === "correct" && current[i] !== prev[i]) {
+            rejectGuess(
+              `Hard mode: must use the green ${prev[i]} in position ${i + 1}`
+            );
+            return;
+          }
+          if (evals[i] === "present" && !current.includes(prev[i])) {
+            rejectGuess(`Hard mode: guess must include ${prev[i]}`);
+            return;
+          }
+        }
+      }
+    }
+    setBoardMessage(null);
 
     const nextGuesses = [...guesses, current];
     const won = current === answer;
@@ -310,7 +350,9 @@ export default function SignalWordle() {
           solved: true,
           guesses: g,
           day: dayKey,
-          score: 700 - (g - 1) * 100,
+          hardMode,
+          // Hard mode is a real constraint, so it's worth a real bonus.
+          score: 700 - (g - 1) * 100 + (hardMode ? HARDMODE_BONUS : 0),
         };
         track("game.played", payload);
         setStreak(recordWinStreak(dayKey));
@@ -349,6 +391,8 @@ export default function SignalWordle() {
     guesses,
     answer,
     dayKey,
+    hardMode,
+    rejectGuess,
     persist,
     recordWinStreak,
     isAuthenticated,
@@ -361,8 +405,10 @@ export default function SignalWordle() {
       if (key === "ENTER") {
         submitGuess();
       } else if (key === "BACK") {
+        setBoardMessage(null);
         setCurrent((c) => c.slice(0, -1));
       } else if (/^[A-Z]$/.test(key) && current.length < WORD_LENGTH) {
+        setBoardMessage(null);
         setCurrent((c) => c + key);
       }
     },
@@ -439,6 +485,24 @@ export default function SignalWordle() {
     }
   };
 
+  // Hard mode can only be armed before the first guess (arming it on guess
+  // six would be a free +50); switching it off mid-game is always allowed.
+  const canEnableHardMode = guesses.length === 0 && phase === "playing";
+  const toggleHardMode = () => {
+    if (!hardMode && !canEnableHardMode) {
+      setBoardMessage("Hard mode can only be turned on before your first guess");
+      return;
+    }
+    const next = !hardMode;
+    setHardMode(next);
+    setBoardMessage(null);
+    try {
+      localStorage.setItem(HARDMODE_KEY, next ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  };
+
   const finished = phase === "won" || phase === "lost";
 
   return (
@@ -453,6 +517,18 @@ export default function SignalWordle() {
             </span>
           )}
         </p>
+        <button
+          onClick={toggleHardMode}
+          aria-pressed={hardMode}
+          className={cn(
+            "shrink-0 rounded-full border px-3 py-1 text-xs font-semibold transition-colors",
+            hardMode
+              ? "border-primary text-primary"
+              : "border-edge text-content-muted hover:border-edge-strong"
+          )}
+        >
+          Hard mode: {hardMode ? "on" : "off"}
+        </button>
         <button
           onClick={openInfo}
           aria-label="How to play and your stats"
@@ -507,6 +583,15 @@ export default function SignalWordle() {
         })}
       </div>
 
+      {boardMessage && (
+        <p
+          className="mb-4 -mt-2 text-center text-sm font-semibold text-gdg-yellow"
+          aria-live="polite"
+        >
+          {boardMessage}
+        </p>
+      )}
+
       {/* End panel */}
       {finished && (
         <div className="mb-6 rounded-2xl border border-edge bg-surface-raised dark-card p-5 text-center">
@@ -541,9 +626,13 @@ export default function SignalWordle() {
           word — a new signal drops at midnight.
         </p>
         <ul className="list-disc space-y-1 pl-5">
-          <li>Type a five-letter word and press Enter.</li>
+          <li>Type a five-letter word and press Enter — guesses must be real words.</li>
           <li>Tile colors show how close your guess was.</li>
           <li>Fewer guesses means a higher score.</li>
+          <li>
+            Hard mode (toggle above the board, before your first guess) forces
+            every revealed hint into your next guess — worth a +50 bonus.
+          </li>
         </ul>
         <div className="space-y-3 pt-1">
           <ExampleTiles
