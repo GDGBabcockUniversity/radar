@@ -7,6 +7,7 @@ import { SIGNAL_ANSWERS } from "../lib/gamesData/signalWords";
 import { SIGNAL_GUESSES } from "../lib/gamesData/signalGuessList";
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
+import { BASE_URL } from "../lib/constants";
 import { queuePendingScore } from "../lib/pendingScores";
 import { shareResult } from "../lib/shareResult";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
@@ -121,7 +122,7 @@ function buildShareText(dayKey: string, guesses: string[], answer: string, won: 
   const grid = guesses
     .map((g) => evaluateGuess(g, answer).map((s) => TILE_EMOJI[s]).join(""))
     .join("\n");
-  return `${header}\n\n${grid}\n\nradar.gdgbabcock.com/games/signal`;
+  return `${header}\n\n${grid}\n\n${BASE_URL}/games/signal`;
 }
 
 // Runtime-injected keyframes, same pattern as PersonalityQuiz's confetti —

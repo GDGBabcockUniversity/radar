@@ -9,6 +9,7 @@ import {
 } from "../lib/gamesData/rapidFireQuestions";
 import { localDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
+import { BASE_URL } from "../lib/constants";
 import { queuePendingScore } from "../lib/pendingScores";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { shareResult } from "../lib/shareResult";
@@ -183,7 +184,7 @@ export default function RapidFireGame() {
 
   const share = async () => {
     const result = await shareResult(
-      `${GAME_NAME} ${localDateKey()} — ${score} pts (${correctCount} correct in 60s)\n\nradar.gdgbabcock.com/games/rapid-fire`
+      `${GAME_NAME} ${localDateKey()} — ${score} pts (${correctCount} correct in 60s)\n\n${BASE_URL}/games/rapid-fire`
     );
     if (result === "copied") {
       setCopied(true);
