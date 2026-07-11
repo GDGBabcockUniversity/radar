@@ -43,6 +43,7 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://radar.gdgbabcock.com"),
   title: "RADAR | GDG Babcock",
   description: "Your signal to what's next in the Babcock tech ecosystem.",
 };

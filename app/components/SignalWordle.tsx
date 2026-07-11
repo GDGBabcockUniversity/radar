@@ -8,6 +8,7 @@ import { SIGNAL_GUESSES } from "../lib/gamesData/signalGuessList";
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
 import { queuePendingScore } from "../lib/pendingScores";
+import { shareResult } from "../lib/shareResult";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { computeDailyGameStats, type GameStats } from "../lib/gameStats";
 import { useAuth } from "./AuthProvider";
@@ -474,14 +475,12 @@ export default function SignalWordle() {
   };
 
   const share = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        buildShareText(dayKey, guesses, answer, phase === "won")
-      );
+    const result = await shareResult(
+      buildShareText(dayKey, guesses, answer, phase === "won")
+    );
+    if (result === "copied") {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* clipboard unavailable */
     }
   };
 

@@ -11,6 +11,7 @@ import { localDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
 import { queuePendingScore } from "../lib/pendingScores";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
+import { shareResult } from "../lib/shareResult";
 import { useAuth } from "./AuthProvider";
 import GameInfoModal from "./GameInfoModal";
 
@@ -180,14 +181,12 @@ export default function RapidFireGame() {
   };
 
   const share = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        `${GAME_NAME} ${localDateKey()} — ${score} pts (${correctCount} correct in 60s)\n\nradar.gdgbabcock.com/games/rapid-fire`
-      );
+    const result = await shareResult(
+      `${GAME_NAME} ${localDateKey()} — ${score} pts (${correctCount} correct in 60s)\n\nradar.gdgbabcock.com/games/rapid-fire`
+    );
+    if (result === "copied") {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* clipboard unavailable */
     }
   };
 
