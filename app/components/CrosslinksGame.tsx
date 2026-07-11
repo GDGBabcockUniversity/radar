@@ -92,6 +92,14 @@ function ensureAnimationStyles() {
       100% { transform: scale(1); opacity: 1; }
     }
     .crosslinks-pop { animation: crosslinks-pop 250ms ease; }
+    @keyframes crosslinks-shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(6px); }
+    }
+    .crosslinks-shake { animation: crosslinks-shake 450ms ease; }
   `;
   document.head.appendChild(style);
 }
@@ -122,6 +130,8 @@ export default function CrosslinksGame() {
   const [guessHistory, setGuessHistory] = useState<CrosslinksDifficulty[][]>([]);
   const [pastGuesses, setPastGuesses] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
+  const [shakeGrid, setShakeGrid] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [stats, setStats] = useState<GameStats | null>(null);
@@ -266,6 +276,7 @@ export default function CrosslinksGame() {
 
     const guessKey = [...selected].sort().join("|");
     if (pastGuesses.includes(guessKey)) {
+      setFeedback("Already guessed that combination.");
       toast("Already guessed that combination");
       return;
     }
@@ -296,6 +307,7 @@ export default function CrosslinksGame() {
       setSolvedGroups(nextSolved);
       setTiles(nextTiles);
       setSelected([]);
+      setFeedback(null);
       setGuessHistory(nextHistory);
       setPastGuesses(nextPastGuesses);
       persist(
@@ -324,6 +336,19 @@ export default function CrosslinksGame() {
     setGuessHistory(nextHistory);
     setPastGuesses(nextPastGuesses);
     setSelected([]);
+    // A miss has to FEEL like a miss: shake the grid and leave a persistent
+    // inline hint — a toast alone is easy to blink past mid-game.
+    setShakeGrid(true);
+    setTimeout(() => setShakeGrid(false), 500);
+    if (!lost) {
+      setFeedback(
+        bestOverlap === 3
+          ? "One away!"
+          : `Not a group — ${MAX_MISTAKES - nextMistakes} mistake${
+              MAX_MISTAKES - nextMistakes === 1 ? "" : "s"
+            } left.`
+      );
+    }
     if (bestOverlap === 3 && !lost) toast("One away!");
     persist(
       {
@@ -465,7 +490,12 @@ export default function CrosslinksGame() {
 
       {/* Tile grid */}
       {!finished && tiles.length > 0 && (
-        <div className="grid grid-cols-4 gap-2 mb-5">
+        <div
+          className={cn(
+            "grid grid-cols-4 gap-2 mb-5",
+            shakeGrid && "crosslinks-shake"
+          )}
+        >
           {tiles.map((word) => {
             const isSelected = selected.includes(word);
             return (
@@ -489,6 +519,14 @@ export default function CrosslinksGame() {
       {/* Mistake dots + controls */}
       {!finished && phase !== "loading" && (
         <>
+          {feedback && (
+            <p
+              className="mb-3 text-center text-sm font-semibold text-gdg-yellow"
+              aria-live="polite"
+            >
+              {feedback}
+            </p>
+          )}
           <div className="flex items-center justify-center gap-2 mb-5 text-sm text-content-muted">
             <span>Mistakes remaining:</span>
             <span className="inline-flex gap-1.5">

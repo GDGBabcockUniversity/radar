@@ -9,13 +9,15 @@ export default function ThemedToaster() {
   return (
     <Toaster
       theme={theme}
-      position="top-right"
+      position="bottom-center"
+      duration={3500}
       toastOptions={{
         style: {
-          background: "var(--color-surface)",
+          background: "var(--color-surface-raised)",
           color: "var(--color-content)",
-          border: "1px solid var(--color-edge)",
+          border: "1px solid var(--color-edge-strong)",
           borderRadius: "6px",
+          boxShadow: "0 8px 30px rgba(0,0,0,0.5)",
           fontSize: "14px",
           fontWeight: 500,
         },
