@@ -183,6 +183,7 @@ export default function CrypticDaily() {
         gameId: leaderboardId(GAME, dayKey),
         baseId: leaderboardId(GAME),
         streakEligible: true,
+        oneAttempt: true,
         solved: won,
         hints: hintsUsed,
         seconds,

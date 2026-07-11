@@ -39,6 +39,17 @@ export function queuePendingScore(payload: Record<string, unknown>): void {
   }
 }
 
+// Sign-out hygiene: a queued anonymous score must never survive into the
+// NEXT account's session on the same browser — flushing there would credit
+// player A's result to player B.
+export function clearPendingScores(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 export function flushPendingScores(): void {
   try {
     const queue = read();

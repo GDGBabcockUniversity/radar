@@ -306,6 +306,7 @@ export default function SignalWordle() {
           gameId: leaderboardId(GAME, dayKey),
           baseId: leaderboardId(GAME),
           streakEligible: true,
+          oneAttempt: true,
           solved: true,
           guesses: g,
           day: dayKey,
@@ -322,6 +323,7 @@ export default function SignalWordle() {
       } else {
         track("game.played", {
           gameId: leaderboardId(GAME, dayKey),
+          oneAttempt: true,
           solved: false,
           guesses: nextGuesses.length,
           day: dayKey,

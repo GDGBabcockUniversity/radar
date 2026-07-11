@@ -375,6 +375,7 @@ export default function CrosslinksGame() {
         gameId: leaderboardId(GAME, dayKey),
         baseId: leaderboardId(GAME),
         streakEligible: true,
+        oneAttempt: true,
         solved: won,
         score,
         mistakes: finalMistakes,
