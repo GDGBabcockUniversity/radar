@@ -10,9 +10,9 @@ import {
 } from "../lib/games";
 import { getLeaderboard, type LeaderboardEntry } from "../lib/engagement";
 import { publicDisplayName, avatarColor } from "../lib/displayName";
-import { localDateKey } from "../lib/gamesData/daily";
 import { PAGES } from "../lib/constants";
 import TodayStrip from "../components/TodayStrip";
+import MiniLeaderboard from "../components/MiniLeaderboard";
 
 export const metadata: Metadata = {
   title: "Games | RADAR",
@@ -25,32 +25,28 @@ export const revalidate = 60;
 
 interface GameBoard {
   game: Game;
-  top: LeaderboardEntry[];
   streaks: LeaderboardEntry[];
 }
 
-// One top-5 board per daily game only — a permanent leaderboard doesn't mean
-// anything for a one-off/seasonal puzzle, so non-daily games don't get one.
-// Defensive by design: a Redis hiccup renders as empty boards, never a 500.
+// Streak boards only — the "today" top-5 per game renders client-side via
+// MiniLeaderboard instead of being fetched here. This page is an async
+// Server Component with no player-local timezone to draw on, so a
+// server-computed "today" key (resolving to the server's own UTC clock)
+// would read the wrong day's board for anyone not in UTC, right around
+// their own local midnight. Streaks have no date component, so they're
+// unaffected and stay server-rendered. Defensive by design: a Redis
+// hiccup renders as an empty streak list, never a 500.
 async function fetchBoards(): Promise<GameBoard[]> {
   const dailyGames = GAMES.filter(hasDailyLeaderboard);
-  const today = localDateKey();
   const results = await Promise.allSettled(
     dailyGames.map(async (game) => {
-      const [top, streaks] = await Promise.all([
-        getLeaderboard(leaderboardId(game, today), 5),
-        getLeaderboard(`streak:${leaderboardId(game)}`, 5),
-      ]);
-      return { game, top, streaks };
+      const streaks = await getLeaderboard(`streak:${leaderboardId(game)}`, 5);
+      return { game, streaks };
     })
   );
-  const boards = results.map((r, i) =>
-    r.status === "fulfilled"
-      ? r.value
-      : { game: dailyGames[i], top: [], streaks: [] }
+  return results.map((r, i) =>
+    r.status === "fulfilled" ? r.value : { game: dailyGames[i], streaks: [] }
   );
-  // Lead the section with boards that have life in them.
-  return boards.sort((a, b) => Number(b.top.length > 0) - Number(a.top.length > 0));
 }
 
 export default async function GamesPage() {
@@ -117,7 +113,7 @@ export default async function GamesPage() {
               High Scores
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {boards.map(({ game, top, streaks }) => (
+              {boards.map(({ game, streaks }) => (
                 <div
                   key={game.slug}
                   className="rounded-2xl border border-edge bg-surface-raised dark-card p-6"
@@ -128,42 +124,9 @@ export default async function GamesPage() {
                   >
                     {game.title}
                   </Link>
-                  {top.length === 0 ? (
-                    <p className="mt-4 text-sm text-content-subtle">
-                      No scores yet today — be the first.
-                    </p>
-                  ) : (
-                    <ol className="mt-4 space-y-2.5">
-                      {top.map((entry, i) => (
-                        <li
-                          key={entry.member}
-                          className="flex items-center gap-3 text-sm"
-                        >
-                          <span
-                            className={
-                              i === 0
-                                ? "font-mono text-xs font-bold text-gdg-yellow"
-                                : "font-mono text-xs text-content-subtle"
-                            }
-                          >
-                            {String(i + 1).padStart(2, "0")}
-                          </span>
-                          <span
-                            className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white"
-                            style={{ backgroundColor: avatarColor(entry.member) }}
-                          >
-                            {publicDisplayName(entry.name, entry.member)[0]?.toUpperCase()}
-                          </span>
-                          <span className="flex-1 truncate text-content-secondary">
-                            {publicDisplayName(entry.name, entry.member)}
-                          </span>
-                          <span className="font-bold text-primary">
-                            {entry.score}
-                          </span>
-                        </li>
-                      ))}
-                    </ol>
-                  )}
+                  <div className="mt-4">
+                    <MiniLeaderboard gameSlug={game.slug} />
+                  </div>
                   {streaks.length > 0 && (
                     <div className="mt-5 border-t border-edge pt-4">
                       <p className="mb-2.5 text-[10px] font-bold uppercase tracking-[2px] text-content-subtle">
