@@ -82,6 +82,19 @@ async function redisSink(e: EngagementEvent): Promise<void> {
     }
   } else if (e.type === "game.played") {
     const gameId = String(e.payload.gameId ?? "");
+
+    // Daily games are one attempt per member per day: the first submitted
+    // result is THE result. Repeat submissions (fresh browser, cleared
+    // storage, replay with a known answer) are ignored. The dated gameId
+    // scopes the marker to the day; EX cleans it up after two days.
+    if (id && e.payload.oneAttempt === true && gameId) {
+      const first = await redis.set(`radar:attempt:${gameId}:${id}`, 1, {
+        nx: true,
+        ex: 60 * 60 * 48,
+      });
+      if (first === null) return;
+    }
+
     if (id) await redis.incr(`radar:games:${id}`);
     const score = Number(e.payload.score);
     if (id && gameId && Number.isFinite(score)) {

@@ -12,10 +12,12 @@ import {
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
 import { queuePendingScore } from "../lib/pendingScores";
+import { shareResult } from "../lib/shareResult";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { computeDailyGameStats, type GameStats } from "../lib/gameStats";
 import { useAuth } from "./AuthProvider";
 import GameInfoModal from "./GameInfoModal";
+import PostGameLoop from "./PostGameLoop";
 
 // Crosslinks — RADAR's daily grouping game (Connections-style). Sixteen
 // terms, four hidden groups, four mistakes. Score = solvedGroups×100 +
@@ -92,6 +94,14 @@ function ensureAnimationStyles() {
       100% { transform: scale(1); opacity: 1; }
     }
     .crosslinks-pop { animation: crosslinks-pop 250ms ease; }
+    @keyframes crosslinks-shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(6px); }
+    }
+    .crosslinks-shake { animation: crosslinks-shake 450ms ease; }
   `;
   document.head.appendChild(style);
 }
@@ -122,6 +132,8 @@ export default function CrosslinksGame() {
   const [guessHistory, setGuessHistory] = useState<CrosslinksDifficulty[][]>([]);
   const [pastGuesses, setPastGuesses] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
+  const [shakeGrid, setShakeGrid] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [stats, setStats] = useState<GameStats | null>(null);
@@ -266,6 +278,7 @@ export default function CrosslinksGame() {
 
     const guessKey = [...selected].sort().join("|");
     if (pastGuesses.includes(guessKey)) {
+      setFeedback("Already guessed that combination.");
       toast("Already guessed that combination");
       return;
     }
@@ -296,6 +309,7 @@ export default function CrosslinksGame() {
       setSolvedGroups(nextSolved);
       setTiles(nextTiles);
       setSelected([]);
+      setFeedback(null);
       setGuessHistory(nextHistory);
       setPastGuesses(nextPastGuesses);
       persist(
@@ -324,6 +338,19 @@ export default function CrosslinksGame() {
     setGuessHistory(nextHistory);
     setPastGuesses(nextPastGuesses);
     setSelected([]);
+    // A miss has to FEEL like a miss: shake the grid and leave a persistent
+    // inline hint — a toast alone is easy to blink past mid-game.
+    setShakeGrid(true);
+    setTimeout(() => setShakeGrid(false), 500);
+    if (!lost) {
+      setFeedback(
+        bestOverlap === 3
+          ? "One away!"
+          : `Not a group — ${MAX_MISTAKES - nextMistakes} mistake${
+              MAX_MISTAKES - nextMistakes === 1 ? "" : "s"
+            } left.`
+      );
+    }
     if (bestOverlap === 3 && !lost) toast("One away!");
     persist(
       {
@@ -350,6 +377,7 @@ export default function CrosslinksGame() {
         gameId: leaderboardId(GAME, dayKey),
         baseId: leaderboardId(GAME),
         streakEligible: true,
+        oneAttempt: true,
         solved: won,
         score,
         mistakes: finalMistakes,
@@ -381,14 +409,12 @@ export default function CrosslinksGame() {
     const grid = guessHistory
       .map((row) => row.map((d) => DIFFICULTY_EMOJI[d]).join(""))
       .join("\n");
-    try {
-      await navigator.clipboard.writeText(
-        `${header}\n\n${grid}\n\nradar.gdgbabcock.com/games/crosslinks`
-      );
+    const result = await shareResult(
+      `${header}\n\n${grid}\n\nradar.gdgbabcock.com/games/crosslinks`
+    );
+    if (result === "copied") {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* clipboard unavailable */
     }
   };
 
@@ -465,7 +491,12 @@ export default function CrosslinksGame() {
 
       {/* Tile grid */}
       {!finished && tiles.length > 0 && (
-        <div className="grid grid-cols-4 gap-2 mb-5">
+        <div
+          className={cn(
+            "grid grid-cols-4 gap-2 mb-5",
+            shakeGrid && "crosslinks-shake"
+          )}
+        >
           {tiles.map((word) => {
             const isSelected = selected.includes(word);
             return (
@@ -489,6 +520,14 @@ export default function CrosslinksGame() {
       {/* Mistake dots + controls */}
       {!finished && phase !== "loading" && (
         <>
+          {feedback && (
+            <p
+              className="mb-3 text-center text-sm font-semibold text-gdg-yellow"
+              aria-live="polite"
+            >
+              {feedback}
+            </p>
+          )}
           <div className="flex items-center justify-center gap-2 mb-5 text-sm text-content-muted">
             <span>Mistakes remaining:</span>
             <span className="inline-flex gap-1.5">
@@ -549,6 +588,7 @@ export default function CrosslinksGame() {
           >
             {copied ? "Copied!" : "Share result"}
           </button>
+          <PostGameLoop gameSlug="crosslinks" day={dayKey} />
         </div>
       )}
 

@@ -11,8 +11,10 @@ import { localDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
 import { queuePendingScore } from "../lib/pendingScores";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
+import { shareResult } from "../lib/shareResult";
 import { useAuth } from "./AuthProvider";
 import GameInfoModal from "./GameInfoModal";
+import PostGameLoop from "./PostGameLoop";
 
 // Rapid Fire — RADAR's replayable 60-second trivia sprint. Unlimited runs;
 // the daily leaderboard bucket plus the best-score-only write means your
@@ -24,6 +26,9 @@ const GAME_NAME = "Rapid Fire"; // working title — change here only
 const GAME = getGame("rapid-fire")!;
 const RUN_SECONDS = 60;
 const POINTS_PER_CORRECT = 10;
+const WRONG_PENALTY = 5;
+const STREAK_THRESHOLD = 3;
+const STREAK_BONUS = 5;
 
 type Phase = "ready" | "playing" | "finished";
 
@@ -42,6 +47,7 @@ export default function RapidFireGame() {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [runStreak, setRunStreak] = useState(0);
   const [remaining, setRemaining] = useState(RUN_SECONDS);
   const [bestToday, setBestToday] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
@@ -138,6 +144,7 @@ export default function RapidFireGame() {
     setIndex(0);
     setScore(0);
     setCorrectCount(0);
+    setRunStreak(0);
     scoreRef.current = 0;
     correctRef.current = 0;
     setRemaining(RUN_SECONDS);
@@ -152,10 +159,18 @@ export default function RapidFireGame() {
     if (!question) return;
 
     const isCorrect = optionIndex === question.correct;
-    const nextScore = isCorrect ? score + POINTS_PER_CORRECT : score;
+    const nextStreak = isCorrect ? runStreak + 1 : 0;
+    // Wrong answers cost points — spamming through the deck no longer pays.
+    // A live streak of 3+ correct answers earns a bonus on top of the base
+    // 10, rewarding actually knowing the run of questions.
+    const gain = isCorrect
+      ? POINTS_PER_CORRECT + (nextStreak >= STREAK_THRESHOLD ? STREAK_BONUS : 0)
+      : -WRONG_PENALTY;
+    const nextScore = Math.max(0, score + gain);
     const nextCorrect = isCorrect ? correctCount + 1 : correctCount;
     setScore(nextScore);
     setCorrectCount(nextCorrect);
+    setRunStreak(nextStreak);
     scoreRef.current = nextScore;
     correctRef.current = nextCorrect;
 
@@ -167,14 +182,12 @@ export default function RapidFireGame() {
   };
 
   const share = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        `${GAME_NAME} ${localDateKey()} — ${score} pts (${correctCount} correct in 60s)\n\nradar.gdgbabcock.com/games/rapid-fire`
-      );
+    const result = await shareResult(
+      `${GAME_NAME} ${localDateKey()} — ${score} pts (${correctCount} correct in 60s)\n\nradar.gdgbabcock.com/games/rapid-fire`
+    );
+    if (result === "copied") {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* clipboard unavailable */
     }
   };
 
@@ -220,7 +233,14 @@ export default function RapidFireGame() {
         <>
           {/* Score + timer bar */}
           <div className="mb-4 flex items-center justify-between font-mono text-sm">
-            <span className="font-bold text-primary">{score} pts</span>
+            <span className="flex items-center gap-2">
+              <span className="font-bold text-primary">{score} pts</span>
+              {runStreak >= STREAK_THRESHOLD && (
+                <span className="font-bold text-gdg-yellow">
+                  🔥 x{runStreak}
+                </span>
+              )}
+            </span>
             <span
               className={cn(
                 "font-bold",
@@ -285,6 +305,7 @@ export default function RapidFireGame() {
               {copied ? "Copied!" : "Share result"}
             </button>
           </div>
+          <PostGameLoop gameSlug="rapid-fire" day={localDateKey()} />
         </div>
       )}
 
@@ -299,7 +320,8 @@ export default function RapidFireGame() {
         </p>
         <ul className="list-disc space-y-1 pl-5">
           <li>Every correct answer is worth 10 points.</li>
-          <li>Wrong answers cost nothing — you just move on. Keep going.</li>
+          <li>Wrong answers cost 5 — guessing wildly doesn&apos;t pay.</li>
+          <li>Three or more correct in a row earns a streak bonus (+5 each) while it lasts — shown as 🔥.</li>
           <li>Replay as many times as you want, all day.</li>
           <li>Only your best run of the day counts on the leaderboard, which resets at midnight.</li>
         </ul>

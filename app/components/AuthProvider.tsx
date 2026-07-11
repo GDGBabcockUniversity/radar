@@ -10,7 +10,7 @@ import {
   type FirebaseUser,
 } from "../lib/firebase";
 import SignInModal from "./SignInModal";
-import { flushPendingScores } from "../lib/pendingScores";
+import { clearPendingScores, flushPendingScores } from "../lib/pendingScores";
 
 interface Member {
   memberId: string;
@@ -160,6 +160,9 @@ export default function AuthProvider({
       // best effort
     } finally {
       setMember(null);
+      // Whatever was queued anonymously on this browser dies with the
+      // session — the next account to sign in here must not inherit it.
+      clearPendingScores();
     }
   }, []);
 

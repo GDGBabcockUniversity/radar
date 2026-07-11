@@ -21,6 +21,10 @@ export { default as CrosslinksGame } from "./CrosslinksGame";
 export { default as CrypticDaily } from "./CrypticDaily";
 export { default as RapidFireGame } from "./RapidFireGame";
 export { default as ShareButtons } from "./ShareButtons";
+export { default as NextPuzzleCountdown } from "./NextPuzzleCountdown";
+export { default as MiniLeaderboard } from "./MiniLeaderboard";
+export { default as PostGameLoop } from "./PostGameLoop";
+export { default as TodayStrip } from "./TodayStrip";
 export { default as Byline } from "./Byline";
 export { default as SectionHeading } from "./SectionHeading";
 
