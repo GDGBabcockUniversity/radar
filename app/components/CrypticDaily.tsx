@@ -10,7 +10,7 @@ import { getGame, leaderboardId } from "../lib/games";
 import { queuePendingScore } from "../lib/pendingScores";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { shareResult } from "../lib/shareResult";
-import { LINKS } from "../lib/constants";
+import { LINKS, BASE_URL } from "../lib/constants";
 import { computeDailyGameStats, type GameStats } from "../lib/gameStats";
 import { useAuth } from "./AuthProvider";
 import GameInfoModal from "./GameInfoModal";
@@ -254,7 +254,7 @@ export default function CrypticDaily() {
       ? `✓ ${hintsUsed} hint${hintsUsed === 1 ? "" : "s"} · ${finalSeconds}s`
       : "✗";
     const result = await shareResult(
-      `${GAME_NAME} ${dayKey} ${summary}\n\nradar.gdgbabcock.com/games/cryptic`
+      `${GAME_NAME} ${dayKey} ${summary}\n\n${BASE_URL}/games/cryptic`
     );
     if (result === "copied") {
       setCopied(true);

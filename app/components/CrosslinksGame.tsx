@@ -11,6 +11,7 @@ import {
 } from "../lib/gamesData/crosslinksBoards";
 import { dayIndex, localDateKey, yesterdayDateKey } from "../lib/gamesData/daily";
 import { getGame, leaderboardId } from "../lib/games";
+import { BASE_URL } from "../lib/constants";
 import { queuePendingScore } from "../lib/pendingScores";
 import { shareResult } from "../lib/shareResult";
 import { nudgeSignInAfterGame } from "../lib/signInNudge";
@@ -410,7 +411,7 @@ export default function CrosslinksGame() {
       .map((row) => row.map((d) => DIFFICULTY_EMOJI[d]).join(""))
       .join("\n");
     const result = await shareResult(
-      `${header}\n\n${grid}\n\nradar.gdgbabcock.com/games/crosslinks`
+      `${header}\n\n${grid}\n\n${BASE_URL}/games/crosslinks`
     );
     if (result === "copied") {
       setCopied(true);
