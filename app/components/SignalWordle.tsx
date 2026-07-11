@@ -13,6 +13,7 @@ import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { computeDailyGameStats, type GameStats } from "../lib/gameStats";
 import { useAuth } from "./AuthProvider";
 import GameInfoModal from "./GameInfoModal";
+import PostGameLoop from "./PostGameLoop";
 
 // Signal — RADAR's daily five-letter word game. One word per local day for
 // everyone; six guesses. Scoring is guess-count based (700 − (g−1)×100),
@@ -611,6 +612,7 @@ export default function SignalWordle() {
           >
             {copied ? "Copied!" : "Share result"}
           </button>
+          <PostGameLoop gameSlug="signal" day={dayKey} />
         </div>
       )}
 

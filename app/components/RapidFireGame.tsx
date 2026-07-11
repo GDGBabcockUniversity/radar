@@ -14,6 +14,7 @@ import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { shareResult } from "../lib/shareResult";
 import { useAuth } from "./AuthProvider";
 import GameInfoModal from "./GameInfoModal";
+import PostGameLoop from "./PostGameLoop";
 
 // Rapid Fire — RADAR's replayable 60-second trivia sprint. Unlimited runs;
 // the daily leaderboard bucket plus the best-score-only write means your
@@ -304,6 +305,7 @@ export default function RapidFireGame() {
               {copied ? "Copied!" : "Share result"}
             </button>
           </div>
+          <PostGameLoop gameSlug="rapid-fire" day={localDateKey()} />
         </div>
       )}
 

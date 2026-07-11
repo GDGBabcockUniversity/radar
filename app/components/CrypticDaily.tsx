@@ -13,6 +13,7 @@ import { shareResult } from "../lib/shareResult";
 import { computeDailyGameStats, type GameStats } from "../lib/gameStats";
 import { useAuth } from "./AuthProvider";
 import GameInfoModal from "./GameInfoModal";
+import PostGameLoop from "./PostGameLoop";
 
 // Cryptic — RADAR's daily cryptic-clue game, One Minute Cryptic style: one
 // clue per local day, solve it fast, and the post-solve explanation teaches
@@ -389,6 +390,7 @@ export default function CrypticDaily() {
                   {copied ? "Copied!" : "Share result"}
                 </button>
               </div>
+              <PostGameLoop gameSlug="cryptic" day={dayKey} />
             </div>
           )}
         </>

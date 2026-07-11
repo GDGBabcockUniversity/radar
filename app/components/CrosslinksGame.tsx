@@ -17,6 +17,7 @@ import { nudgeSignInAfterGame } from "../lib/signInNudge";
 import { computeDailyGameStats, type GameStats } from "../lib/gameStats";
 import { useAuth } from "./AuthProvider";
 import GameInfoModal from "./GameInfoModal";
+import PostGameLoop from "./PostGameLoop";
 
 // Crosslinks — RADAR's daily grouping game (Connections-style). Sixteen
 // terms, four hidden groups, four mistakes. Score = solvedGroups×100 +
@@ -587,6 +588,7 @@ export default function CrosslinksGame() {
           >
             {copied ? "Copied!" : "Share result"}
           </button>
+          <PostGameLoop gameSlug="crosslinks" day={dayKey} />
         </div>
       )}
 
