@@ -92,7 +92,14 @@ async function redisSink(e: EngagementEvent): Promise<void> {
         nx: true,
         ex: 60 * 60 * 48,
       });
-      if (first === null) return;
+      if (first === null) {
+        // Logged (not silent) so a future "my score didn't show" report is
+        // diagnosable from server logs instead of requiring a fresh
+        // investigation — this is expected to fire on legitimate repeat
+        // submissions, but should be rare for a genuine first attempt.
+        console.log(`game.played dropped by oneAttempt marker: ${gameId}:${id}`);
+        return;
+      }
     }
 
     if (id) await redis.incr(`radar:games:${id}`);
