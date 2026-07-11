@@ -15,3 +15,12 @@ export function publicDisplayName(name: string | null, memberId: string): string
   if (parts.length === 1) return parts[0];
   return `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.`;
 }
+
+// GDG's four brand hues, deterministically assigned per member — the same
+// member gets the same color everywhere a leaderboard row renders them.
+const AVATAR_COLORS = ["#4285f4", "#ea4335", "#f9ab00", "#34a853"];
+
+export function avatarColor(memberId: string): string {
+  const code = memberId.charCodeAt(0) || 0;
+  return AVATAR_COLORS[code % AVATAR_COLORS.length];
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { publicDisplayName } from "../lib/displayName";
+import { publicDisplayName, avatarColor } from "../lib/displayName";
 import { localDateKey } from "../lib/gamesData/daily";
 import { useAuth } from "./AuthProvider";
 
@@ -47,6 +47,7 @@ export default function MiniLeaderboard({ gameSlug }: { gameSlug: string }) {
     <ol className="space-y-2 text-left">
       {entries.map((entry, i) => {
         const isSelf = member?.memberId === entry.member;
+        const label = publicDisplayName(entry.name, entry.member);
         return (
           <li
             key={entry.member}
@@ -63,8 +64,14 @@ export default function MiniLeaderboard({ gameSlug }: { gameSlug: string }) {
             >
               {String(i + 1).padStart(2, "0")}
             </span>
+            <span
+              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white"
+              style={{ backgroundColor: avatarColor(entry.member) }}
+            >
+              {label[0]?.toUpperCase()}
+            </span>
             <span className="flex-1 truncate text-content-secondary">
-              {isSelf ? "You" : publicDisplayName(entry.name, entry.member)}
+              {isSelf ? "You" : label}
             </span>
             <span className="font-bold text-primary">{entry.score}</span>
           </li>

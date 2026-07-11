@@ -9,9 +9,10 @@ import {
   type Game,
 } from "../lib/games";
 import { getLeaderboard, type LeaderboardEntry } from "../lib/engagement";
-import { publicDisplayName } from "../lib/displayName";
+import { publicDisplayName, avatarColor } from "../lib/displayName";
 import { localDateKey } from "../lib/gamesData/daily";
 import { PAGES } from "../lib/constants";
+import TodayStrip from "../components/TodayStrip";
 
 export const metadata: Metadata = {
   title: "Games | RADAR",
@@ -68,10 +69,12 @@ export default async function GamesPage() {
               Play
             </h1>
             <p className="text-content-muted max-w-xl">
-              Crosswords, quizzes and other diversions from the RADAR desk. Sign
-              in to save your scores and streaks.
+              One puzzle a day. Same for everyone — brag, argue, rematch
+              tomorrow. Sign in to get on the board.
             </p>
           </div>
+
+          <TodayStrip />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {GAMES.map((game) => (
@@ -145,6 +148,12 @@ export default async function GamesPage() {
                           >
                             {String(i + 1).padStart(2, "0")}
                           </span>
+                          <span
+                            className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white"
+                            style={{ backgroundColor: avatarColor(entry.member) }}
+                          >
+                            {publicDisplayName(entry.name, entry.member)[0]?.toUpperCase()}
+                          </span>
                           <span className="flex-1 truncate text-content-secondary">
                             {publicDisplayName(entry.name, entry.member)}
                           </span>
@@ -174,6 +183,12 @@ export default async function GamesPage() {
                               }
                             >
                               {String(i + 1).padStart(2, "0")}
+                            </span>
+                            <span
+                              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white"
+                              style={{ backgroundColor: avatarColor(entry.member) }}
+                            >
+                              {publicDisplayName(entry.name, entry.member)[0]?.toUpperCase()}
                             </span>
                             <span className="flex-1 truncate text-content-secondary">
                               {publicDisplayName(entry.name, entry.member)}

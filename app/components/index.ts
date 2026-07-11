@@ -24,6 +24,7 @@ export { default as ShareButtons } from "./ShareButtons";
 export { default as NextPuzzleCountdown } from "./NextPuzzleCountdown";
 export { default as MiniLeaderboard } from "./MiniLeaderboard";
 export { default as PostGameLoop } from "./PostGameLoop";
+export { default as TodayStrip } from "./TodayStrip";
 export { default as Byline } from "./Byline";
 export { default as SectionHeading } from "./SectionHeading";
 
