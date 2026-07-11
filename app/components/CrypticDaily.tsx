@@ -205,10 +205,15 @@ export default function CrypticDaily() {
     [clue, dayKey, elapsed, hintsUsed, isAuthenticated, openSignIn, persist]
   );
 
+  // Single normalization point: the input stores whatever the keyboard
+  // produced (mobile predictive keyboards break if a controlled input
+  // rewrites its value on every keystroke); letters-only uppercase happens
+  // here, and the CSS `uppercase` class handles the display.
+  const normalized = guess.toUpperCase().replace(/[^A-Z]/g, "");
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (phase !== "playing" || !clue) return;
-    const normalized = guess.toUpperCase().replace(/[^A-Z]/g, "");
     if (normalized.length !== clue.answer.length) {
       setShake(true);
       setTimeout(() => setShake(false), 500);
@@ -316,18 +321,17 @@ export default function CrypticDaily() {
                 <input
                   type="text"
                   value={guess}
-                  onChange={(e) =>
-                    setGuess(e.target.value.toUpperCase().replace(/[^A-Za-z]/g, ""))
-                  }
-                  maxLength={clue.answer.length}
+                  onChange={(e) => setGuess(e.target.value)}
+                  maxLength={clue.answer.length + 2}
                   placeholder={`${clue.answer.length} letters`}
                   autoComplete="off"
-                  autoCapitalize="characters"
+                  autoCorrect="off"
+                  spellCheck={false}
                   className="min-w-0 flex-1 rounded-xl border border-edge bg-transparent px-4 py-3 text-center font-mono text-lg uppercase tracking-[0.3em] text-content placeholder:text-sm placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-content-subtle focus:outline-none focus:border-primary"
                 />
                 <button
                   type="submit"
-                  disabled={guess.length !== clue.answer.length}
+                  disabled={normalized.length !== clue.answer.length}
                   className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover transition-colors disabled:opacity-40"
                 >
                   Submit

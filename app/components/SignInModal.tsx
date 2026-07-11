@@ -61,14 +61,15 @@ export default function SignInModal({
   return createPortal(
     <div className="fixed inset-0 z-[9999] overflow-y-auto">
       <div
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+        className="animate-backdrop-fade fixed inset-0 bg-black/70 backdrop-blur-sm"
         onClick={() => {
           clearError();
           onClose();
         }}
       />
-      <div className="relative z-[10000] flex min-h-full items-center justify-center p-4">
-        <div className="w-full max-w-sm rounded-2xl border border-edge bg-surface p-8 shadow-2xl">
+      {/* Bottom sheet on phones, gently rising card on larger screens. */}
+      <div className="relative z-[10000] flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
+        <div className="animate-sheet-up w-full max-w-none rounded-t-3xl rounded-b-none border border-edge bg-surface p-8 pb-10 shadow-2xl sm:max-w-sm sm:rounded-2xl sm:pb-8">
           <h2 className="text-xl font-semibold text-content">
             {title ?? "Sign in to RADAR"}
           </h2>
