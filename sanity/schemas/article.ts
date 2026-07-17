@@ -2,9 +2,12 @@ import { defineField, defineType } from "sanity";
 import { PreviewUrlField } from "../components/PreviewUrlField";
 import { SECTIONS } from "../../app/lib/sections";
 
-// The authored unit. Each article references exactly one issue (one-to-many)
-// and can have many authors (many-to-many via the `authors` reference array).
-// Its globally-unique slug is what makes it independently shareable.
+// The authored unit. An article usually references one issue (one-to-many),
+// but the reference is optional: an article with no issue is a standalone
+// piece (founding notes, editorials) that lives outside the issue cadence and
+// is surfaced on the About page. Articles can have many authors (many-to-many
+// via the `authors` reference array). The globally-unique slug is what makes
+// every article independently shareable.
 export default defineType({
   name: "article",
   title: "Article",
@@ -40,7 +43,8 @@ export default defineType({
       title: "Issue",
       type: "reference",
       to: { type: "issue" },
-      validation: (Rule) => Rule.required(),
+      description:
+        "Leave empty for a standalone piece — it won't appear in any issue, but stays shareable at /articles/... and is listed on the About page.",
     }),
     defineField({
       name: "section",
@@ -112,7 +116,7 @@ export default defineType({
       const sectionTitle =
         SECTIONS.find((s) => s.value === section)?.title ?? section;
       const bits = [
-        issueNumber ? `#${issueNumber}` : null,
+        issueNumber ? `#${issueNumber}` : "Standalone",
         sectionTitle,
         author0 ? `by ${author0}` : null,
       ].filter(Boolean);

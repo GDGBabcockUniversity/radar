@@ -2,7 +2,11 @@ export const revalidate = 60;
 
 import Link from "next/link";
 import { Header, Footer } from "@/app/components";
-import { getAuthors, getTeamCohort } from "@/app/lib/sanity";
+import {
+  getAuthors,
+  getStandaloneArticles,
+  getTeamCohort,
+} from "@/app/lib/sanity";
 import { buildOgMetadata } from "@/app/lib/metadata";
 import { PAGES, CADENCE_TAGLINE } from "@/app/lib/constants";
 
@@ -13,10 +17,21 @@ interface Author {
   role?: string;
 }
 
+interface StandaloneArticle {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  excerpt?: string;
+  publishedAt?: string;
+}
+
 export default async function AboutPage() {
   // Reflect the current team cohort (per-year roles); fall back to the legacy
   // author roster until any cohort exists.
-  const cohort = await getTeamCohort();
+  const [cohort, notes] = await Promise.all([
+    getTeamCohort(),
+    getStandaloneArticles() as Promise<StandaloneArticle[]>,
+  ]);
   const authors: Author[] = (cohort?.members ??
     (await getAuthors())) as Author[];
 
@@ -43,6 +58,31 @@ export default async function AboutPage() {
               their own schedule between issues. {CADENCE_TAGLINE}
             </p>
           </div>
+
+          {notes.length > 0 && (
+            <div className="mt-16">
+              <h2 className="text-xs font-bold uppercase tracking-[1.4px] text-content-subtle">
+                From the Editors
+              </h2>
+              <ul className="mt-6 divide-y divide-edge">
+                {notes.map((n) => (
+                  <li key={n._id} className="py-4">
+                    <Link
+                      href={PAGES.article(n.slug.current)}
+                      className="font-semibold text-content hover:text-primary transition-colors"
+                    >
+                      {n.title}
+                    </Link>
+                    {n.excerpt && (
+                      <p className="mt-1 text-sm text-content-muted">
+                        {n.excerpt}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="mt-16">
             <h2 className="text-xs font-bold uppercase tracking-[1.4px] text-content-subtle">

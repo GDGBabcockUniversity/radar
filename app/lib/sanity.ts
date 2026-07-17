@@ -328,6 +328,20 @@ export async function getArticle(slug: string) {
   );
 }
 
+// Articles with no parent issue — permanent standalone pieces (founding
+// notes, editorials) that live outside the issue cadence. Listed on /about.
+export async function getStandaloneArticles() {
+  return client.fetch(
+    `
+    *[_type == "article" && !defined(issue)] | order(publishedAt asc){
+      ${ARTICLE_CARD_FIELDS}
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
 // Author profile + every article referencing them (reverse reference).
 export async function getAuthor(slug: string) {
   return client.fetch(

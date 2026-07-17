@@ -38,6 +38,15 @@ export const structure: StructureResolver = (S) =>
             ),
         ),
       S.documentTypeListItem("article").title("Articles"),
+      // Articles with no parent issue — permanent pieces outside the cadence.
+      S.listItem()
+        .title("Standalone articles")
+        .child(
+          S.documentList()
+            .title("Standalone articles")
+            .apiVersion(API_VERSION)
+            .filter('_type == "article" && !defined(issue)'),
+        ),
 
       S.divider(),
 
