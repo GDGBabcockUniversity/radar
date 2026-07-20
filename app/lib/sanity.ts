@@ -333,7 +333,23 @@ export async function getArticle(slug: string) {
 export async function getStandaloneArticles() {
   return client.fetch(
     `
-    *[_type == "article" && !defined(issue)] | order(publishedAt asc){
+    *[_type == "article" && !defined(issue)]
+      | order(featured desc, publishedAt asc){
+      ${ARTICLE_CARD_FIELDS}
+    }
+    `,
+    {},
+    { next: { revalidate: 60 } },
+  );
+}
+
+// The single featured standalone note (falling back to the oldest) — the
+// founding masthead statement, surfaced as its own block on the homepage.
+export async function getFeaturedNote() {
+  return client.fetch(
+    `
+    *[_type == "article" && !defined(issue)]
+      | order(featured desc, publishedAt asc)[0]{
       ${ARTICLE_CARD_FIELDS}
     }
     `,

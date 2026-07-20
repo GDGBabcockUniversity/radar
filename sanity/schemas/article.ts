@@ -47,6 +47,14 @@ export default defineType({
         "Leave empty for a standalone piece — it won't appear in any issue, but stays shareable at /articles/... and is listed on the About page.",
     }),
     defineField({
+      name: "featured",
+      title: "Featured note",
+      type: "boolean",
+      initialValue: false,
+      description:
+        "For standalone pieces only: pin this as the featured masthead note on the About page. If several are featured, the oldest wins.",
+    }),
+    defineField({
       name: "section",
       title: "Section",
       type: "string",
