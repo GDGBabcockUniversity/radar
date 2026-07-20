@@ -9,6 +9,7 @@ import {
 } from "@/app/lib/sanity";
 import { buildOgMetadata } from "@/app/lib/metadata";
 import { PAGES, CADENCE_TAGLINE } from "@/app/lib/constants";
+import { SECTION_TITLES, type SectionValue } from "@/app/lib/sections";
 
 interface Author {
   _id: string;
@@ -23,6 +24,8 @@ interface StandaloneArticle {
   slug: { current: string };
   excerpt?: string;
   publishedAt?: string;
+  section?: string;
+  authors?: { name: string; slug?: { current: string } }[];
 }
 
 export default async function AboutPage() {
@@ -59,30 +62,74 @@ export default async function AboutPage() {
             </p>
           </div>
 
-          {notes.length > 0 && (
-            <div className="mt-16">
-              <h2 className="text-xs font-bold uppercase tracking-[1.4px] text-content-subtle">
-                From the Editors
-              </h2>
-              <ul className="mt-6 divide-y divide-edge">
-                {notes.map((n) => (
-                  <li key={n._id} className="py-4">
-                    <Link
-                      href={PAGES.article(n.slug.current)}
-                      className="font-semibold text-content hover:text-primary transition-colors"
-                    >
-                      {n.title}
-                    </Link>
-                    {n.excerpt && (
-                      <p className="mt-1 text-sm text-content-muted">
-                        {n.excerpt}
+          {notes.length > 0 &&
+            (() => {
+              // The oldest standalone piece is the founding note — the
+              // masthead statement this publication was started on. Feature it
+              // as the anchor; list any later editors' notes beneath it.
+              const [founding, ...rest] = notes;
+              const sectionLabel =
+                SECTION_TITLES[founding.section as SectionValue];
+              const byline = founding.authors
+                ?.map((a) => a.name)
+                .filter(Boolean)
+                .join(", ");
+
+              return (
+                <div className="mt-16">
+                  <h2 className="text-xs font-bold uppercase tracking-[1.4px] text-content-subtle">
+                    From the Editors
+                  </h2>
+
+                  <Link
+                    href={PAGES.article(founding.slug.current)}
+                    className="group mt-6 block rounded-2xl border border-edge bg-surface-raised p-6 transition-colors hover:border-edge-strong md:p-8"
+                  >
+                    {sectionLabel && (
+                      <span className="text-xs font-bold uppercase tracking-[1.4px] text-primary">
+                        {sectionLabel}
+                      </span>
+                    )}
+                    <h3 className="mt-3 text-2xl font-bold tracking-tight text-content transition-colors group-hover:text-primary md:text-3xl">
+                      {founding.title}
+                    </h3>
+                    {founding.excerpt && (
+                      <p className="mt-3 text-content-secondary">
+                        {founding.excerpt}
                       </p>
                     )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+                    {byline && (
+                      <p className="mt-4 text-sm text-content-subtle">
+                        By {byline}
+                      </p>
+                    )}
+                    <span className="mt-5 inline-block text-sm font-bold uppercase tracking-wider text-primary transition-colors group-hover:text-primary-hover">
+                      Read the note →
+                    </span>
+                  </Link>
+
+                  {rest.length > 0 && (
+                    <ul className="mt-8 divide-y divide-edge border-t border-edge">
+                      {rest.map((n) => (
+                        <li key={n._id} className="py-4">
+                          <Link
+                            href={PAGES.article(n.slug.current)}
+                            className="font-semibold text-content hover:text-primary transition-colors"
+                          >
+                            {n.title}
+                          </Link>
+                          {n.excerpt && (
+                            <p className="mt-1 text-sm text-content-muted">
+                              {n.excerpt}
+                            </p>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })()}
 
           <div className="mt-16">
             <h2 className="text-xs font-bold uppercase tracking-[1.4px] text-content-subtle">
