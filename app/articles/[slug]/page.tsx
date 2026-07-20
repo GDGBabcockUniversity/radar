@@ -3,7 +3,7 @@ export const revalidate = 60;
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticle } from "@/app/lib/sanity";
-import { buildOgMetadata } from "@/app/lib/metadata";
+import { buildOgMetadata, buildArticleJsonLd } from "@/app/lib/metadata";
 import { calculateReadingTime } from "@/app/lib/readingTime";
 import { PAGES } from "@/app/lib/constants";
 import { SECTION_TITLES, type SectionValue } from "@/app/lib/sections";
@@ -33,9 +33,21 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const readingTime = calculateReadingTime(article.body);
   const sectionLabel = SECTION_TITLES[article.section as SectionValue];
   const path = PAGES.article(article.slug.current);
+  const jsonLd = buildArticleJsonLd({
+    title: article.title,
+    description: article.excerpt,
+    image: article.coverImage,
+    path,
+    publishedTime: article.publishedAt,
+    authors: article.authors,
+  });
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <ReadingTracker slug={path} />
       <main className="bg-surface min-h-screen">
