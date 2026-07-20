@@ -64,9 +64,10 @@ export default async function AboutPage() {
 
           {notes.length > 0 &&
             (() => {
-              // The oldest standalone piece is the founding note — the
-              // masthead statement this publication was started on. Feature it
-              // as the anchor; list any later editors' notes beneath it.
+              // The featured standalone piece (falling back to the oldest) is
+              // the founding note — the masthead statement this publication was
+              // started on. The query already sorts featured-first, so take the
+              // lead as the anchor and list any later editors' notes beneath it.
               const [founding, ...rest] = notes;
               const sectionLabel =
                 SECTION_TITLES[founding.section as SectionValue];

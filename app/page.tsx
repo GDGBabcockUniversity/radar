@@ -3,6 +3,7 @@ import {
   HeroSection,
   LatestIssueSection,
   SpotlightSection,
+  FoundingNoteSection,
   SeriesSection,
   PastEditionsSection,
   NewsletterSection,
@@ -12,6 +13,7 @@ import {
   getArchive,
   getLatestIssue,
   getHomeSpotlight,
+  getFeaturedNote,
   getFeaturedSeries,
   getLatestEpisodes,
 } from "./lib/sanity";
@@ -23,6 +25,7 @@ export default async function Home() {
     archive,
     latestIssue,
     spotlight,
+    foundingNote,
     featuredSeries,
     latestEpisodes,
   ] = await Promise.all([
@@ -30,6 +33,7 @@ export default async function Home() {
     getArchive(),
     getLatestIssue(),
     getHomeSpotlight(),
+    getFeaturedNote(),
     getFeaturedSeries(),
     getLatestEpisodes(3),
   ]);
@@ -48,6 +52,7 @@ export default async function Home() {
         <HeroSection heroHref={heroHref} series={featuredSeries} />
         <LatestIssueSection posts={posts} issue={latestIssue} />
         <SpotlightSection article={spotlight} />
+        <FoundingNoteSection note={foundingNote} />
         <SeriesSection series={featuredSeries} episodes={latestEpisodes} />
         <PastEditionsSection entries={archive} />
         <NewsletterSection />
