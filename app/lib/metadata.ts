@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { urlFor } from "./sanity";
-import { BASE_URL } from "./constants";
+import { BASE_URL, IMAGES, PAGES } from "./constants";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SanityImage = any;
@@ -66,4 +66,68 @@ export function buildOgMetadata({
       images: [img],
     },
   };
+}
+
+interface ArticleJsonLdInput {
+  title: string;
+  description?: string;
+  image?: SanityImage;
+  /** Absolute or root-relative canonical path, e.g. "/articles/foo". */
+  path: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  authors?: { name: string; slug?: { current: string } }[];
+}
+
+// schema.org Article structured data for the article page. Emitted as a
+// JSON-LD <script> so search engines can surface author, date, headline, and
+// image as an article rich result.
+export function buildArticleJsonLd({
+  title,
+  description,
+  image,
+  path,
+  publishedTime,
+  modifiedTime,
+  authors,
+}: ArticleJsonLdInput): Record<string, unknown> {
+  const url = path.startsWith("http") ? path : `${BASE_URL}${path}`;
+  const desc =
+    description || "Your signal to what's next in the Babcock tech ecosystem.";
+  const img = ogImageUrl(image);
+
+  const people = (authors ?? []).filter(Boolean).map((a) => ({
+    "@type": "Person",
+    name: a.name,
+    ...(a.slug?.current
+      ? { url: `${BASE_URL}${PAGES.author(a.slug.current)}` }
+      : {}),
+  }));
+
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: desc,
+    image: [img],
+    url,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    publisher: {
+      "@type": "Organization",
+      name: "RADAR",
+      logo: {
+        "@type": "ImageObject",
+        url: `${BASE_URL}${IMAGES.logo.src}`,
+        width: IMAGES.logo.w,
+        height: IMAGES.logo.h,
+      },
+    },
+  };
+
+  if (publishedTime) jsonLd.datePublished = publishedTime;
+  const modified = modifiedTime || publishedTime;
+  if (modified) jsonLd.dateModified = modified;
+  if (people.length) jsonLd.author = people;
+
+  return jsonLd;
 }
