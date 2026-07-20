@@ -1,11 +1,13 @@
 export const revalidate = 60;
 
+import Image from "next/image";
 import Link from "next/link";
 import { Header, Footer } from "@/app/components";
 import {
   getAuthors,
   getStandaloneArticles,
   getTeamCohort,
+  urlFor,
 } from "@/app/lib/sanity";
 import { buildOgMetadata } from "@/app/lib/metadata";
 import { PAGES, CADENCE_TAGLINE } from "@/app/lib/constants";
@@ -25,6 +27,8 @@ interface StandaloneArticle {
   excerpt?: string;
   publishedAt?: string;
   section?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  coverImage?: any;
   authors?: { name: string; slug?: { current: string } }[];
 }
 
@@ -75,6 +79,9 @@ export default async function AboutPage() {
                 ?.map((a) => a.name)
                 .filter(Boolean)
                 .join(", ");
+              const image = founding.coverImage?.asset
+                ? urlFor(founding.coverImage).width(800).height(600).url()
+                : null;
 
               return (
                 <div className="mt-16">
@@ -84,29 +91,44 @@ export default async function AboutPage() {
 
                   <Link
                     href={PAGES.article(founding.slug.current)}
-                    className="group mt-6 block rounded-2xl border border-edge bg-surface-raised p-6 transition-colors hover:border-edge-strong md:p-8"
+                    className={`group mt-6 grid grid-cols-1 gap-6 rounded-2xl border border-edge bg-surface-raised p-6 transition-colors hover:border-edge-strong md:p-8 ${
+                      image ? "sm:grid-cols-[minmax(0,1fr)_2fr] sm:items-center" : ""
+                    }`}
                   >
-                    {sectionLabel && (
-                      <span className="text-xs font-bold uppercase tracking-[1.4px] text-primary">
-                        {sectionLabel}
+                    {image && (
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-edge bg-overlay">
+                        <Image
+                          src={image}
+                          alt={founding.coverImage?.alt || founding.title}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      {sectionLabel && (
+                        <span className="text-xs font-bold uppercase tracking-[1.4px] text-primary">
+                          {sectionLabel}
+                        </span>
+                      )}
+                      <h3 className="mt-3 text-2xl font-bold tracking-tight text-content transition-colors group-hover:text-primary md:text-3xl">
+                        {founding.title}
+                      </h3>
+                      {founding.excerpt && (
+                        <p className="mt-3 text-content-secondary">
+                          {founding.excerpt}
+                        </p>
+                      )}
+                      {byline && (
+                        <p className="mt-4 text-sm text-content-subtle">
+                          By {byline}
+                        </p>
+                      )}
+                      <span className="mt-5 inline-block text-sm font-bold uppercase tracking-wider text-primary transition-colors group-hover:text-primary-hover">
+                        Read the note →
                       </span>
-                    )}
-                    <h3 className="mt-3 text-2xl font-bold tracking-tight text-content transition-colors group-hover:text-primary md:text-3xl">
-                      {founding.title}
-                    </h3>
-                    {founding.excerpt && (
-                      <p className="mt-3 text-content-secondary">
-                        {founding.excerpt}
-                      </p>
-                    )}
-                    {byline && (
-                      <p className="mt-4 text-sm text-content-subtle">
-                        By {byline}
-                      </p>
-                    )}
-                    <span className="mt-5 inline-block text-sm font-bold uppercase tracking-wider text-primary transition-colors group-hover:text-primary-hover">
-                      Read the note →
-                    </span>
+                    </div>
                   </Link>
 
                   {rest.length > 0 && (
