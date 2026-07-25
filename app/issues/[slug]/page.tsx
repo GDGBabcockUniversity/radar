@@ -7,7 +7,12 @@ import { buildOgMetadata } from "@/app/lib/metadata";
 import { PAGES } from "@/app/lib/constants";
 import { SECTION_TITLES, type SectionValue } from "@/app/lib/sections";
 import Link from "next/link";
-import { Header, Footer, ShareButtons } from "@/app/components";
+import {
+  Header,
+  Footer,
+  ShareButtons,
+  ReadingTracker,
+} from "@/app/components";
 import IssueSection, {
   type IssueArticle,
   articleAnchor,
@@ -81,6 +86,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
 
   return (
     <>
+      <ReadingTracker slug={path} />
       <Header />
       <main className="bg-surface min-h-screen">
         {/* 1. Issue masthead */}
