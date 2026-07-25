@@ -50,6 +50,29 @@ export function verifyPlatformToken(
   return verifyHS256(token, CREDENTIALS.auth_jwt_secret);
 }
 
+/**
+ * Maps a verified platform JWT payload onto a Member. Exported so the session
+ * route can build the member straight from a freshly refreshed token, without
+ * round-tripping through the cookie store it just wrote to.
+ */
+export function memberFromPayload(
+  payload: Record<string, unknown>,
+): Member | null {
+  // The auth service's JWT payload carries `user_id`/`full_name`
+  // (see auth/src/services/authService.js) — check that shape first,
+  // with the older guesses kept as fallbacks.
+  const memberId = (payload.user_id ??
+    payload.sub ??
+    payload.id ??
+    payload.userId) as string | undefined;
+  if (!memberId) return null;
+  return {
+    memberId: String(memberId),
+    name: (payload.full_name ?? payload.name) as string | undefined,
+    email: payload.email as string | undefined,
+  };
+}
+
 export async function getMember(): Promise<Member | null> {
   try {
     const store = await cookies();
@@ -57,19 +80,7 @@ export async function getMember(): Promise<Member | null> {
     if (!token) return null;
     const payload = verifyPlatformToken(token);
     if (!payload) return null;
-    // The auth service's JWT payload carries `user_id`/`full_name`
-    // (see auth/src/services/authService.js) — check that shape first,
-    // with the older guesses kept as fallbacks.
-    const memberId = (payload.user_id ??
-      payload.sub ??
-      payload.id ??
-      payload.userId) as string | undefined;
-    if (!memberId) return null;
-    return {
-      memberId: String(memberId),
-      name: (payload.full_name ?? payload.name) as string | undefined,
-      email: payload.email as string | undefined,
-    };
+    return memberFromPayload(payload);
   } catch {
     return null;
   }

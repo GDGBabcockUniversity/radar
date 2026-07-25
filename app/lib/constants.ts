@@ -24,6 +24,12 @@ export const CREDENTIALS = {
   auth_api_url: process.env.AUTH_API_URL,
   auth_jwt_secret: process.env.AUTH_JWT_SECRET,
   auth_cookie_name: process.env.AUTH_COOKIE_NAME || "gdg_token",
+  // Paired with the access cookie above. The auth service already returns a
+  // refresh token on login; keeping it lets an expired access token be renewed
+  // silently instead of dropping the member back to signed-out (and, worse,
+  // silently dropping their reads and scores — see app/lib/engagement.ts).
+  auth_refresh_cookie_name:
+    process.env.AUTH_REFRESH_COOKIE_NAME || "gdg_refresh_token",
 };
 
 export const PAGES = {
