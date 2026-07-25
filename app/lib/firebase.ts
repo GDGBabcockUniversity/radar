@@ -5,6 +5,7 @@ import {
   signInWithPopup,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
+  onIdTokenChanged,
   type User as FirebaseUser,
   type Auth,
 } from "firebase/auth";
@@ -49,5 +50,6 @@ export {
   signInWithPopup,
   signInWithEmailAndPassword,
   firebaseSignOut,
+  onIdTokenChanged,
 };
 export type { FirebaseUser };
