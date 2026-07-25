@@ -55,6 +55,18 @@ export default defineType({
         "Legacy default. For team display, set the course per year on the Team Cohort.",
     }),
     defineField({
+      name: "platformUserId",
+      title: "Platform Profile ID",
+      type: "string",
+      description:
+        "Optional. The author's GDG platform ID (a UUID, from the admin user list). Links their bylines to their profile on gdgbabcock.com so reads on their work show up as writer stats. Deliberately the ID and not an email — this dataset is public.",
+      validation: (Rule) =>
+        Rule.regex(
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+          { name: "UUID" }
+        ).error("Must be a full platform UUID, e.g. 3f2a1c8e-...."),
+    }),
+    defineField({
       name: "socials",
       title: "Socials",
       type: "array",
