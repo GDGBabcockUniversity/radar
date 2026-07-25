@@ -99,17 +99,19 @@ export default async function SeriesShowPage({ params }: SeriesPageProps) {
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       )}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-                          <svg
-                            className="ml-1 h-6 w-6 text-content"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
+                      {ep.youtubeUrl && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                            <svg
+                              className="ml-1 h-6 w-6 text-content"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                     <div>
                       <h3 className="line-clamp-2 text-lg font-bold transition-colors group-hover:text-primary">

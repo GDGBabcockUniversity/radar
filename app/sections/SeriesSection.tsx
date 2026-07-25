@@ -110,13 +110,15 @@ export default function SeriesSection({ series, episodes }: SeriesSectionProps) 
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       )}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
-                        <div className="flex h-10 w-14 items-center justify-center rounded-lg bg-[#FF0000] shadow-lg">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
+                      {ep.youtubeUrl && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
+                          <div className="flex h-10 w-14 items-center justify-center rounded-lg bg-[#FF0000] shadow-lg">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                     <div>
                       <h4 className="line-clamp-2 font-semibold leading-snug text-content transition-colors group-hover:text-primary">

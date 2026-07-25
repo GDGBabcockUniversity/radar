@@ -44,8 +44,7 @@ export default defineType({
       title: "YouTube URL",
       type: "url",
       description:
-        "The full YouTube video URL (e.g., https://www.youtube.com/watch?v=...)",
-      validation: (Rule) => Rule.required(),
+        "Optional. The full YouTube video URL (e.g., https://www.youtube.com/watch?v=...). Leave empty for a write-up-only episode.",
     }),
     defineField({
       name: "author",
