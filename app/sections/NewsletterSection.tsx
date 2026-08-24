@@ -30,14 +30,14 @@ export default function NewsletterSection() {
 
         {/* Heading */}
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-content mb-4">
-          Get
+          Get{" "}
           <Image
             src={IMAGES.radarLogo.src}
             width={IMAGES.radarLogo.w}
             height={IMAGES.radarLogo.h}
             alt="Radar"
-            className="inline-block h-[0.85em] w-auto align-middle mx-1.5 -translate-y-[0.04em] theme-invert"
-          />
+            className="inline-block h-[1em] w-auto align-middle mx-1 -translate-y-[0.04em] theme-invert"
+          />{" "}
           in your inbox
         </h2>
 
