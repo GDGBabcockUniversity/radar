@@ -196,24 +196,26 @@ export default function Header() {
                 setQuery("");
               }
             }}
-            className="container flex items-center gap-3 py-3"
+            className="container py-3"
           >
-            <IoSearch className="text-content-muted text-lg shrink-0" />
-            <input
-              autoFocus
-              type="search"
-              name="q"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search articles and contributors…"
-              className="flex-1 bg-transparent text-content placeholder:text-content-subtle focus:outline-none text-sm"
-            />
-            <button
-              type="submit"
-              className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary-hover transition-colors"
-            >
-              Search
-            </button>
+            <div className="flex items-center gap-2 rounded-full border border-edge bg-overlay p-1.5 pl-4 focus-within:border-primary transition-colors">
+              <IoSearch className="text-content-muted text-lg shrink-0" />
+              <input
+                autoFocus
+                type="search"
+                name="q"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search articles and contributors…"
+                className="min-w-0 flex-1 bg-transparent py-2 text-content placeholder:text-content-subtle focus:outline-none text-sm"
+              />
+              <button
+                type="submit"
+                className="shrink-0 rounded-full bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary-hover focus:outline-none transition-colors cursor-pointer"
+              >
+                Search
+              </button>
+            </div>
           </form>
         </div>
       )}
