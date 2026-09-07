@@ -24,12 +24,21 @@ export const SECTION_TITLES: Record<SectionValue, string> = SECTIONS.reduce(
 
 // The order sections appear on an issue page (newspaper layout, brief §4).
 // signals + opportunities are embedded blocks slotted in by the page, not here.
+// editorial/interview/feature fall into the page's "More from this issue"
+// bucket, which inherits the query's section-alphabetical order.
 export const ISSUE_SECTION_ORDER: SectionValue[] = [
   "openingNote",
   "spotlight",
-  "editorial",
-  "interview",
-  "feature",
   "ecosystemBrief",
   "alumniSpotlight",
+  "editorial",
+  "feature",
+  "interview",
 ];
+
+// Position of a section in the issue's running order; unknown sections sort
+// last, matching the page dropping them into "More from this issue".
+export function sectionRank(section?: string) {
+  const i = ISSUE_SECTION_ORDER.indexOf(section as SectionValue);
+  return i === -1 ? ISSUE_SECTION_ORDER.length : i;
+}

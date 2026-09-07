@@ -44,6 +44,7 @@ export default function Header() {
     if (!q) return;
     setSearchOpen(false);
     setMenuOpen(false);
+    setQuery("");
     router.push(`${PAGES.search}?q=${encodeURIComponent(q)}`);
   };
 
@@ -79,8 +80,12 @@ export default function Header() {
         <div className="flex items-center gap-2 sm:gap-3 ml-auto lg:ml-0">
           {/* Search toggle */}
           <button
-            onClick={() => setSearchOpen((v) => !v)}
-            aria-label="Search"
+            onClick={() => {
+              setSearchOpen((v) => !v);
+              setMenuOpen(false);
+              setAccountOpen(false);
+            }}
+            aria-label={searchOpen ? "Close search" : "Search"}
             aria-expanded={searchOpen}
             className="flex items-center justify-center w-9 h-9 rounded-full text-lg text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer"
           >
@@ -167,7 +172,10 @@ export default function Header() {
 
           {/* Hamburger (mobile only) */}
           <button
-            onClick={() => setMenuOpen((v) => !v)}
+            onClick={() => {
+              setMenuOpen((v) => !v);
+              setSearchOpen(false);
+            }}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             className="flex lg:hidden items-center justify-center w-9 h-9 rounded-full text-xl text-content-muted hover:text-content hover:bg-overlay-strong transition-all duration-200 cursor-pointer"
@@ -182,24 +190,32 @@ export default function Header() {
         <div className="border-t border-edge bg-surface/95 backdrop-blur-md">
           <form
             onSubmit={submitSearch}
-            className="container flex items-center gap-3 py-3"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setSearchOpen(false);
+                setQuery("");
+              }
+            }}
+            className="container py-3"
           >
-            <IoSearch className="text-content-muted text-lg shrink-0" />
-            <input
-              autoFocus
-              type="search"
-              name="q"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search articles and contributors…"
-              className="flex-1 bg-transparent text-content placeholder:text-content-subtle focus:outline-none text-sm"
-            />
-            <button
-              type="submit"
-              className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary-hover transition-colors"
-            >
-              Search
-            </button>
+            <div className="flex items-center gap-2 rounded-full border border-edge bg-overlay p-1.5 pl-4 focus-within:border-primary transition-colors">
+              <IoSearch className="text-content-muted text-lg shrink-0" />
+              <input
+                autoFocus
+                type="search"
+                name="q"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search articles and contributors…"
+                className="min-w-0 flex-1 bg-transparent py-2 text-content placeholder:text-content-subtle focus:outline-none text-sm"
+              />
+              <button
+                type="submit"
+                className="shrink-0 rounded-full bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary-hover focus:outline-none transition-colors cursor-pointer"
+              >
+                Search
+              </button>
+            </div>
           </form>
         </div>
       )}

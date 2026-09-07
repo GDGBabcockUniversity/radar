@@ -320,7 +320,11 @@ export async function getArticle(slug: string) {
       publishedAt,
       body,
       "issue": issue->{ title, slug, issueNumber },
-      "authors": authors[]->{ name, slug, image, bio, role }
+      "authors": authors[]->{ name, slug, image, bio, role },
+      // Within-section order only; the page sorts sections by sectionRank so
+      // prev/next matches the issue page's running order.
+      "siblings": *[_type == "article" && defined(issue) && issue._ref == ^.issue._ref]
+        | order(order asc, publishedAt asc){ _id, title, slug, section }
     }
     `,
     { slug },
