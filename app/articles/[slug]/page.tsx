@@ -106,7 +106,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           {(prev || next) && (
-            <nav className="flex flex-col gap-4 border-t border-edge py-8 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+            <nav className="flex items-center justify-between gap-4 border-t border-edge py-8 sm:gap-8">
               {prev && (
                 <Link
                   href={PAGES.article(prev.slug.current)}
@@ -117,7 +117,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     <span className="block text-xs uppercase tracking-wider text-content-subtle">
                       Previous
                     </span>
-                    <span className="block truncate font-medium text-content transition-colors group-hover:text-primary">
+                    <span className="hidden truncate font-medium text-content transition-colors group-hover:text-primary sm:block">
                       {prev.title}
                     </span>
                   </span>
@@ -126,13 +126,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               {next && (
                 <Link
                   href={PAGES.article(next.slug.current)}
-                  className="group flex min-w-0 items-center gap-3 sm:ml-auto sm:text-right"
+                  className="group ml-auto flex min-w-0 items-center gap-3 text-right"
                 >
                   <span className="min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-content-subtle">
                       Next
                     </span>
-                    <span className="block truncate font-medium text-content transition-colors group-hover:text-primary">
+                    <span className="hidden truncate font-medium text-content transition-colors group-hover:text-primary sm:block">
                       {next.title}
                     </span>
                   </span>
