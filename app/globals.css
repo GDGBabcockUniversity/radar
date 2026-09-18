@@ -291,15 +291,20 @@ html.light .toc-link:hover {
     max-width: 100%;
     height: auto;
   }
+
+  /* Same unlayered-CSS trap as above: .container's own margin/padding
+     shorthand was silently zeroing out vertical padding/margin utilities
+     applied alongside it (e.g. on the issues page masthead). Keeping it
+     in @layer base lets those utilities win as normal. */
+  .container {
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+  }
 }
 
 /* ===== Utility Classes ===== */
-.container {
-  width: 100%;
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
-}
 
 .section-dark {
   background: var(--color-bg-dark);
