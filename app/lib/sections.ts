@@ -10,6 +10,7 @@ export const SECTIONS = [
   { value: "ecosystemBrief", title: "Ecosystem Brief" },
   { value: "interview", title: "Interview" },
   { value: "feature", title: "Feature" },
+  { value: "closingNote", title: "Closing Note" },
 ] as const;
 
 export type SectionValue = (typeof SECTIONS)[number]["value"];

@@ -52,6 +52,8 @@ export default async function IssuePage({ params }: IssuePageProps) {
   const spotlight = bySection(articles, "spotlight");
   const ecosystem = bySection(articles, "ecosystemBrief");
   const alumni = bySection(articles, "alumniSpotlight");
+  const closingNote = bySection(articles, "closingNote");
+
   // Anything else (editorial, interview, feature) grouped under "More".
   const placed = new Set<SectionValue>([
     "openingNote",
@@ -233,6 +235,10 @@ export default async function IssuePage({ params }: IssuePageProps) {
           articles={alumni}
         />
 
+        <IssueSection
+          title={SECTION_TITLES.closingNote}
+          articles={closingNote}
+        />
         {/* 8. Anything else from this issue */}
         <IssueSection title="More from this issue" articles={more} />
 
