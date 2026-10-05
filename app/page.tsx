@@ -6,7 +6,7 @@ import {
   FoundingNoteSection,
   SeriesSection,
   PastEditionsSection,
-  NewsletterSection,
+  // NewsletterSection,
 } from "./sections";
 import {
   getRecentPosts,
@@ -55,7 +55,7 @@ export default async function Home() {
         <SpotlightSection article={spotlight} />
         <SeriesSection series={featuredSeries} episodes={latestEpisodes} />
         <PastEditionsSection entries={archive} />
-        <NewsletterSection />
+        {/* <NewsletterSection /> */}
       </main>
       <Footer />
     </>

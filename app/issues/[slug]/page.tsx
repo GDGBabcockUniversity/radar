@@ -12,6 +12,7 @@ import {
   Footer,
   ShareButtons,
   ReadingTracker,
+  ViewCounter
 } from "@/app/components";
 import IssueSection, {
   type IssueArticle,
@@ -19,7 +20,7 @@ import IssueSection, {
 } from "@/app/components/IssueSection";
 import SignalsBlock from "@/app/components/SignalsBlock";
 import OpportunitiesBlock from "@/app/components/OpportunitiesBlock";
-import { NewsletterSection } from "@/app/sections";
+// import { NewsletterSection } from "@/app/sections";
 
 interface IssuePageProps {
   params: Promise<{ slug: string }>;
@@ -47,22 +48,30 @@ export default async function IssuePage({ params }: IssuePageProps) {
       })
     : null;
 
-  // Sections rendered in the §4 newspaper order, between the embedded blocks.
+  // Sections rendered in the newspaper order, between the embedded blocks.
   const opening = bySection(articles, "openingNote");
   const spotlight = bySection(articles, "spotlight");
   const ecosystem = bySection(articles, "ecosystemBrief");
   const alumni = bySection(articles, "alumniSpotlight");
+  const editorial = bySection(articles, "editorial");
+  const feature = bySection(articles, "feature");
+  const interview = bySection(articles, "interview");
   const closingNote = bySection(articles, "closingNote");
 
-  // Anything else (editorial, interview, feature) grouped under "More".
+  // Articles with specified categories are placed in distinct sections above.
+  // Any article without a specified category falls under "More from this issue".
   const placed = new Set<SectionValue>([
     "openingNote",
     "spotlight",
     "ecosystemBrief",
     "alumniSpotlight",
+    "editorial",
+    "feature",
+    "interview",
+    "closingNote",
   ]);
   const more = articles.filter(
-    (a) => !placed.has(a.section as SectionValue),
+    (a) => !a.section || !placed.has(a.section as SectionValue),
   );
 
   // "In this issue" contents, in render order. Embedded blocks (signals,
@@ -83,7 +92,11 @@ export default async function IssuePage({ params }: IssuePageProps) {
       : []),
     { label: SECTION_TITLES.ecosystemBrief, items: ecosystem },
     { label: SECTION_TITLES.alumniSpotlight, items: alumni },
+    { label: SECTION_TITLES.editorial, items: editorial },
+    { label: SECTION_TITLES.feature, items: feature },
+    { label: SECTION_TITLES.interview, items: interview },
     { label: "More from this issue", items: more },
+    { label: SECTION_TITLES.closingNote, items: closingNote },
   ].filter((c) => c.anchor || c.items.length > 0);
 
   return (
@@ -94,7 +107,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
         {/* 1. Issue masthead */}
         <header className="relative">
           {issue.coverImage?.asset ? (
-            <div className="relative aspect-video md:aspect-21/9 w-full overflow-hidden">
+            <div className="relative aspect-video md:aspect-21/9 w-full h-[85vh] md:h-full">
               <Image
                 src={urlFor(issue.coverImage).width(1920).height(820).url()}
                 alt={issue.coverImage?.alt || issue.title}
@@ -104,7 +117,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
               />
               <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-transparent" />
               <div className="absolute inset-0 flex flex-col justify-end">
-                <div className="container pb-8 md:pb-12">
+                <div className="container py-8 md:py-12">
                   <span className="text-xs font-semibold uppercase tracking-[2px] text-primary">
                     RADAR · Issue #{issue.issueNumber}
                     {date ? ` · ${date}` : ""}
@@ -154,6 +167,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
 
         <div className="container flex flex-wrap items-center justify-between gap-4 pt-6">
           <ShareButtons path={path} title={issue.title} />
+          <ViewCounter slug={issue.slug.current} />
         </div>
 
         {/* In this issue — contents */}
@@ -229,24 +243,44 @@ export default async function IssuePage({ params }: IssuePageProps) {
           articles={ecosystem}
         />
 
-        {/* 7. Alumni Spotlight (optional) */}
+        {/* 7. Alumni Spotlight */}
         <IssueSection
           title={SECTION_TITLES.alumniSpotlight}
           articles={alumni}
         />
 
+        {/* 8. Editorial */}
+        <IssueSection
+          title={SECTION_TITLES.editorial}
+          articles={editorial}
+        />
+
+        {/* 9. Feature */}
+        <IssueSection
+          title={SECTION_TITLES.feature}
+          articles={feature}
+        />
+
+        {/* 10. Interview */}
+        <IssueSection
+          title={SECTION_TITLES.interview}
+          articles={interview}
+        />
+
+        {/* 11. Anything else without a specified category */}
+        <IssueSection title="More from this issue" articles={more} />
+
+        {/* 12. Closing Note */}
         <IssueSection
           title={SECTION_TITLES.closingNote}
           articles={closingNote}
         />
-        {/* 8. Anything else from this issue */}
-        <IssueSection title="More from this issue" articles={more} />
 
         <div className="container border-t border-edge py-8">
           <ShareButtons path={path} title={issue.title} />
         </div>
 
-        <NewsletterSection />
+        {/* <NewsletterSection /> */}
       </main>
       <Footer />
     </>
