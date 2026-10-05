@@ -56,12 +56,12 @@ export default function PostHeader({
   return (
     <header className="relative">
       {/* Hero Image */}
-      <div className="relative aspect-video md:aspect-21/9 w-full overflow-hidden">
+      <div className="relative aspect-video md:aspect-21/9 w-full overflow--hidden h-85vh md:h-full">
         <Image
           src={urlFor(mainImage).width(1920).height(820).url()}
           alt={mainImage.alt || title}
           fill
-          className="object-cover"
+          className="object-fit"
           priority
         />
 
@@ -70,7 +70,7 @@ export default function PostHeader({
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col justify-end">
-          <div className="container pb-6 md:pb-10">
+          <div className="container py-6 md:py-10">
             {/* Tags Row */}
             {categories && categories.length > 0 && (
               <div className="mb-3 flex items-center gap-2">

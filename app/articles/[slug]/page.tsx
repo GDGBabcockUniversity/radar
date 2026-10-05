@@ -20,6 +20,7 @@ import {
   Byline,
   ShareButtons,
   ReadingTracker,
+  ViewCounter,
 } from "@/app/components";
 import { NewsletterSection } from "@/app/sections";
 
@@ -98,6 +99,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             />
             <ShareButtons path={path} title={article.title} />
           </div>
+
+          <ViewCounter slug={article.slug.current} />
 
           <div className="post-layout">
             <div className="post-content">

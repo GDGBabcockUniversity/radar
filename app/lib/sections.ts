@@ -35,11 +35,16 @@ export const ISSUE_SECTION_ORDER: SectionValue[] = [
   "editorial",
   "feature",
   "interview",
+  "closingNote",
 ];
 
 // Position of a section in the issue's running order; unknown sections sort
-// last, matching the page dropping them into "More from this issue".
+// 2nd to last (just before closingNote), while closingNote is always last.
 export function sectionRank(section?: string) {
+  if (section === "closingNote") {
+    return ISSUE_SECTION_ORDER.length;
+  }
   const i = ISSUE_SECTION_ORDER.indexOf(section as SectionValue);
-  return i === -1 ? ISSUE_SECTION_ORDER.length : i;
+  return i === -1 ? ISSUE_SECTION_ORDER.length - 1 : i;
 }
+

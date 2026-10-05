@@ -56,7 +56,7 @@ export default async function PostPage({ params }: PostPageProps) {
     <>
       <Header />
       <ReadingTracker slug={`/posts/${slug}`} />
-      <main className="bg-surface min-h-screen">
+      <main className="bg-surface min-h-screen mt-16 md:mt-0">
         <PostHeader
           title={post.title}
           description={post.description}
