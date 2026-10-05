@@ -6,7 +6,7 @@ import { buildOgMetadata } from "@/app/lib/metadata";
 import { youTubeThumbnail } from "@/app/lib/youtube";
 import { PAGES } from "@/app/lib/constants";
 import { Header, Footer } from "@/app/components";
-import { NewsletterSection } from "@/app/sections";
+// import { NewsletterSection } from "@/app/sections";
 
 interface SeriesPageProps {
   params: Promise<{ series: string }>;
@@ -135,7 +135,7 @@ export default async function SeriesShowPage({ params }: SeriesPageProps) {
           )}
         </div>
 
-        <NewsletterSection />
+        {/* <NewsletterSection /> */}
       </main>
       <Footer />
     </>

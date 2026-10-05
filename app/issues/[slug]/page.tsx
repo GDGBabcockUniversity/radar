@@ -20,7 +20,7 @@ import IssueSection, {
 } from "@/app/components/IssueSection";
 import SignalsBlock from "@/app/components/SignalsBlock";
 import OpportunitiesBlock from "@/app/components/OpportunitiesBlock";
-import { NewsletterSection } from "@/app/sections";
+// import { NewsletterSection } from "@/app/sections";
 
 interface IssuePageProps {
   params: Promise<{ slug: string }>;
@@ -112,7 +112,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
                 src={urlFor(issue.coverImage).width(1920).height(820).url()}
                 alt={issue.coverImage?.alt || issue.title}
                 fill
-                className="object-fit"
+                className="object-cover"
                 priority
               />
               <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-transparent" />
@@ -280,7 +280,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
           <ShareButtons path={path} title={issue.title} />
         </div>
 
-        <NewsletterSection />
+        {/* <NewsletterSection /> */}
       </main>
       <Footer />
     </>

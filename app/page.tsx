@@ -6,7 +6,7 @@ import {
   FoundingNoteSection,
   SeriesSection,
   PastEditionsSection,
-  NewsletterSection,
+  // NewsletterSection,
 } from "./sections";
 import {
   getRecentPosts,

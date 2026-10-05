@@ -13,7 +13,7 @@ import {
   ShareButtons,
   ReadingTracker,
 } from "@/app/components";
-import { NewsletterSection } from "@/app/sections";
+// import { NewsletterSection } from "@/app/sections";
 
 interface EpisodePageProps {
   params: Promise<{ series: string; episode: string }>;
@@ -104,7 +104,7 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           </div>
         </div>
 
-        <NewsletterSection />
+        {/* <NewsletterSection /> */}
       </main>
       <Footer />
     </>

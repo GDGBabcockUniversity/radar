@@ -10,7 +10,7 @@ import TableOfContents from "@/app/components/TableOfContents";
 import RelatedPosts from "@/app/components/RelatedPosts";
 import ViewCounter from "@/app/components/ViewCounter";
 import ReadingTracker from "@/app/components/ReadingTracker";
-import { NewsletterSection } from "@/app/sections";
+// import { NewsletterSection } from "@/app/sections";
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -91,7 +91,7 @@ export default async function PostPage({ params }: PostPageProps) {
         </div>
 
         <RelatedPosts posts={filteredRelated} />
-        <NewsletterSection />
+        {/* <NewsletterSection /> */}
       </main>
       <Footer />
     </>
