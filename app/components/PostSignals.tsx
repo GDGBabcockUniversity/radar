@@ -42,15 +42,16 @@ export default function PostSignals({ slug }: PostSignalsProps) {
 
   // Auto-resize textarea
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!isAuthenticated) return; // don't let them type
     setBody(e.target.value);
     setError(null);
-    // Auto-grow
     const ta = e.target;
     ta.style.height = "auto";
     ta.style.height = `${ta.scrollHeight}px`;
   };
 
-  const handleFocus = () => {
+  // When a logged-out user focuses or clicks the textarea → open sign-in modal
+  const handleFocusOrClick = () => {
     if (!isAuthenticated) {
       openSignIn({
         title: "Leave a Signal",
@@ -60,8 +61,16 @@ export default function PostSignals({ slug }: PostSignalsProps) {
   };
 
   const handleSubmit = async () => {
+    if (!isAuthenticated) {
+      openSignIn({
+        title: "Leave a Signal",
+        message: "Sign in to share your thoughts on this post.",
+      });
+      return;
+    }
+
     const trimmed = body.trim();
-    if (!trimmed || !isAuthenticated) return;
+    if (!trimmed) return;
 
     if (trimmed.length > MAX_LENGTH) {
       setError(`Signal must be ${MAX_LENGTH} characters or fewer`);
@@ -132,7 +141,7 @@ export default function PostSignals({ slug }: PostSignalsProps) {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && isAuthenticated) {
       e.preventDefault();
       handleSubmit();
     }
@@ -156,10 +165,7 @@ export default function PostSignals({ slug }: PostSignalsProps) {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M2 10V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4" />
-            <path d="M12 14v4" />
-            <path d="M2 10l10 4 10-4" />
-            <path d="M8 22h8" />
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
           <h3 className="post-signals-title">
             Signals
@@ -169,71 +175,69 @@ export default function PostSignals({ slug }: PostSignalsProps) {
           </h3>
         </div>
         <p className="post-signals-subtitle">
-          Share your thoughts on this post
+          {isAuthenticated
+            ? "Share your thoughts on this post"
+            : "Sign in to leave a signal · anyone can read"}
         </p>
       </div>
 
-      {/* Compose area */}
+      {/* Compose area — always visible, auth gated on interaction */}
       <div className="post-signals-compose">
-        {isAuthenticated ? (
-          <>
-            <div className="post-signals-input-row">
-              <textarea
-                ref={textareaRef}
-                className="post-signals-textarea"
-                placeholder="Drop a signal…"
-                value={body}
-                onChange={handleInput}
-                onKeyDown={handleKeyDown}
-                maxLength={MAX_LENGTH}
-                rows={1}
-                disabled={submitting}
-              />
-            </div>
-            <div className="post-signals-compose-footer">
-              <span
-                className={`post-signals-char-count ${remaining <= 50 ? "warning" : ""} ${remaining <= 0 ? "over" : ""}`}
-              >
-                {remaining}
-              </span>
-              <button
-                className="post-signals-submit"
-                onClick={handleSubmit}
-                disabled={submitting || body.trim().length === 0}
-              >
-                {submitting ? (
-                  <span className="post-signals-spinner" />
-                ) : (
-                  <>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="22" y1="2" x2="11" y2="13" />
-                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                    </svg>
-                    Send
-                  </>
-                )}
-              </button>
-            </div>
-            {error && <p className="post-signals-error">{error}</p>}
-          </>
-        ) : (
-          <button
-            className="post-signals-signin-prompt"
-            onClick={() =>
-              openSignIn({
-                title: "Leave a Signal",
-                message: "Sign in to share your thoughts on this post.",
-              })
+        <div className="post-signals-input-row">
+          <textarea
+            ref={textareaRef}
+            className="post-signals-textarea"
+            placeholder={
+              isAuthenticated ? "Drop a signal…" : "Sign in to drop a signal…"
             }
+            value={body}
+            onChange={handleInput}
+            onFocus={handleFocusOrClick}
+            onClick={handleFocusOrClick}
+            onKeyDown={handleKeyDown}
+            maxLength={isAuthenticated ? MAX_LENGTH : 0}
+            rows={1}
+            disabled={submitting}
+            readOnly={!isAuthenticated}
+            aria-label="Write a signal"
+          />
+        </div>
+        <div className="post-signals-compose-footer">
+          {isAuthenticated && (
+            <span
+              className={`post-signals-char-count ${remaining <= 50 ? "warning" : ""} ${remaining <= 0 ? "over" : ""}`}
+            >
+              {remaining}
+            </span>
+          )}
+          <button
+            className="post-signals-submit"
+            onClick={handleSubmit}
+            disabled={submitting || (isAuthenticated && body.trim().length === 0)}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-              <polyline points="10 17 15 12 10 7" />
-              <line x1="15" y1="12" x2="3" y2="12" />
-            </svg>
-            Sign in to leave a Signal
+            {submitting ? (
+              <span className="post-signals-spinner" />
+            ) : (
+              <>
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+                {isAuthenticated ? "Send" : "Sign in"}
+              </>
+            )}
           </button>
-        )}
+        </div>
+        {error && <p className="post-signals-error">{error}</p>}
       </div>
 
       {/* Signals list */}
@@ -245,7 +249,7 @@ export default function PostSignals({ slug }: PostSignalsProps) {
           </div>
         ) : signals.length === 0 ? (
           <div className="post-signals-empty">
-            <p>No signals yet. Be the first to share your thoughts!</p>
+            <p>No signals yet — be the first to drop one!</p>
           </div>
         ) : (
           signals.map((signal) => (

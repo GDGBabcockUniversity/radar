@@ -12,6 +12,8 @@ import ViewCounter from "@/app/components/ViewCounter";
 import ReadingTracker from "@/app/components/ReadingTracker";
 import PostSignals from "@/app/components/PostSignals";
 import SignalCount from "@/app/components/SignalCount";
+import ShareButtons from "@/app/components/ShareButtons";
+import { PAGES } from "@/app/lib/constants";
 // import { NewsletterSection } from "@/app/sections";
 
 interface PostPageProps {
@@ -48,6 +50,7 @@ export default async function PostPage({ params }: PostPageProps) {
   const isHidden = post.hidden === true;
   const readingTime = calculateReadingTime(post.body);
   const relatedPosts = await getRecentPosts();
+  const path = PAGES.post ? PAGES.post(slug) : `/posts/${slug}`;
 
   // Filter out current post from related
   const filteredRelated = relatedPosts.filter(
@@ -87,14 +90,25 @@ export default async function PostPage({ params }: PostPageProps) {
             </div>
           )}
 
+          {/* Article body + sidebar TOC */}
           <div className="post-layout">
             <div className="post-content">
               <PostBody body={post.body || []} />
-              <PostSignals slug={post.slug.current} />
             </div>
             <aside className="post-sidebar">
               <TableOfContents body={post.body || []} />
             </aside>
+          </div>
+
+          {/* Share + Signals section — below the article, above the footer */}
+          <div className="post-bottom-section">
+            {/* Share row */}
+            <div className="post-share-row">
+              <ShareButtons path={path} title={post.title} />
+            </div>
+
+            {/* Signals (comments) */}
+            <PostSignals slug={post.slug.current} />
           </div>
         </div>
 
