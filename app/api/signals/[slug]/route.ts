@@ -13,6 +13,7 @@ export interface Signal {
   name: string;
   body: string;
   createdAt: string;
+  replyCount: number;
 }
 
 function signalsKey(slug: string) {
@@ -53,6 +54,7 @@ export async function GET(_req: NextRequest, context: RouteContext) {
       name: data.name,
       body: data.body,
       createdAt: data.createdAt,
+      replyCount: parseInt(data.replyCount ?? "0", 10),
     }));
 
   return NextResponse.json({ signals, count: signals.length });
@@ -93,6 +95,7 @@ export async function POST(req: NextRequest, context: RouteContext) {
     name: displayName,
     body,
     createdAt: now,
+    replyCount: 0,
   };
 
   // Store signal hash + add to sorted set + increment count

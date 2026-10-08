@@ -102,7 +102,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <ShareButtons path={path} title={article.title} />
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 mt-8">
             <ViewCounter slug={article.slug.current} />
             <SignalCount slug={article.slug.current} />
           </div>

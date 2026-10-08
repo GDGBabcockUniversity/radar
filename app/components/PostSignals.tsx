@@ -88,6 +88,7 @@ export default function PostSignals({ slug }: PostSignalsProps) {
       name: member!.name ?? "Member",
       body: trimmed,
       createdAt: new Date().toISOString(),
+      replyCount: 0,
     };
     setSignals((prev) => [optimisticSignal, ...prev]);
     setBody("");
@@ -257,8 +258,16 @@ export default function PostSignals({ slug }: PostSignalsProps) {
               key={signal.id}
               signal={signal}
               currentMemberId={member?.memberId}
+              currentMemberName={member?.name ?? undefined}
+              isAuthenticated={isAuthenticated}
               onDelete={handleDelete}
               isDeleting={deletingId === signal.id}
+              onReply={() =>
+                openSignIn({
+                  title: "Leave a Signal",
+                  message: "Sign in to reply to this signal.",
+                })
+              }
             />
           ))
         )}

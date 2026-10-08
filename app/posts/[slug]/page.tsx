@@ -77,7 +77,7 @@ export default async function PostPage({ params }: PostPageProps) {
           />
 
           {!isHidden && (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 mt-8">
               <ViewCounter slug={post.slug.current} />
               <SignalCount slug={post.slug.current} />
             </div>
