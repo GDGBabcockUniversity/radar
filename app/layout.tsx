@@ -10,6 +10,8 @@ import ThemedToaster from "./components/ThemedToaster";
 const googleSansFlex = Google_Sans_Flex({
   variable: "--font-google-sans-flex",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
   weight: [
     "100",
     "200",
@@ -33,12 +35,16 @@ const googleSansFlex = Google_Sans_Flex({
 const merriweather = Merriweather({
   variable: "--font-merriweather",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 const caveat = Caveat({
   variable: "--font-caveat",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
   weight: ["400", "700"],
 });
 

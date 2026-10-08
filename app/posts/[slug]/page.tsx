@@ -10,6 +10,8 @@ import TableOfContents from "@/app/components/TableOfContents";
 import RelatedPosts from "@/app/components/RelatedPosts";
 import ViewCounter from "@/app/components/ViewCounter";
 import ReadingTracker from "@/app/components/ReadingTracker";
+import PostSignals from "@/app/components/PostSignals";
+import SignalCount from "@/app/components/SignalCount";
 // import { NewsletterSection } from "@/app/sections";
 
 interface PostPageProps {
@@ -71,7 +73,12 @@ export default async function PostPage({ params }: PostPageProps) {
             readingTime={readingTime}
           />
 
-          {!isHidden && <ViewCounter slug={post.slug.current} />}
+          {!isHidden && (
+            <div className="flex items-center gap-4">
+              <ViewCounter slug={post.slug.current} />
+              <SignalCount slug={post.slug.current} />
+            </div>
+          )}
 
           {isHidden && (
             <div className="mt-6 rounded-md border border-yellow-500/40 bg-yellow-500/5 px-4 py-3 text-sm text-yellow-200">
@@ -83,6 +90,7 @@ export default async function PostPage({ params }: PostPageProps) {
           <div className="post-layout">
             <div className="post-content">
               <PostBody body={post.body || []} />
+              <PostSignals slug={post.slug.current} />
             </div>
             <aside className="post-sidebar">
               <TableOfContents body={post.body || []} />

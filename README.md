@@ -1,3 +1,5 @@
+[![Keyway Secrets](https://www.keyway.sh/badge.svg?repo=GDGBabcockUniversity/radar)](https://www.keyway.sh/vaults/GDGBabcockUniversity/radar)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
