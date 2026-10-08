@@ -22,6 +22,8 @@ import {
   ReadingTracker,
   ViewCounter,
 } from "@/app/components";
+import PostSignals from "@/app/components/PostSignals";
+import SignalCount from "@/app/components/SignalCount";
 import { NewsletterSection } from "@/app/sections";
 
 interface ArticlePageProps {
@@ -100,7 +102,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <ShareButtons path={path} title={article.title} />
           </div>
 
-          <ViewCounter slug={article.slug.current} />
+          <div className="flex items-center gap-4">
+            <ViewCounter slug={article.slug.current} />
+            <SignalCount slug={article.slug.current} />
+          </div>
 
           <div className="post-layout">
             <div className="post-content">
@@ -145,8 +150,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </nav>
           )}
 
-          <div className="border-t border-edge py-8">
-            <ShareButtons path={path} title={article.title} />
+          <div className="post-bottom-section">
+            <div className="post-share-row">
+              <ShareButtons path={path} title={article.title} />
+            </div>
+            <PostSignals slug={article.slug.current} />
           </div>
         </div>
 
