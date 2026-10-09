@@ -22,7 +22,7 @@ export function clearPlatformSession(store: CookieStore) {
 }
 
 export function setPlatformSession(
-  store: CookieStore,
+  store: Pick<CookieStore, "set">,
   access: string,
   refresh: string | undefined,
   expires: number,

@@ -24,6 +24,7 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
+  signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (
     fullName: string,
@@ -39,6 +40,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   error: null,
   isAuthenticated: false,
+  signInWithGoogle: async () => {},
   signInWithEmail: async () => {},
   signUpWithEmail: async () => {},
   signOut: async () => {},
@@ -111,6 +113,13 @@ export default function AuthProvider({
     },
     [],
   );
+  const signInWithGoogle = useCallback(async () => {
+    setError(null);
+    const returnTo = `${window.location.pathname}${window.location.search}`;
+    window.location.assign(
+      `/api/auth/google?returnTo=${encodeURIComponent(returnTo)}`,
+    );
+  }, []);
   const signUpWithEmail = useCallback(
     async (fullName: string, email: string, password: string) => {
       setError(null);
@@ -146,6 +155,7 @@ export default function AuthProvider({
         loading,
         error,
         isAuthenticated: !!member,
+        signInWithGoogle,
         signInWithEmail,
         signUpWithEmail,
         signOut,

@@ -51,3 +51,5 @@ Required auth and storage environment variables:
 - `AUTH_API_URL` — auth-v2 base URL, for native login, token refresh, and member lookup.
 - `RADAR_DATABASE_URL` — RADAR's own PostgreSQL connection string, used only by Drizzle.
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` — leaderboard and fast aggregate projection storage.
+
+For Google sign-in, configure auth-v2 with `GOOGLE_RETURN_URL` pointing to RADAR's `/api/auth/google/callback` URL. Keep `GOOGLE_REDIRECT_URL` pointed at auth-v2's `/auth/google/callback` endpoint.
