@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { useAuth } from "./AuthProvider";
-import { cn } from "../lib/utils";
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -20,7 +19,7 @@ export default function SignInModal({
   title,
   message,
 }: SignInModalProps) {
-  const { signInWithGoogle, signInWithEmail, error, clearError } = useAuth();
+  const { signInWithEmail, error, clearError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,18 +31,6 @@ export default function SignInModal({
   }, []);
 
   if (!isOpen || !mounted) return null;
-
-  const handleGoogle = async () => {
-    setLoading(true);
-    try {
-      await signInWithGoogle();
-      onClose();
-    } catch {
-      toast.error(error || "Google sign-in failed");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,27 +65,7 @@ export default function SignInModal({
               "Use your GDG Babcock account to track reads and game scores on your profile."}
           </p>
 
-          <button
-            onClick={handleGoogle}
-            disabled={loading}
-            className={cn(
-              "mt-6 flex w-full items-center justify-center gap-2 rounded-full",
-              "bg-white px-4 py-3 text-sm font-medium text-black transition-transform",
-              "hover:scale-[1.01] disabled:pointer-events-none disabled:opacity-50"
-            )}
-          >
-            Continue with Google
-          </button>
-
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-edge" />
-            <span className="text-xs uppercase tracking-wider text-content-subtle">
-              or
-            </span>
-            <div className="h-px flex-1 bg-edge" />
-          </div>
-
-          <form onSubmit={handleEmailSubmit} className="space-y-3">
+          <form onSubmit={handleEmailSubmit} className="mt-6 space-y-3">
             <input
               type="email"
               placeholder="Email address"

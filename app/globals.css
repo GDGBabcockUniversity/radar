@@ -268,10 +268,6 @@ html.light .toc-link:hover {
     background: var(--color-content-subtle);
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
-
   body {
     /* Font aliases - must be in body scope where Next.js font variables are available */
     --font-body: var(--font-google-sans-flex);
