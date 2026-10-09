@@ -25,6 +25,11 @@ interface AuthContextType {
   error: string | null;
   isAuthenticated: boolean;
   signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (
+    fullName: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
   signOut: () => Promise<void>;
   clearError: () => void;
   openSignIn: (context?: SignInContext) => void;
@@ -35,6 +40,7 @@ const AuthContext = createContext<AuthContextType>({
   error: null,
   isAuthenticated: false,
   signInWithEmail: async () => {},
+  signUpWithEmail: async () => {},
   signOut: async () => {},
   clearError: () => {},
   openSignIn: () => {},
@@ -105,6 +111,25 @@ export default function AuthProvider({
     },
     [],
   );
+  const signUpWithEmail = useCallback(
+    async (fullName: string, email: string, password: string) => {
+      setError(null);
+      const response = await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, password }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.success) {
+        const message = data.error || "Account creation failed";
+        setError(message);
+        throw new Error(message);
+      }
+      setMember(data.member);
+      flushPendingScores();
+    },
+    [],
+  );
   const signOut = useCallback(async () => {
     try {
       await fetch("/api/auth/session", { method: "DELETE" });
@@ -122,6 +147,7 @@ export default function AuthProvider({
         error,
         isAuthenticated: !!member,
         signInWithEmail,
+        signUpWithEmail,
         signOut,
         clearError,
         openSignIn,

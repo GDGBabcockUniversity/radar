@@ -19,7 +19,9 @@ export default function SignInModal({
   title,
   message,
 }: SignInModalProps) {
-  const { signInWithEmail, error, clearError } = useAuth();
+  const { signInWithEmail, signUpWithEmail, error, clearError } = useAuth();
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,10 +38,18 @@ export default function SignInModal({
     e.preventDefault();
     setLoading(true);
     try {
-      await signInWithEmail(email, password);
+      if (mode === "signup") {
+        await signUpWithEmail(fullName, email, password);
+      } else {
+        await signInWithEmail(email, password);
+      }
       onClose();
-    } catch {
-      toast.error(error || "Sign-in failed");
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : error || (mode === "signup" ? "Sign-up failed" : "Sign-in failed"),
+      );
     } finally {
       setLoading(false);
     }
@@ -58,16 +68,31 @@ export default function SignInModal({
       <div className="relative z-[10000] flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
         <div className="animate-sheet-up w-full max-w-none rounded-t-3xl rounded-b-none border border-edge bg-surface p-8 pb-10 shadow-2xl sm:max-w-sm sm:rounded-2xl sm:pb-8">
           <h2 className="text-xl font-semibold text-content">
-            {title ?? "Sign in to RADAR"}
+            {mode === "signin" ? title ?? "Sign in to RADAR" : "Create your account"}
           </h2>
           <p className="mt-2 text-sm text-content-muted">
-            {message ??
-              "Use your GDG Babcock account to track reads and game scores on your profile."}
+            {mode === "signin"
+              ? message ??
+                "Use your GDG Babcock account to track reads and game scores on your profile."
+              : "Create a GDG Babcock account to save your reads and game scores."}
           </p>
 
           <form onSubmit={handleEmailSubmit} className="mt-6 space-y-3">
+            {mode === "signup" && (
+              <input
+                type="text"
+                autoComplete="name"
+                placeholder="Full name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+                disabled={loading}
+                className="w-full rounded-xl border border-edge bg-transparent px-4 py-3 text-sm text-content placeholder:text-content-subtle focus:outline-none"
+              />
+            )}
             <input
               type="email"
+              autoComplete="email"
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -77,10 +102,14 @@ export default function SignInModal({
             />
             <input
               type="password"
+              autoComplete={
+                mode === "signin" ? "current-password" : "new-password"
+              }
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={mode === "signup" ? 12 : undefined}
               disabled={loading}
               className="w-full rounded-xl border border-edge bg-transparent px-4 py-3 text-sm text-content placeholder:text-content-subtle focus:outline-none"
             />
@@ -89,9 +118,32 @@ export default function SignInModal({
               disabled={loading}
               className="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.01] disabled:pointer-events-none disabled:opacity-50"
             >
-              {loading ? "Signing in…" : "Sign in"}
+              {loading
+                ? mode === "signin"
+                  ? "Signing in…"
+                  : "Creating account…"
+                : mode === "signin"
+                  ? "Sign in"
+                  : "Create account"}
             </button>
           </form>
+
+          <p className="mt-5 text-center text-sm text-content-muted">
+            {mode === "signin"
+              ? "Don't have an account?"
+              : "Already have an account?"}{" "}
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => {
+                setMode(mode === "signin" ? "signup" : "signin");
+                clearError();
+              }}
+              className="font-semibold text-primary hover:underline disabled:opacity-50"
+            >
+              {mode === "signin" ? "Sign up" : "Sign in"}
+            </button>
+          </p>
 
           <button
             onClick={onClose}

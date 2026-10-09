@@ -15,25 +15,46 @@ export async function POST(req: NextRequest) {
       { status: 503 },
     );
   const body = await req.json().catch(() => ({}));
-  const { email, password } = body;
+  const { email, password, fullName } = body;
   if (typeof email !== "string" || typeof password !== "string")
     return NextResponse.json(
       { success: false, error: "email and password are required" },
       { status: 400 },
     );
   try {
-    const response = await fetch(`${CREDENTIALS.auth_api_url}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-      cache: "no-store",
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!response.ok)
+    const registering = typeof fullName === "string";
+    if (registering && !fullName.trim())
       return NextResponse.json(
-        { success: false, error: "Authentication failed" },
-        { status: 401 },
+        { success: false, error: "Full name is required" },
+        { status: 400 },
       );
+
+    const response = await fetch(
+      `${CREDENTIALS.auth_api_url}/auth/${registering ? "register" : "login"}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          registering
+            ? { email, password, full_name: fullName.trim() }
+            : { email, password },
+        ),
+        cache: "no-store",
+        signal: AbortSignal.timeout(10000),
+      },
+    );
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({}));
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            errorBody.message ||
+            (registering ? "Account creation failed" : "Authentication failed"),
+        },
+        { status: registering ? response.status : 401 },
+      );
+    }
     const data = await response.json();
     const access = data?.tokens?.access_token;
     const refresh = data?.tokens?.refresh_token;
