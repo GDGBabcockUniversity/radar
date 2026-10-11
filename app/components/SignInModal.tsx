@@ -19,17 +19,19 @@ export default function SignInModal({
   title,
   message,
 }: SignInModalProps) {
-  const {
-    signInWithGoogle,
-    signInWithEmail,
-    signUpWithEmail,
-    error,
-    clearError,
-  } = useAuth();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { signInWithGoogle, clearError } = useAuth();
+  // Email/password authentication is temporarily disabled.
+  // const {
+  //   signInWithGoogle,
+  //   signInWithEmail,
+  //   signUpWithEmail,
+  //   error,
+  //   clearError,
+  // } = useAuth();
+  // const [mode, setMode] = useState<"signin" | "signup">("signin");
+  // const [fullName, setFullName] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -40,26 +42,26 @@ export default function SignInModal({
 
   if (!isOpen || !mounted) return null;
 
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      if (mode === "signup") {
-        await signUpWithEmail(fullName, email, password);
-      } else {
-        await signInWithEmail(email, password);
-      }
-      onClose();
-    } catch (err) {
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : error || (mode === "signup" ? "Sign-up failed" : "Sign-in failed"),
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handleEmailSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   try {
+  //     if (mode === "signup") {
+  //       await signUpWithEmail(fullName, email, password);
+  //     } else {
+  //       await signInWithEmail(email, password);
+  //     }
+  //     onClose();
+  //   } catch (err) {
+  //     toast.error(
+  //       err instanceof Error
+  //         ? err.message
+  //         : error || (mode === "signup" ? "Sign-up failed" : "Sign-in failed"),
+  //     );
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -86,15 +88,11 @@ export default function SignInModal({
       <div className="relative z-[10000] flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
         <div className="animate-sheet-up w-full max-w-none rounded-t-3xl rounded-b-none border border-edge bg-surface p-8 pb-10 shadow-2xl sm:max-w-sm sm:rounded-2xl sm:pb-8">
           <h2 className="text-xl font-semibold text-content">
-            {mode === "signin"
-              ? (title ?? "Sign in to RADAR")
-              : "Create your account"}
+            {title ?? "Sign in to RADAR"}
           </h2>
           <p className="mt-2 text-sm text-content-muted">
-            {mode === "signin"
-              ? (message ??
-                "Use your GDG Babcock account to track reads and game scores on your profile.")
-              : "Create a GDG Babcock account to save your reads and game scores."}
+            {message ??
+              "Use your GDG Babcock account to track reads and game scores on your profile."}
           </p>
 
           <button
@@ -124,6 +122,7 @@ export default function SignInModal({
             Continue with Google
           </button>
 
+          {/* Email/password authentication is temporarily disabled.
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-edge" />
             <span className="text-xs uppercase tracking-wider text-content-subtle">
@@ -199,6 +198,8 @@ export default function SignInModal({
               {mode === "signin" ? "Sign up" : "Sign in"}
             </button>
           </p>
+
+          */}
 
           <button
             onClick={onClose}
