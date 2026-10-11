@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { redis } from "@/app/lib/redis";
-import { getMember } from "@/app/lib/member";
+import { getMemberWithRefresh } from "@/app/lib/platform-session";
 import { publicDisplayName } from "@/app/lib/displayName";
 
 interface RouteContext {
@@ -62,7 +63,7 @@ export async function GET(_req: NextRequest, context: RouteContext) {
 
 // POST /api/replies/[signalId] — create a reply (auth required)
 export async function POST(req: NextRequest, context: RouteContext) {
-  const member = await getMember();
+  const member = await getMemberWithRefresh(await cookies());
   if (!member) {
     return NextResponse.json(
       { error: "Sign in to reply" },
@@ -124,7 +125,7 @@ export async function POST(req: NextRequest, context: RouteContext) {
 
 // DELETE /api/replies/[signalId]?replyId=xxx — delete own reply
 export async function DELETE(req: NextRequest, context: RouteContext) {
-  const member = await getMember();
+  const member = await getMemberWithRefresh(await cookies());
   if (!member) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

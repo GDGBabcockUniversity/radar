@@ -3,8 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useAuth } from "./AuthProvider";
 import SignalCard from "./SignalCard";
-import type { Signal } from "../api/signals/[slug]/route";
-import { getSignals } from "../lib/comments";
+import type { Signal } from "../lib/signal-types";
 
 interface PostSignalsProps {
   slug: string;
@@ -14,7 +13,7 @@ const MAX_LENGTH = 500;
 
 export default function PostSignals({ slug }: PostSignalsProps) {
   const { member, isAuthenticated, openSignIn } = useAuth();
-  const [signals, setSignals] = useState<{ parentId: string; content: string }[]>([]);
+  const [signals, setSignals] = useState<Signal[]>([]);
   const [loading, setLoading] = useState(true);
   const [body, setBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -38,7 +37,7 @@ export default function PostSignals({ slug }: PostSignalsProps) {
   }, [slug]);
 
   useEffect(() => {
-    getSignals();
+    void fetchSignals();
   }, [fetchSignals]);
 
   // Auto-resize textarea
@@ -103,7 +102,7 @@ export default function PostSignals({ slug }: PostSignalsProps) {
       const res = await fetch(`/api/signals/${encodeURIComponent(slug)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: trimmed }),
+        body: JSON.stringify({ content: trimmed }),
       });
 
       if (!res.ok) {

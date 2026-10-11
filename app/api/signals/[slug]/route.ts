@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { redis } from "@/app/lib/redis";
 import { getMemberWithRefresh } from "@/app/lib/platform-session";
 import { publicDisplayName } from "@/app/lib/displayName";
+import type { Signal } from "@/app/lib/signal-types";
 import {
   createSignal,
   deleteSignal,
   getSignal,
   getSignals,
-} from "@/app/lib/comments";
+} from "@/app/lib/signal";
 import { cookies } from "next/headers";
-import signalItem from "@/sanity/schemas/signalItem";
 
 interface RouteContext {
   params: Promise<{ slug: string }>;
@@ -21,12 +20,13 @@ export async function GET(_req: NextRequest, context: RouteContext) {
 
   const results = (await getSignals(slug)) ?? [];
 
-  const signals = results.map((data) => ({
+  const signals: Signal[] = results.map((data) => ({
     id: data.id,
     memberId: data.userId,
+    name: publicDisplayName(data.name, data.userId),
     body: data.content,
-    createdAt: data.createdAt,
-    replyCount: data.replyCount,
+    createdAt: data.createdAt.toISOString(),
+    replyCount: Number(data.replyCount) || 0,
   }));
 
   return NextResponse.json({ signals, count: signals.length });
@@ -44,31 +44,50 @@ export async function POST(req: NextRequest, context: RouteContext) {
 
   const { slug } = await context.params;
 
-  const body: { parentId: string; content: string } = await req.json();
+  const body = await req.json().catch(() => null);
+  if (!body || typeof body.content !== "string") {
+    return NextResponse.json(
+      { error: "Signal content is required" },
+      { status: 400 },
+    );
+  }
+  const content = body.content.trim();
 
-  if (body.content.length === 0) {
+  if (content.length === 0) {
     return NextResponse.json(
       { error: "Signal cannot be empty" },
       { status: 400 },
     );
   }
 
-  if (body.content.length > 500) {
+  if (content.length > 500) {
     return NextResponse.json(
       { error: "Signal must be 500 characters or fewer" },
       { status: 400 },
     );
   }
 
-  const now = new Date().toISOString();
-  const displayName = publicDisplayName(member.name ?? null, member.memberId);
-
-  await createSignal({
+  const created = await createSignal({
     memberId: member.memberId,
-    parentId: body.parentId,
+    parentId: null,
     slug,
-    content: body.content,
+    content,
   });
+  if (!created) {
+    return NextResponse.json(
+      { error: "Signals are unavailable" },
+      { status: 503 },
+    );
+  }
+
+  const signal: Signal = {
+    id: created.id,
+    memberId: created.userId,
+    name: publicDisplayName(member.name ?? null, member.memberId),
+    body: created.content,
+    createdAt: created.createdAt.toISOString(),
+    replyCount: 0,
+  };
 
   return NextResponse.json({ signal }, { status: 201 });
 }

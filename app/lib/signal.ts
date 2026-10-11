@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { getRadarDB } from "./db/client";
-import { comments } from "./db/schema";
+import { comments, radarUsers } from "./db/schema";
 
 export interface Signal {
   id: string;
@@ -17,16 +17,22 @@ export const getSignals = async (articleSlug: string) => {
 
     if (!db) return;
 
-    const signals = await db.query.comments.findMany({
-      where: (comments, { eq }) => eq(comments.articleSlug, articleSlug),
-      extras: (table) => ({
+    const signals = await db
+      .select({
+        id: comments.id,
+        userId: comments.userId,
+        content: comments.content,
+        createdAt: comments.createdAt,
+        name: radarUsers.fullName,
         replyCount: sql<number>`(
               SELECT COUNT(*)::int
               FROM comments as replies
-              WHERE replies.parent_id = ${table.id}
-            )`.as("replyCount"),
-      }),
-    });
+              WHERE replies.parent_id = ${comments.id}
+            )`,
+      })
+      .from(comments)
+      .leftJoin(radarUsers, eq(comments.userId, radarUsers.id))
+      .where(eq(comments.articleSlug, articleSlug));
 
     return signals;
   } catch (error) {
@@ -51,19 +57,25 @@ export const getSignal = async (signalId: string) => {
 };
 
 export const createSignal = async (
-  signal: Omit<Signal, "id" | "createdAt">,
+  signal: Omit<Signal, "id" | "createdAt" | "parentId"> & {
+    parentId: string | null;
+  },
 ) => {
   try {
     const db = getRadarDB();
 
     if (!db) return;
 
-    await db.insert(comments).values({
-      content: signal.content,
-      userId: signal.memberId,
-      parentId: signal.parentId,
-      articleSlug: signal.slug,
-    });
+    const [created] = await db
+      .insert(comments)
+      .values({
+        content: signal.content,
+        userId: signal.memberId,
+        parentId: signal.parentId,
+        articleSlug: signal.slug,
+      })
+      .returning();
+    return created;
   } catch (error) {
     console.log("error creating comment", error);
   }
