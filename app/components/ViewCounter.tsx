@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const VIEW_DELAY_MS = 7000; // 7 seconds before recording a view
-
 interface ViewCounterProps {
   slug: string;
 }
@@ -12,23 +10,10 @@ export default function ViewCounter({ slug }: ViewCounterProps) {
   const [views, setViews] = useState<number | null>(null);
 
   useEffect(() => {
-    // UPDATE THE URLs IN THE FETCH CALLS TO BE GOTTEN FROM THE CONSTANTS FILE
-
-    // Fetch current count on mount
-    fetch(`/api/views/${slug}`)
+    fetch(`/api/views/${encodeURIComponent(slug)}`)
       .then((res) => res.json())
       .then((data) => setViews(data.views))
       .catch(() => {}); // silently fail — view count is non-critical
-
-    // Record a view after the delay
-    const timer = setTimeout(() => {
-      fetch(`/api/views/${slug}`, { method: "POST" })
-        .then((res) => res.json())
-        .then((data) => setViews(data.views))
-        .catch(() => {});
-    }, VIEW_DELAY_MS);
-
-    return () => clearTimeout(timer);
   }, [slug]);
 
   if (views === null) return null;

@@ -5,6 +5,7 @@ import {
   integer,
   jsonb,
   pgTable,
+  text,
   timestamp,
   uniqueIndex,
   uuid,
@@ -48,6 +49,30 @@ export const radarReads = pgTable(
     index("radar_reads_user_idx").on(table.userId),
   ],
 );
+
+export const radarPostViewBaselines = pgTable("post_view_baselines", {
+  slug: varchar("slug", { length: 500 }).primaryKey(),
+  views: integer("views").default(0).notNull(),
+});
+
+// Anonymous views are deduplicated by a keyed IP/UA/article/day fingerprint.
+export const radarAnonymousViews = pgTable(
+  "anonymous_views",
+  {
+    fingerprint: varchar("fingerprint", { length: 64 }).primaryKey(),
+    slug: varchar("slug", { length: 500 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [index("radar_anonymous_views_slug_idx").on(table.slug)],
+);
+
+// Public identity fields mirrored from auth-v2 for joins inside RADAR's DB.
+export const radarUsers = pgTable("radar_users", {
+  id: uuid("id").primaryKey(),
+  fullName: varchar("full_name", { length: 255 }).notNull(),
+  profilePicture: text("profile_picture"),
+  sourceUpdatedAt: timestamp("source_updated_at", { withTimezone: true }).notNull(),
+});
 
 export const radarReadSessions = pgTable(
   "read_sessions",

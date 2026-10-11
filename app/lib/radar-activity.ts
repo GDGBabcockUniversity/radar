@@ -1,6 +1,7 @@
 import "server-only";
 import { and, count, eq, sql, sum } from "drizzle-orm";
 import { getRadarDB } from "./db/client";
+import { redis } from "./redis";
 import {
   radarActivityDays,
   radarGameScores,
@@ -49,50 +50,63 @@ export async function recordRadarActivity(input: {
       maxScroll > 100
     )
       return;
-    await db.transaction(async (tx) => {
+    const createdSession = await db.transaction(async (tx) => {
       const where = and(
         eq(radarReadSessions.userId, input.userId),
         eq(radarReadSessions.sessionId, sessionId),
         eq(radarReadSessions.slug, slug),
       );
-      const [existing] = await tx
-        .select({
-          seconds: radarReadSessions.seconds,
-          maxScroll: radarReadSessions.maxScroll,
+      const [inserted] = await tx
+        .insert(radarReadSessions)
+        .values({
+          userId: input.userId,
+          sessionId,
+          slug,
+          seconds,
+          maxScroll,
         })
-        .from(radarReadSessions)
-        .where(where)
-        .limit(1);
-      const prior = existing?.seconds ?? 0;
-      const delta = Math.max(0, seconds - prior);
-      const nextScroll = Math.max(existing?.maxScroll ?? 0, maxScroll);
-      if (existing)
+        .onConflictDoNothing({
+          target: [
+            radarReadSessions.userId,
+            radarReadSessions.sessionId,
+            radarReadSessions.slug,
+          ],
+        })
+        .returning({ id: radarReadSessions.id });
+
+      let prior = 0;
+      if (!inserted) {
+        // A competing beacon may have inserted this row. Lock it before
+        // calculating the delta so concurrent updates cannot count twice.
+        const [existing] = await tx
+          .select({
+            seconds: radarReadSessions.seconds,
+            maxScroll: radarReadSessions.maxScroll,
+          })
+          .from(radarReadSessions)
+          .where(where)
+          .for("update");
+        if (!existing) throw new Error("Read session missing after conflict");
+        prior = existing.seconds;
         await tx
           .update(radarReadSessions)
           .set({
             seconds: Math.max(prior, seconds),
-            maxScroll: nextScroll,
+            maxScroll: Math.max(existing.maxScroll, maxScroll),
             updatedAt: new Date(),
           })
           .where(where);
-      else
-        await tx
-          .insert(radarReadSessions)
-          .values({
-            userId: input.userId,
-            sessionId,
-            slug,
-            seconds,
-            maxScroll: nextScroll,
-          });
-      if (delta === 0) return;
+      }
+
+      const delta = Math.max(0, seconds - prior);
+      if (delta === 0) return Boolean(inserted);
       await tx
         .insert(radarReads)
         .values({
           userId: input.userId,
           slug,
           seconds: delta,
-          readCount: existing ? 0 : 1,
+          readCount: inserted ? 1 : 0,
         })
         .onConflictDoUpdate({
           target: [radarReads.userId, radarReads.slug],
@@ -107,7 +121,7 @@ export async function recordRadarActivity(input: {
         .values({
           userId: input.userId,
           day,
-          reads: existing ? 0 : 1,
+          reads: inserted ? 1 : 0,
           seconds: delta,
         })
         .onConflictDoUpdate({
@@ -117,7 +131,10 @@ export async function recordRadarActivity(input: {
             seconds: sql`${radarActivityDays.seconds} + excluded.seconds`,
           },
         });
+      return Boolean(inserted);
     });
+    if (createdSession)
+      await redis.del(`radar:views:v4:${slug}`).catch(() => {});
     return;
   }
   const gameId =
