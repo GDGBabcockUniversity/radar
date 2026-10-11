@@ -1,4 +1,5 @@
-import { BASE_URL, CREDENTIALS } from "@/app/lib/constants";
+import { BASE_URL } from "@/app/lib/constants";
+import { CREDENTIALS } from "@/app/lib/credentials";
 import { Client } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
 

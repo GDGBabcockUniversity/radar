@@ -10,6 +10,17 @@ import {
 import SignInModal from "./SignInModal";
 import { clearPendingScores, flushPendingScores } from "../lib/pendingScores";
 
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut as firebaseSignOut,
+  updateProfile,
+  type User,
+} from "firebase/auth";
+import { firebaseAuth } from "../lib/firebase-auth";
+
 interface Member {
   memberId: string;
   name?: string;
@@ -94,58 +105,84 @@ export default function AuthProvider({
     };
   }, []);
 
-  const signInWithEmail = useCallback(
-    async (email: string, password: string) => {
-      setError(null);
-      const response = await fetch("/api/auth/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data.success) {
-        const message = data.error || "Sign-in failed";
-        setError(message);
-        throw new Error(message);
-      }
-      setMember(data.member);
-      flushPendingScores();
-    },
-    [],
-  );
-  const signInWithGoogle = useCallback(async () => {
-    setError(null);
-    const returnTo = `${window.location.pathname}${window.location.search}`;
-    window.location.assign(
-      `/api/auth/google?returnTo=${encodeURIComponent(returnTo)}`,
-    );
+  const exchangeIdentity = useCallback(async (user: User) => {
+    const response = await fetch("/api/auth/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firebase_token: await user.getIdToken(true) }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.success)
+      throw new Error(data.error || "Sign-in failed");
+    setMember(data.member);
+    flushPendingScores();
   }, []);
-  const signUpWithEmail = useCallback(
-    async (fullName: string, email: string, password: string) => {
+
+  const authenticate = useCallback(
+    async (login: () => Promise<User>) => {
       setError(null);
-      const response = await fetch("/api/auth/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, password }),
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data.success) {
-        const message = data.error || "Account creation failed";
+      try {
+        await exchangeIdentity(await login());
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Sign-in failed";
         setError(message);
         throw new Error(message);
+      } finally {
+        const auth = await firebaseAuth().catch(() => null);
+        if (auth) await firebaseSignOut(auth);
       }
-      setMember(data.member);
-      flushPendingScores();
     },
-    [],
+    [exchangeIdentity],
+  );
+
+  const signInWithEmail = useCallback(
+    (email: string, password: string) =>
+      authenticate(async () => {
+        const credential = await signInWithEmailAndPassword(
+          await firebaseAuth(),
+          email,
+          password,
+        );
+        return credential.user;
+      }),
+    [authenticate],
+  );
+  const signInWithGoogle = useCallback(
+    () =>
+      authenticate(async () => {
+        const credential = await signInWithPopup(
+          await firebaseAuth(),
+          new GoogleAuthProvider(),
+        );
+        return credential.user;
+      }),
+    [authenticate],
+  );
+  const signUpWithEmail = useCallback(
+    (fullName: string, email: string, password: string) =>
+      authenticate(async () => {
+        if (!fullName.trim()) throw new Error("Full name is required");
+        const credential = await createUserWithEmailAndPassword(
+          await firebaseAuth(),
+          email,
+          password,
+        );
+        await updateProfile(credential.user, { displayName: fullName.trim() });
+        return credential.user;
+      }),
+    [authenticate],
   );
   const signOut = useCallback(async () => {
-    try {
-      await fetch("/api/auth/session", { method: "DELETE" });
-    } finally {
-      setMember(null);
-      clearPendingScores();
+    const response = await fetch("/api/auth/session", { method: "DELETE" });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      setError(data.error || "Sign-out failed");
+      if (response.status !== 503)
+        throw new Error(data.error || "Sign-out failed");
     }
+    setMember(null);
+    clearPendingScores();
   }, []);
 
   return (

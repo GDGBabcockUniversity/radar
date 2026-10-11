@@ -1,4 +1,4 @@
-import { CREDENTIALS } from "./constants";
+import { CREDENTIALS } from "./credentials";
 
 export interface Member {
   memberId: string;

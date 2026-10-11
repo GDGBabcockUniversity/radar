@@ -1,58 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { CREDENTIALS } from "@/app/lib/constants";
+import { CREDENTIALS } from "@/app/lib/credentials";
 import {
   clearPlatformSession,
   getMemberWithRefresh,
   setPlatformSession,
 } from "@/app/lib/platform-session";
 
-// Creates RADAR's httpOnly cookie session from native auth-v2 credentials.
+// Exchanges a verified Firebase identity for RADAR's httpOnly platform session.
 export async function POST(req: NextRequest) {
+  if (req.headers.get("origin") !== req.nextUrl.origin)
+    return NextResponse.json(
+      { success: false, error: "Invalid request origin" },
+      { status: 403 },
+    );
+
   if (!CREDENTIALS.auth_api_url)
     return NextResponse.json(
       { success: false, error: "Auth is not configured" },
       { status: 503 },
     );
-  const body = await req.json().catch(() => ({}));
-  const { email, password, fullName } = body;
-  if (typeof email !== "string" || typeof password !== "string")
+  const body = await req.json().catch(() => null);
+  const firebaseToken = body?.firebase_token;
+  if (typeof firebaseToken !== "string" || !firebaseToken.trim())
     return NextResponse.json(
-      { success: false, error: "email and password are required" },
+      { success: false, error: "Firebase token is required" },
       { status: 400 },
     );
   try {
-    const registering = typeof fullName === "string";
-    if (registering && !fullName.trim())
-      return NextResponse.json(
-        { success: false, error: "Full name is required" },
-        { status: 400 },
-      );
-
-    const response = await fetch(
-      `${CREDENTIALS.auth_api_url}/auth/${registering ? "register" : "login"}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          registering
-            ? { email, password, full_name: fullName.trim() }
-            : { email, password },
-        ),
-        cache: "no-store",
-        signal: AbortSignal.timeout(10000),
-      },
-    );
+    const response = await fetch(`${CREDENTIALS.auth_api_url}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firebase_token: firebaseToken }),
+      cache: "no-store",
+      signal: AbortSignal.timeout(10000),
+    });
     if (!response.ok) {
       const errorBody = await response.json().catch(() => ({}));
       return NextResponse.json(
         {
           success: false,
-          error:
-            errorBody.message ||
-            (registering ? "Account creation failed" : "Authentication failed"),
+          error: errorBody.error || "Authentication failed",
         },
-        { status: registering ? response.status : 401 },
+        { status: response.status },
       );
     }
     const data = await response.json();
@@ -60,7 +50,13 @@ export async function POST(req: NextRequest) {
     const refresh = data?.tokens?.refresh_token;
     const expires = Number(data?.tokens?.expires_in) || 15 * 60;
     const user = data?.user;
-    if (typeof access !== "string" || !user?.id)
+    if (
+      typeof access !== "string" ||
+      !access ||
+      typeof refresh !== "string" ||
+      !refresh ||
+      typeof user?.id !== "string"
+    )
       return NextResponse.json(
         { success: false, error: "Unexpected auth response" },
         { status: 502 },
@@ -75,7 +71,7 @@ export async function POST(req: NextRequest) {
       success: true,
       member: { memberId: user.id, name: user.full_name, email: user.email },
     });
-  } catch {
+  } catch (error) {
     return NextResponse.json(
       { success: false, error: "Authentication service unavailable" },
       { status: 503 },
@@ -83,8 +79,41 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function DELETE() {
-  clearPlatformSession(await cookies());
+export async function DELETE(req: NextRequest) {
+  if (req.headers.get("origin") !== req.nextUrl.origin)
+    return NextResponse.json(
+      { success: false, error: "Invalid request origin" },
+      { status: 403 },
+    );
+  const store = await cookies();
+  try {
+    await getMemberWithRefresh(store);
+    const access = store.get(CREDENTIALS.auth_cookie_name)?.value;
+    const refresh = store.get(CREDENTIALS.auth_refresh_cookie_name)?.value;
+    if (access && CREDENTIALS.auth_api_url) {
+      const response = await fetch(`${CREDENTIALS.auth_api_url}/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access}`,
+        },
+        body: JSON.stringify({ refresh_token: refresh }),
+        cache: "no-store",
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!response.ok) throw new Error("Logout failed");
+    }
+  } catch {
+    clearPlatformSession(store);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Signed out locally; server logout unavailable",
+      },
+      { status: 503 },
+    );
+  }
+  clearPlatformSession(store);
   return NextResponse.json({ success: true });
 }
 export async function GET() {

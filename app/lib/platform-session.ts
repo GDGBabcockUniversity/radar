@@ -1,6 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
-import { CREDENTIALS } from "./constants";
+import { CREDENTIALS } from "./credentials";
 import { memberFromToken, type Member } from "./member";
 
 type CookieStore = Awaited<ReturnType<typeof cookies>>;
@@ -53,7 +53,8 @@ export async function getMemberWithRefresh(
       signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) {
-      clearPlatformSession(store);
+      if (response.status === 401 || response.status === 403)
+        clearPlatformSession(store);
       return null;
     }
     const body = await response.json();

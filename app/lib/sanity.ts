@@ -1,9 +1,9 @@
 import { createClient } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
-import { CREDENTIALS, PAGES } from "./constants";
+import { PAGES } from "./constants";
 
-const projectId = CREDENTIALS.sanity_project_id;
-const dataset = CREDENTIALS.sanity_dataset;
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
 const apiVersion = "2024-01-01";
 
 export const client = createClient({

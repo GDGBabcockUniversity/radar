@@ -1,4 +1,4 @@
-import { CREDENTIALS } from "@/app/lib/constants";
+import { CREDENTIALS } from "@/app/lib/credentials";
 import { resend } from "@/app/lib/resend";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
