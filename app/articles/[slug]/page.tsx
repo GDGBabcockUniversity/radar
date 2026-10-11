@@ -151,9 +151,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           )}
 
           <div className="post-bottom-section">
-            <div className="post-share-row">
-              <ShareButtons path={path} title={article.title} />
-            </div>
+
             <PostSignals slug={article.slug.current} />
           </div>
         </div>
