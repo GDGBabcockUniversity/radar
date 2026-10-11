@@ -276,9 +276,6 @@ export default async function IssuePage({ params }: IssuePageProps) {
           articles={closingNote}
         />
 
-        <div className="container border-t border-edge py-8">
-          <ShareButtons path={path} title={issue.title} />
-        </div>
 
         {/* <NewsletterSection /> */}
       </main>
