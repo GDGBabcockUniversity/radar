@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import SignalAvatar from "./SignalAvatar";
-import type { Reply } from "../api/replies/[signalId]/route";
+import type { Reply } from "../lib/signal-types";
 
 interface ReplyCardProps {
   reply: Reply;
