@@ -157,3 +157,18 @@ export const commentRelation = relations(comments, ({ one, many }) => ({
      relationName: "comment_replies"
    }),
 }));
+
+// Public views include this immutable historical baseline plus new engaged views.
+export const radarArticleMetrics = pgTable("article_metrics", {
+  articleId: varchar("article_id", { length: 128 }).primaryKey(),
+  historicalViews: integer("historical_views"),
+  pageViews: integer("page_views").default(0).notNull(),
+  engagedViews: integer("engaged_views").default(0).notNull(),
+  readCompletions: integer("read_completions").default(0).notNull(),
+});
+
+// One opaque key per visitor/article/metric; updates enforce a rolling window.
+export const radarViewReceipts = pgTable("view_receipts", {
+  key: varchar("key", { length: 64 }).primaryKey(),
+  countedAt: timestamp("counted_at", { withTimezone: true }).defaultNow().notNull(),
+});
