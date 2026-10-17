@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { useAuth } from "./AuthProvider";
+
+// The portal target is stable for the lifetime of the browser document.
+const subscribeToDocument = () => () => {};
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -33,14 +36,14 @@ export default function SignInModal({
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  // Use the server snapshot during SSR and hydration, then read the DOM target.
+  const portalContainer = useSyncExternalStore(
+    subscribeToDocument,
+    () => document.body,
+    () => null,
+  );
 
-  // Portals need a real `document`, which doesn't exist during SSR.
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!isOpen || !mounted) return null;
+  if (!isOpen || !portalContainer) return null;
 
   // const handleEmailSubmit = async (e: React.FormEvent) => {
   //   e.preventDefault();
@@ -210,6 +213,6 @@ export default function SignInModal({
         </div>
       </div>
     </div>,
-    document.body,
+    portalContainer,
   );
 }
