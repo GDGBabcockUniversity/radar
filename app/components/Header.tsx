@@ -181,11 +181,11 @@ export default function Header() {
             )}
 
             {/* Subscribe Button */}
-            <div className="hidden sm:block">
+            {/*<div className="hidden sm:block">
               <Button variant="blue" size="sm" href="/#subscribe">
                 Subscribe
               </Button>
-            </div>
+            </div>*/}
 
             {/* Hamburger (mobile only) */}
             <button

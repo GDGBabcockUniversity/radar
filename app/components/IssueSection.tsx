@@ -40,15 +40,16 @@ function ArticleCard({
 }) {
   const href = PAGES.article(article.slug.current);
   return (
-    <Link
+    <div
       id={articleAnchor(article._id)}
-      href={href}
-      className="group block overflow-hidden rounded-2xl border border-edge bg-surface-raised transition-colors hover:border-edge-strong scroll-mt-24"
+      className="group relative block overflow-hidden rounded-2xl border border-edge bg-surface-raised transition-colors hover:border-edge-strong scroll-mt-24"
     >
       {article.coverImage?.asset && (
         <div className={`relative ${large ? "aspect-video" : "aspect-4/3"}`}>
           <Image
-            src={urlFor(article.coverImage).width(large ? 1200 : 600).url()}
+            src={urlFor(article.coverImage)
+              .width(large ? 1200 : 600)
+              .url()}
             alt={article.coverImage?.alt || article.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -61,7 +62,12 @@ function ArticleCard({
             large ? "text-3xl md:text-4xl tracking-tight" : "text-xl"
           }`}
         >
-          {article.title}
+          <Link
+            href={href}
+            className="before:absolute before:inset-0 before:content-[''] focus-visible:outline-none focus-visible:before:rounded-2xl focus-visible:before:ring-2 focus-visible:before:ring-primary"
+          >
+            {article.title}
+          </Link>
         </h3>
         {article.excerpt && (
           <p
@@ -83,10 +89,10 @@ function ArticleCard({
           authors={article.authors}
           publishedAt={article.publishedAt}
           showAvatars={false}
-          className="mt-4"
+          className="relative z-10 mt-4 w-fit"
         />
       </div>
-    </Link>
+    </div>
   );
 }
 

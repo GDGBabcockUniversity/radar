@@ -11,7 +11,6 @@ import {
   PostBody,
   Byline,
   ShareButtons,
-  ReadingTracker,
 } from "@/app/components";
 // import { NewsletterSection } from "@/app/sections";
 
@@ -36,7 +35,6 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
 
   return (
     <>
-      <ReadingTracker slug={path} />
       <Header />
       <main className="bg-surface min-h-screen pt-16">
         <div className="container max-w-4xl mx-auto py-12">

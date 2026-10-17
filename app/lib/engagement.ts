@@ -1,23 +1,15 @@
 import { redis } from "./redis";
-import { CREDENTIALS } from "./constants";
+import { recordRadarActivity } from "./radar-activity";
 
 // The single engagement write seam. Every tracked action funnels through
-// `emit()`. It writes to two places in parallel: RADAR's own Redis (the
-// system of record for RADAR features like leaderboards and "your stats")
-// and the shared auth service's Postgres (radar_game_scores / radar_reads —
-// what the cross-product profile reads via GET /auth/me). Each sink is
-// isolated so one failing never skips or breaks the other.
+// `emit()`. It writes RADAR's PostgreSQL record through Drizzle and its Redis
+// projections in parallel. auth-v2 owns member identities only.
 
 export type EngagementType = "article.read" | "game.played";
 
 export interface Identity {
   memberId: string | null;
   anonId?: string;
-  // The raw platform JWT, when the request carried a valid session cookie —
-  // needed to call the auth service's authenticated /radar/* endpoints on
-  // the member's behalf. Absent for anonymous visitors (authServiceSink
-  // then simply no-ops, same as redisSink already does without an id).
-  platformToken?: string;
   // Display name from the JWT — persisted opportunistically so leaderboards
   // can show people instead of UUIDs. Never forwarded to the auth service
   // (it owns its own profile names).
@@ -43,21 +35,18 @@ export async function emit(
     ts: Date.now(),
     memberId: identity.memberId,
     anonId: identity.anonId,
-    platformToken: identity.platformToken,
     memberName: identity.memberName,
   };
-  // allSettled: engagement is non-critical and must never break a request,
-  // and a failure in one sink must not prevent the other from running.
-  // Failures still get logged — a misconfigured Redis or auth URL otherwise
-  // drops every score with no trace anywhere.
+  // allSettled: engagement is non-critical and a projection failure must not
+  // prevent the durable RADAR record from being attempted.
   const results = await Promise.allSettled([
     redisSink(event),
-    authServiceSink(event),
+    radarDatabaseSink(event),
   ]);
   results.forEach((r, i) => {
     if (r.status === "rejected") {
       console.error(
-        `engagement ${i === 0 ? "redis" : "auth-service"} sink failed:`,
+        `engagement ${i === 0 ? "redis" : "database"} sink failed:`,
         r.reason,
       );
     }
@@ -148,50 +137,9 @@ function prevDateKey(day: string): string {
   return new Date(Date.UTC(y, m - 1, d - 1)).toISOString().slice(0, 10);
 }
 
-// Forwards the same event to the auth service so it lands in Postgres
-// (radar_game_scores / radar_reads) — the source GET /auth/me reads from
-// for the shared profile. Requires both a known member and their platform
-// JWT; anonymous events, or events from a session with no/expired token,
-// simply aren't forwarded (RADAR's own Redis stats still capture them).
-async function authServiceSink(e: EngagementEvent): Promise<void> {
-  const authApiUrl = CREDENTIALS.auth_api_url;
-  if (!e.memberId || !e.platformToken || !authApiUrl) return;
-
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${e.platformToken}`,
-  };
-
-  if (e.type === "article.read") {
-    const slug = String(e.payload.slug ?? "");
-    const seconds = Math.round(Number(e.payload.seconds ?? 0));
-    if (!slug || seconds <= 0) return;
-    await fetch(`${authApiUrl}/radar/reads`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ slug, seconds }),
-      signal: AbortSignal.timeout(5000),
-    });
-  } else if (e.type === "game.played") {
-    const gameId = String(e.payload.gameId ?? "");
-    const score = Number(e.payload.score);
-    if (!gameId || !Number.isFinite(score)) return;
-    // gameId is "crossword:new-year-new-lies" — split into game + puzzle_id
-    // to match the auth service's radar_game_scores columns.
-    const [game, ...rest] = gameId.split(":");
-    const puzzleId = rest.length > 0 ? rest.join(":") : undefined;
-    await fetch(`${authApiUrl}/radar/scores`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        game,
-        puzzle_id: puzzleId,
-        score: Math.round(score),
-        meta: e.payload,
-      }),
-      signal: AbortSignal.timeout(5000),
-    });
-  }
+async function radarDatabaseSink(e: EngagementEvent): Promise<void> {
+  if (!e.memberId) return;
+  await recordRadarActivity({ userId: e.memberId, type: e.type, payload: e.payload, occurredAt: e.ts });
 }
 
 export interface MemberStats {

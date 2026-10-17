@@ -1,0 +1,1 @@
+ALTER TABLE "article_metrics" ADD COLUMN "historical_views" integer;

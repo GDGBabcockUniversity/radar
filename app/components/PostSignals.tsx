@@ -1,44 +1,25 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "./AuthProvider";
 import SignalCard from "./SignalCard";
-import type { Signal } from "../api/signals/[slug]/route";
+import type { Signal } from "../lib/signal-types";
 
 interface PostSignalsProps {
   slug: string;
+  initialSignals: Signal[];
 }
 
 const MAX_LENGTH = 500;
 
-export default function PostSignals({ slug }: PostSignalsProps) {
+export default function PostSignals({ slug, initialSignals }: PostSignalsProps) {
   const { member, isAuthenticated, openSignIn } = useAuth();
-  const [signals, setSignals] = useState<Signal[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [signals, setSignals] = useState<Signal[]>(initialSignals);
   const [body, setBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Fetch signals on mount
-  const fetchSignals = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/signals/${encodeURIComponent(slug)}`);
-      if (res.ok) {
-        const data = await res.json();
-        setSignals(data.signals ?? []);
-      }
-    } catch {
-      // silent — signals are non-critical
-    } finally {
-      setLoading(false);
-    }
-  }, [slug]);
-
-  useEffect(() => {
-    fetchSignals();
-  }, [fetchSignals]);
 
   // Auto-resize textarea
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -102,7 +83,7 @@ export default function PostSignals({ slug }: PostSignalsProps) {
       const res = await fetch(`/api/signals/${encodeURIComponent(slug)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: trimmed }),
+        body: JSON.stringify({ content: trimmed }),
       });
 
       if (!res.ok) {
@@ -243,12 +224,7 @@ export default function PostSignals({ slug }: PostSignalsProps) {
 
       {/* Signals list */}
       <div className="post-signals-list">
-        {loading ? (
-          <div className="post-signals-loading">
-            <span className="post-signals-spinner" />
-            <span>Loading signals…</span>
-          </div>
-        ) : signals.length === 0 ? (
+        {signals.length === 0 ? (
           <div className="post-signals-empty">
             <p>No signals yet — be the first to drop one!</p>
           </div>

@@ -41,10 +41,7 @@ export default function SpotlightSection({ article }: SpotlightSectionProps) {
           <span className="h-px flex-1 bg-overlay-strong" />
         </div>
 
-        <Link
-          href={href}
-          className="group grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center"
-        >
+        <div className="group relative grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
           {image && (
             <div className="relative aspect-video overflow-hidden rounded-2xl border border-edge bg-overlay">
               <Image
@@ -63,7 +60,12 @@ export default function SpotlightSection({ article }: SpotlightSectionProps) {
               </span>
             )}
             <h3 className="mt-2 text-3xl md:text-4xl font-bold leading-tight tracking-tight text-content transition-colors group-hover:text-primary">
-              {article.title}
+              <Link
+                href={href}
+                className="before:absolute before:inset-0 before:content-[''] focus-visible:outline-none focus-visible:before:rounded-2xl focus-visible:before:ring-2 focus-visible:before:ring-primary"
+              >
+                {article.title}
+              </Link>
             </h3>
             {article.excerpt && (
               <p
@@ -81,10 +83,10 @@ export default function SpotlightSection({ article }: SpotlightSectionProps) {
               authors={article.authors}
               publishedAt={article.publishedAt}
               showAvatars={false}
-              className="mt-5"
+              className="relative z-10 mt-5 w-fit"
             />
           </div>
-        </Link>
+        </div>
       </div>
     </section>
   );

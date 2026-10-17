@@ -25,7 +25,9 @@ interface FoundingNoteSectionProps {
 // Homepage "From the Editors" block — the featured standalone founding note.
 // Evergreen and issue-independent, unlike the Spotlight, so it leads the page
 // right below the hero. Pairs a modest cover thumbnail with the note itself.
-export default function FoundingNoteSection({ note }: FoundingNoteSectionProps) {
+export default function FoundingNoteSection({
+  note,
+}: FoundingNoteSectionProps) {
   if (!note) return null;
 
   const href = PAGES.article(note.slug.current);
@@ -44,9 +46,8 @@ export default function FoundingNoteSection({ note }: FoundingNoteSectionProps) 
           <span className="h-px flex-1 bg-overlay-strong" />
         </div>
 
-        <Link
-          href={href}
-          className={`group grid grid-cols-1 gap-6 rounded-2xl border border-edge bg-surface-raised p-6 transition-colors hover:border-edge-strong md:gap-8 md:p-8 ${
+        <div
+          className={`group relative grid grid-cols-1 gap-6 rounded-2xl border border-edge bg-surface-raised p-6 transition-colors hover:border-edge-strong md:gap-8 md:p-8 ${
             image ? "md:grid-cols-[minmax(0,1fr)_2fr] md:items-center" : ""
           }`}
         >
@@ -68,7 +69,12 @@ export default function FoundingNoteSection({ note }: FoundingNoteSectionProps) 
               </span>
             )}
             <h3 className="mt-3 max-w-3xl text-3xl md:text-4xl font-bold leading-tight tracking-tight text-content transition-colors group-hover:text-primary">
-              {note.title}
+              <Link
+                href={href}
+                className="before:absolute before:inset-0 before:content-[''] focus-visible:outline-none focus-visible:before:rounded-2xl focus-visible:before:ring-2 focus-visible:before:ring-primary"
+              >
+                {note.title}
+              </Link>
             </h3>
             {note.excerpt && (
               <p
@@ -86,13 +92,13 @@ export default function FoundingNoteSection({ note }: FoundingNoteSectionProps) 
               authors={note.authors}
               publishedAt={note.publishedAt}
               showAvatars={false}
-              className="mt-6"
+              className="relative z-10 mt-6 w-fit"
             />
             <span className="mt-6 inline-block text-sm font-bold uppercase tracking-wider text-primary transition-colors group-hover:text-primary-hover">
               Read the note →
             </span>
           </div>
-        </Link>
+        </div>
       </div>
     </section>
   );
