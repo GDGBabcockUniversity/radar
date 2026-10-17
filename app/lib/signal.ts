@@ -1,4 +1,6 @@
-import { eq, sql } from "drizzle-orm";
+import { publicDisplayName } from "./displayName";
+import type { Signal as PublicSignal } from "./signal-types";
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { getRadarDB } from "./db/client";
 import { comments, radarUsers } from "./db/schema";
 
@@ -32,7 +34,8 @@ export const getSignals = async (articleSlug: string) => {
       })
       .from(comments)
       .leftJoin(radarUsers, eq(comments.userId, radarUsers.id))
-      .where(eq(comments.articleSlug, articleSlug));
+      .where(and(eq(comments.articleSlug, articleSlug), isNull(comments.parentId)))
+      .orderBy(desc(comments.createdAt), desc(comments.id));
 
     return signals;
   } catch (error) {
@@ -92,3 +95,16 @@ export const deleteSignal = async (signalId: string) => {
     console.log("error creating comment", error);
   }
 };
+
+// Shared public projection for the article page and the signals API.
+export async function getPublicSignals(slug: string): Promise<PublicSignal[]> {
+  const results = (await getSignals(slug)) ?? [];
+  return results.map((data) => ({
+    id: data.id,
+    memberId: data.userId,
+    name: publicDisplayName(data.name, data.userId),
+    body: data.content,
+    createdAt: data.createdAt.toISOString(),
+    replyCount: Number(data.replyCount) || 0,
+  }));
+}

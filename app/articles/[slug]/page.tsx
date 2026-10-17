@@ -1,3 +1,5 @@
+import { getArticlePageData } from "@/app/lib/article-page-data";
+import ArticleEngagement from "@/app/components/ArticleEngagement";
 export const revalidate = 60;
 
 import Link from "next/link";
@@ -19,7 +21,6 @@ import {
   PostBody,
   Byline,
   ShareButtons,
-  ReadingTracker,
   ViewCounter,
 } from "@/app/components";
 import PostSignals from "@/app/components/PostSignals";
@@ -38,6 +39,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
   
+  const { views, signals } = await getArticlePageData(
+    article._id,
+    article.slug.current,
+  );
+
   // Neighbours within the issue, in the issue's running order. Either can be
   // absent (first/last piece, or a standalone article with no issue).
   const siblings: {
@@ -71,7 +77,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      <ReadingTracker slug={path} />
       <main className="bg-surface min-h-screen">
         <PostHeader
           title={article.title}
@@ -103,13 +108,19 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           <div className="flex items-center gap-3 mt-8">
-            <ViewCounter slug={article.slug.current} />
-            <SignalCount slug={article.slug.current} />
+            <ViewCounter
+                key={article._id}
+                articleId={article._id}
+                initialViews={views}
+              />
+            <SignalCount count={signals.length} />
           </div>
 
           <div className="post-layout">
             <div className="post-content">
-              <PostBody body={article.body || []} />
+              <ArticleEngagement key={article._id} articleId={article._id}>
+                <PostBody body={article.body || []} />
+              </ArticleEngagement>
             </div>
           </div>
 
@@ -152,7 +163,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
           <div className="post-bottom-section">
 
-            <PostSignals slug={article.slug.current} />
+            <PostSignals
+              key={article.slug.current}
+              slug={article.slug.current}
+              initialSignals={signals}
+            />
           </div>
         </div>
 

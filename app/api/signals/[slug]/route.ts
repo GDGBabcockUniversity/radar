@@ -6,7 +6,7 @@ import {
   createSignal,
   deleteSignal,
   getSignal,
-  getSignals,
+  getPublicSignals,
 } from "@/app/lib/signal";
 import { cookies } from "next/headers";
 
@@ -18,16 +18,7 @@ interface RouteContext {
 export async function GET(_req: NextRequest, context: RouteContext) {
   const { slug } = await context.params;
 
-  const results = (await getSignals(slug)) ?? [];
-
-  const signals: Signal[] = results.map((data) => ({
-    id: data.id,
-    memberId: data.userId,
-    name: publicDisplayName(data.name, data.userId),
-    body: data.content,
-    createdAt: data.createdAt.toISOString(),
-    replyCount: Number(data.replyCount) || 0,
-  }));
+  const signals = await getPublicSignals(slug);
 
   return NextResponse.json({ signals, count: signals.length });
 }

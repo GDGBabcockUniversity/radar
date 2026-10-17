@@ -3,23 +3,44 @@
 import { useEffect, useState } from "react";
 
 interface ViewCounterProps {
-  slug: string;
+  articleId: string;
+  initialViews: number | null;
 }
 
-export default function ViewCounter({ slug }: ViewCounterProps) {
-  const [views, setViews] = useState<number | null>(null);
+export default function ViewCounter({
+  articleId,
+  initialViews,
+}: ViewCounterProps) {
+  const [views, setViews] = useState<number | null>(initialViews);
 
   useEffect(() => {
-    fetch(`/api/views/${encodeURIComponent(slug)}`)
-      .then((res) => res.json())
-      .then((data) => setViews(data.views))
-      .catch(() => {}); // silently fail — view count is non-critical
-  }, [slug]);
+    let disposed = false;
+    const load = () => {
+      fetch(`/api/articles/${encodeURIComponent(articleId)}/views`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (!disposed && typeof data?.views === "number")
+            setViews(data.views);
+        })
+        .catch(() => {});
+    };
+    const refresh = (event: Event) => {
+      if ((event as CustomEvent).detail === articleId) load();
+    };
+    window.addEventListener("article-engaged", refresh);
+    return () => {
+      disposed = true;
+      window.removeEventListener("article-engaged", refresh);
+    };
+  }, [articleId]);
 
   if (views === null) return null;
 
   return (
-    <span className="text-content-muted text-sm flex items-center gap-1.5">
+    <span
+      title="Views include historical views; new views require 10 active seconds and 25% article progress"
+      className="text-content-muted text-sm flex items-center gap-1.5"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"

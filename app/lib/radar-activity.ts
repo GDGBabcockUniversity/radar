@@ -1,7 +1,6 @@
 import "server-only";
 import { and, count, eq, sql, sum } from "drizzle-orm";
 import { getRadarDB } from "./db/client";
-import { redis } from "./redis";
 import {
   radarActivityDays,
   radarGameScores,
@@ -50,7 +49,7 @@ export async function recordRadarActivity(input: {
       maxScroll > 100
     )
       return;
-    const createdSession = await db.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
       const where = and(
         eq(radarReadSessions.userId, input.userId),
         eq(radarReadSessions.sessionId, sessionId),
@@ -133,8 +132,6 @@ export async function recordRadarActivity(input: {
         });
       return Boolean(inserted);
     });
-    if (createdSession)
-      await redis.del(`radar:views:v4:${slug}`).catch(() => {});
     return;
   }
   const gameId =

@@ -1,3 +1,5 @@
+import { getArticlePageData } from "@/app/lib/article-page-data";
+import ArticleEngagement from "@/app/components/ArticleEngagement";
 export const revalidate = 60;
 
 import { notFound } from "next/navigation";
@@ -9,7 +11,6 @@ import PostBody from "@/app/components/PostBody";
 import TableOfContents from "@/app/components/TableOfContents";
 import RelatedPosts from "@/app/components/RelatedPosts";
 import ViewCounter from "@/app/components/ViewCounter";
-import ReadingTracker from "@/app/components/ReadingTracker";
 import PostSignals from "@/app/components/PostSignals";
 import SignalCount from "@/app/components/SignalCount";
 import ShareButtons from "@/app/components/ShareButtons";
@@ -49,7 +50,10 @@ export default async function PostPage({ params }: PostPageProps) {
 
   const isHidden = post.hidden === true;
   const readingTime = calculateReadingTime(post.body);
-  const relatedPosts = await getRecentPosts();
+  const [relatedPosts, { views, signals }] = await Promise.all([
+    getRecentPosts(),
+    getArticlePageData(post._id, post.slug.current, "post"),
+  ]);
   const path = PAGES.post ? PAGES.post(slug) : `/posts/${slug}`;
 
   // Filter out current post from related
@@ -60,7 +64,6 @@ export default async function PostPage({ params }: PostPageProps) {
   return (
     <>
       <Header />
-      <ReadingTracker slug={`/posts/${slug}`} />
       <main className="bg-surface min-h-screen mt-16 md:mt-0">
         <PostHeader
           title={post.title}
@@ -78,8 +81,12 @@ export default async function PostPage({ params }: PostPageProps) {
 
           {!isHidden && (
             <div className="flex items-center gap-3 mt-8">
-              <ViewCounter slug={post.slug.current} />
-              <SignalCount slug={post.slug.current} />
+              <ViewCounter
+                key={post._id}
+                articleId={post._id}
+                initialViews={views}
+              />
+              <SignalCount count={signals.length} />
             </div>
           )}
 
@@ -93,7 +100,9 @@ export default async function PostPage({ params }: PostPageProps) {
           {/* Article body + sidebar TOC */}
           <div className="post-layout">
             <div className="post-content">
-              <PostBody body={post.body || []} />
+              <ArticleEngagement key={post._id} articleId={post._id}>
+                <PostBody body={post.body || []} />
+              </ArticleEngagement>
             </div>
             <aside className="post-sidebar">
               <TableOfContents body={post.body || []} />
@@ -108,7 +117,11 @@ export default async function PostPage({ params }: PostPageProps) {
             </div>
 
             {/* Signals (comments) */}
-            <PostSignals slug={post.slug.current} />
+            <PostSignals
+              key={post.slug.current}
+              slug={post.slug.current}
+              initialSignals={signals}
+            />
           </div>
         </div>
 
