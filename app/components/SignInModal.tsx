@@ -22,19 +22,17 @@ export default function SignInModal({
   title,
   message,
 }: SignInModalProps) {
-  const { signInWithGoogle, clearError } = useAuth();
-  // Email/password authentication is temporarily disabled.
-  // const {
-  //   signInWithGoogle,
-  //   signInWithEmail,
-  //   signUpWithEmail,
-  //   error,
-  //   clearError,
-  // } = useAuth();
-  // const [mode, setMode] = useState<"signin" | "signup">("signin");
-  // const [fullName, setFullName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const {
+    signInWithGoogle,
+    signInWithEmail,
+    signUpWithEmail,
+    error,
+    clearError,
+  } = useAuth();
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   // Use the server snapshot during SSR and hydration, then read the DOM target.
   const portalContainer = useSyncExternalStore(
@@ -45,31 +43,35 @@ export default function SignInModal({
 
   if (!isOpen || !portalContainer) return null;
 
-  // const handleEmailSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   try {
-  //     if (mode === "signup") {
-  //       await signUpWithEmail(fullName, email, password);
-  //     } else {
-  //       await signInWithEmail(email, password);
-  //     }
-  //     onClose();
-  //   } catch (err) {
-  //     toast.error(
-  //       err instanceof Error
-  //         ? err.message
-  //         : error || (mode === "signup" ? "Sign-up failed" : "Sign-in failed"),
-  //     );
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loading) return;
+    setLoading(true);
+    try {
+      if (mode === "signup") {
+        await signUpWithEmail(fullName, email, password);
+      } else {
+        await signInWithEmail(email, password);
+      }
+      setPassword("");
+      onClose();
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : error || (mode === "signup" ? "Sign-up failed" : "Sign-in failed"),
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGoogleSignIn = async () => {
+    if (loading) return;
     setLoading(true);
     try {
       await signInWithGoogle();
+      setPassword("");
       onClose();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed");
@@ -84,16 +86,26 @@ export default function SignInModal({
         className="animate-backdrop-fade fixed inset-0 bg-black/70 backdrop-blur-sm"
         onClick={() => {
           clearError();
+          setPassword("");
           onClose();
         }}
       />
       {/* Bottom sheet on phones, gently rising card on larger screens. */}
       <div className="relative z-[10000] flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
-        <div className="animate-sheet-up w-full max-w-none rounded-t-3xl rounded-b-none border border-edge bg-surface p-8 pb-10 shadow-2xl sm:max-w-sm sm:rounded-2xl sm:pb-8">
-          <h2 className="text-xl font-semibold text-content">
-            {title ?? "Sign in to RADAR"}
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="auth-title"
+          aria-describedby="auth-description"
+          className="animate-sheet-up w-full max-w-none rounded-t-3xl rounded-b-none border border-edge bg-surface p-8 pb-10 shadow-2xl sm:max-w-sm sm:rounded-2xl sm:pb-8"
+        >
+          <h2 id="auth-title" className="text-xl font-semibold text-content">
+            {title ??
+              (mode === "signup"
+                ? "Create your RADAR account"
+                : "Sign in to RADAR")}
           </h2>
-          <p className="mt-2 text-sm text-content-muted">
+          <p id="auth-description" className="mt-2 text-sm text-content-muted">
             {message ??
               "Use your GDG Babcock account to track reads and game scores on your profile."}
           </p>
@@ -125,7 +137,6 @@ export default function SignInModal({
             Continue with Google
           </button>
 
-          {/* Email/password authentication is temporarily disabled.
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-edge" />
             <span className="text-xs uppercase tracking-wider text-content-subtle">
@@ -134,9 +145,16 @@ export default function SignInModal({
             <div className="h-px flex-1 bg-edge" />
           </div>
 
+          {error && (
+            <p role="alert" className="mb-3 text-sm text-red-500">
+              {error}
+            </p>
+          )}
           <form onSubmit={handleEmailSubmit} className="space-y-3">
             {mode === "signup" && (
               <input
+                aria-label="Full name"
+                name="fullName"
                 type="text"
                 autoComplete="name"
                 placeholder="Full name"
@@ -144,10 +162,12 @@ export default function SignInModal({
                 onChange={(e) => setFullName(e.target.value)}
                 required
                 disabled={loading}
-                className="w-full rounded-xl border border-edge bg-transparent px-4 py-3 text-sm text-content placeholder:text-content-subtle focus:outline-none"
+                className="w-full rounded-xl border border-edge bg-transparent px-4 py-3 text-sm text-content placeholder:text-content-subtle focus:outline-none focus:ring-2 focus:ring-primary"
               />
             )}
             <input
+              aria-label="Email address"
+              name="email"
               type="email"
               autoComplete="email"
               placeholder="Email address"
@@ -155,9 +175,11 @@ export default function SignInModal({
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={loading}
-              className="w-full rounded-xl border border-edge bg-transparent px-4 py-3 text-sm text-content placeholder:text-content-subtle focus:outline-none"
+              className="w-full rounded-xl border border-edge bg-transparent px-4 py-3 text-sm text-content placeholder:text-content-subtle focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <input
+              aria-label="Password"
+              name="password"
               type="password"
               autoComplete={
                 mode === "signin" ? "current-password" : "new-password"
@@ -168,7 +190,7 @@ export default function SignInModal({
               required
               minLength={mode === "signup" ? 12 : undefined}
               disabled={loading}
-              className="w-full rounded-xl border border-edge bg-transparent px-4 py-3 text-sm text-content placeholder:text-content-subtle focus:outline-none"
+              className="w-full rounded-xl border border-edge bg-transparent px-4 py-3 text-sm text-content placeholder:text-content-subtle focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <button
               type="submit"
@@ -194,6 +216,7 @@ export default function SignInModal({
               disabled={loading}
               onClick={() => {
                 setMode(mode === "signin" ? "signup" : "signin");
+                setPassword("");
                 clearError();
               }}
               className="font-semibold text-primary hover:underline disabled:opacity-50"
@@ -202,10 +225,14 @@ export default function SignInModal({
             </button>
           </p>
 
-          */}
-
           <button
-            onClick={onClose}
+            type="button"
+            disabled={loading}
+            onClick={() => {
+              setPassword("");
+              clearError();
+              onClose();
+            }}
             className="mt-6 w-full text-center text-xs text-content-muted hover:text-content"
           >
             Cancel

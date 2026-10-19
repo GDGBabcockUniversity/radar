@@ -11,12 +11,12 @@ import SignInModal from "./SignInModal";
 import { clearPendingScores, flushPendingScores } from "../lib/pendingScores";
 
 import {
-  // createUserWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  // signInWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signInWithPopup,
   signOut as firebaseSignOut,
-  // updateProfile,
+  updateProfile,
   type User,
 } from "firebase/auth";
 import { firebaseAuth } from "../lib/firebase-auth";
@@ -36,12 +36,12 @@ interface AuthContextType {
   error: string | null;
   isAuthenticated: boolean;
   signInWithGoogle: () => Promise<void>;
-//   signInWithEmail: (email: string, password: string) => Promise<void>;
-//   signUpWithEmail: (
-//     fullName: string,
-//     email: string,
-//     password: string,
-//   ) => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (
+    fullName: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
   signOut: () => Promise<void>;
   clearError: () => void;
   openSignIn: (context?: SignInContext) => void;
@@ -52,8 +52,8 @@ const AuthContext = createContext<AuthContextType>({
   error: null,
   isAuthenticated: false,
   signInWithGoogle: async () => {},
-  // signInWithEmail: async () => {},
-  // signUpWithEmail: async () => {},
+  signInWithEmail: async () => {},
+  signUpWithEmail: async () => {},
   signOut: async () => {},
   clearError: () => {},
   openSignIn: () => {},
@@ -136,19 +136,18 @@ export default function AuthProvider({
     [exchangeIdentity],
   );
 
-  // Email/password authentication is temporarily disabled.
-  // const signInWithEmail = useCallback(
-  //   (email: string, password: string) =>
-  //     authenticate(async () => {
-  //       const credential = await signInWithEmailAndPassword(
-  //         await firebaseAuth(),
-  //         email,
-  //         password,
-  //       );
-  //       return credential.user;
-  //     }),
-  //   [authenticate],
-  // );
+  const signInWithEmail = useCallback(
+    (email: string, password: string) =>
+      authenticate(async () => {
+        const credential = await signInWithEmailAndPassword(
+          await firebaseAuth(),
+          email,
+          password,
+        );
+        return credential.user;
+      }),
+    [authenticate],
+  );
   const signInWithGoogle = useCallback(
     () =>
       authenticate(async () => {
@@ -160,21 +159,20 @@ export default function AuthProvider({
       }),
     [authenticate],
   );
-  // Email/password authentication is temporarily disabled.
-  // const signUpWithEmail = useCallback(
-  //   (fullName: string, email: string, password: string) =>
-  //     authenticate(async () => {
-  //       if (!fullName.trim()) throw new Error("Full name is required");
-  //       const credential = await createUserWithEmailAndPassword(
-  //         await firebaseAuth(),
-  //         email,
-  //         password,
-  //       );
-  //       await updateProfile(credential.user, { displayName: fullName.trim() });
-  //       return credential.user;
-  //     }),
-  //   [authenticate],
-  // );
+  const signUpWithEmail = useCallback(
+    (fullName: string, email: string, password: string) =>
+      authenticate(async () => {
+        if (!fullName.trim()) throw new Error("Full name is required");
+        const credential = await createUserWithEmailAndPassword(
+          await firebaseAuth(),
+          email,
+          password,
+        );
+        await updateProfile(credential.user, { displayName: fullName.trim() });
+        return credential.user;
+      }),
+    [authenticate],
+  );
   const signOut = useCallback(async () => {
     const response = await fetch("/api/auth/session", { method: "DELETE" });
     const data = await response.json().catch(() => ({}));
@@ -195,8 +193,8 @@ export default function AuthProvider({
         error,
         isAuthenticated: !!member,
         signInWithGoogle,
-        // signInWithEmail,
-        // signUpWithEmail,
+        signInWithEmail,
+        signUpWithEmail,
         signOut,
         clearError,
         openSignIn,
