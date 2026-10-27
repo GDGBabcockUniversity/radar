@@ -1,22 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 interface SignalCountProps {
-  slug: string;
+  count: number;
 }
 
-export default function SignalCount({ slug }: SignalCountProps) {
-  const [count, setCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetch(`/api/signals/${encodeURIComponent(slug)}`)
-      .then((res) => res.json())
-      .then((data) => setCount(data.count ?? 0))
-      .catch(() => setCount(0));
-  }, [slug]);
-
-  if (count === null || count === 0) return null;
+export default function SignalCount({ count }: SignalCountProps) {
+  if (count === 0) return null;
 
   return (
     <>

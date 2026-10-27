@@ -1,9 +1,8 @@
 import { defineCliConfig } from "sanity/cli";
-import { CREDENTIALS } from "./app/lib/constants";
 
 export default defineCliConfig({
   api: {
-    projectId: CREDENTIALS.sanity_project_id,
-    dataset: CREDENTIALS.sanity_dataset,
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
   },
 });

@@ -6,32 +6,6 @@ export const IMAGES = {
   radarSignalBg: { src: "/radar-signal-bg.png", w: 1780, h: 1780 },
 };
 
-export const CREDENTIALS = {
-  sanity_project_id: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  sanity_dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-
-  resend_api_key: process.env.RESEND_API_KEY!,
-
-  qstash_url: process.env.QSTASH_URL!,
-  qstash_token: process.env.QSTASH_TOKEN!,
-  qstash_current_signing_key: process.env.QSTASH_CURRENT_SIGNING_KEY!,
-  qstash_next_signing_key: process.env.QSTASH_NEXT_SIGNING_KEY!,
-
-  upstash_redis_rest_url: process.env.UPSTASH_REDIS_REST_URL!,
-  upstash_redis_rest_token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-
-  // Shared GDG auth service (optional — engagement stays anonymous until set).
-  auth_api_url: process.env.AUTH_API_URL,
-  auth_jwt_secret: process.env.AUTH_JWT_SECRET,
-  auth_cookie_name: process.env.AUTH_COOKIE_NAME || "gdg_token",
-  // Paired with the access cookie above. The auth service already returns a
-  // refresh token on login; keeping it lets an expired access token be renewed
-  // silently instead of dropping the member back to signed-out (and, worse,
-  // silently dropping their reads and scores — see app/lib/engagement.ts).
-  auth_refresh_cookie_name:
-    process.env.AUTH_REFRESH_COOKIE_NAME || "gdg_refresh_token",
-};
-
 export const PAGES = {
   home: "/",
   team: "/team",

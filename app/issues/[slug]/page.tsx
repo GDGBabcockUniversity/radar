@@ -7,13 +7,7 @@ import { buildOgMetadata } from "@/app/lib/metadata";
 import { PAGES } from "@/app/lib/constants";
 import { SECTION_TITLES, type SectionValue } from "@/app/lib/sections";
 import Link from "next/link";
-import {
-  Header,
-  Footer,
-  ShareButtons,
-  ReadingTracker,
-  ViewCounter
-} from "@/app/components";
+import { Header, Footer, ShareButtons } from "@/app/components";
 import IssueSection, {
   type IssueArticle,
   articleAnchor,
@@ -101,7 +95,6 @@ export default async function IssuePage({ params }: IssuePageProps) {
 
   return (
     <>
-      <ReadingTracker slug={path} />
       <Header />
       <main className="bg-surface min-h-screen">
         {/* 1. Issue masthead */}
@@ -167,7 +160,6 @@ export default async function IssuePage({ params }: IssuePageProps) {
 
         <div className="container flex flex-wrap items-center justify-between gap-4 pt-6">
           <ShareButtons path={path} title={issue.title} />
-          <ViewCounter slug={issue.slug.current} />
         </div>
 
         {/* In this issue — contents */}
@@ -276,9 +268,6 @@ export default async function IssuePage({ params }: IssuePageProps) {
           articles={closingNote}
         />
 
-        <div className="container border-t border-edge py-8">
-          <ShareButtons path={path} title={issue.title} />
-        </div>
 
         {/* <NewsletterSection /> */}
       </main>

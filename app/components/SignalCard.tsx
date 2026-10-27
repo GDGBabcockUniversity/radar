@@ -3,8 +3,8 @@
 import { useState, useRef, useCallback } from "react";
 import SignalAvatar from "./SignalAvatar";
 import ReplyCard from "./ReplyCard";
-import type { Signal } from "../api/signals/[slug]/route";
-import type { Reply } from "../api/replies/[signalId]/route";
+import type { Signal } from "../lib/signal-types";
+import type { Reply } from "../lib/signal-types";
 
 interface SignalCardProps {
   signal: Signal;
