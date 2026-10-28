@@ -5,6 +5,7 @@ import { IMAGES, LINKS, PAGES, CADENCE_TAGLINE } from "../lib/constants";
 const NAV_LINKS = [
   { label: "Home", href: PAGES.home },
   { label: "Issues", href: PAGES.issues },
+  { label: "Articles", href: PAGES.articles },
   { label: "Series", href: PAGES.series },
   { label: "Games", href: PAGES.games },
   { label: "About", href: PAGES.about },
