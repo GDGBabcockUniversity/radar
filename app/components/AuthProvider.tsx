@@ -19,7 +19,7 @@ import {
   updateProfile,
   type User,
 } from "firebase/auth";
-import { firebaseAuth } from "../lib/firebase-auth";
+import { firebaseAuth, firebaseAuthIfReady } from "../lib/firebase-auth";
 
 interface Member {
   memberId: string;
@@ -82,6 +82,11 @@ export default function AuthProvider({
   const closeSignIn = useCallback(() => {
     setSignInOpen(false);
     setSignInContext(null);
+  }, []);
+
+  useEffect(() => {
+    // Warm up Firebase so Google popup sign-in can start synchronously.
+    firebaseAuth().catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -151,8 +156,9 @@ export default function AuthProvider({
   const signInWithGoogle = useCallback(
     () =>
       authenticate(async () => {
+        const auth = firebaseAuthIfReady();
         const credential = await signInWithPopup(
-          await firebaseAuth(),
+          auth ?? (await firebaseAuth()),
           new GoogleAuthProvider(),
         );
         return credential.user;

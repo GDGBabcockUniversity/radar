@@ -1,9 +1,15 @@
 "use client";
 
 import { getApps, initializeApp } from "firebase/app";
-import { getAuth, inMemoryPersistence, setPersistence } from "firebase/auth";
+import {
+  getAuth,
+  inMemoryPersistence,
+  setPersistence,
+  type Auth,
+} from "firebase/auth";
 
 let ready: ReturnType<typeof initializeAuth> | undefined;
+let resolved: Auth | undefined;
 async function initializeAuth() {
   const config = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -27,9 +33,17 @@ async function initializeAuth() {
 }
 
 export function firebaseAuth() {
-  ready ??= initializeAuth().catch((error) => {
-    ready = undefined;
-    throw error;
-  });
+  ready ??= initializeAuth()
+    .then((auth) => (resolved = auth))
+    .catch((error) => {
+      ready = undefined;
+      throw error;
+    });
   return ready;
+}
+
+// Synchronous access once firebaseAuth() has resolved, so popup sign-in can
+// run inside the click gesture without awaiting first.
+export function firebaseAuthIfReady() {
+  return resolved;
 }
