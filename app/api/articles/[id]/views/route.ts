@@ -11,7 +11,6 @@ import { incrementArticleMetric } from "@/app/lib/engaged-view-db";
 import { validArticleId } from "@/app/lib/article-visit";
 import { createArticleViewHandler } from "@/app/lib/article-view-handler";
 
-export const runtime = "nodejs";
 export const POST = createArticleViewHandler({
   secret: () => process.env.ARTICLE_VIEW_SECRET ?? "",
   rateLimit: async (key, maximum) =>
