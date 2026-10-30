@@ -100,7 +100,8 @@ export default async function IssuePage({ params }: IssuePageProps) {
         {/* 1. Issue masthead */}
         <header className="relative">
           {issue.coverImage?.asset ? (
-            <div className="relative aspect-video md:aspect-21/9 w-full h-[85vh] md:h-full">
+            <div className="relative w-full">
+              <div className="relative aspect-video md:aspect-21/9 w-full">
               <Image
                 src={urlFor(issue.coverImage).width(1920).height(820).url()}
                 alt={issue.coverImage?.alt || issue.title}
@@ -108,8 +109,9 @@ export default async function IssuePage({ params }: IssuePageProps) {
                 className="object-cover"
                 priority
               />
-              <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-transparent" />
-              <div className="absolute inset-0 flex flex-col justify-end">
+              <div className="absolute inset-0 hidden md:block bg-linear-to-t from-black via-black/60 to-transparent" />
+              </div>
+              <div className="bg-black md:bg-transparent md:absolute md:inset-0 flex flex-col justify-end">
                 <div className="container py-8 md:py-12">
                   <span className="text-xs font-semibold uppercase tracking-[2px] text-primary">
                     RADAR · Issue #{issue.issueNumber}

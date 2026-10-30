@@ -56,20 +56,21 @@ export default function PostHeader({
   return (
     <header className="relative">
       {/* Hero Image */}
-      <div className="relative aspect-video md:aspect-21/9 w-full overflow--hidden h-85vh md:h-full">
+      <div className="relative w-full">
+        <div className="relative aspect-video md:aspect-21/9 w-full">
         <Image
           src={urlFor(mainImage).width(1920).height(820).url()}
           alt={mainImage.alt || title}
           fill
-          className="object-fit"
+          className="object-cover"
           priority
         />
+        <div className="absolute inset-0 hidden md:block bg-linear-to-t from-black via-black/60 to-transparent" />
+        </div>
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-transparent" />
 
         {/* Content */}
-        <div className="absolute inset-0 flex flex-col justify-end">
+        <div className="bg-black md:bg-transparent md:absolute md:inset-0 flex flex-col justify-end">
           <div className="container py-6 md:py-10">
             {/* Tags Row */}
             {categories && categories.length > 0 && (

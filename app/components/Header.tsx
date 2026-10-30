@@ -19,6 +19,7 @@ import { useAuth } from "./AuthProvider";
 
 const NAV_LINKS = [
   { label: "Issues", href: PAGES.issues },
+  { label: "Articles", href: PAGES.articles },
   { label: "Series", href: PAGES.series },
   { label: "Games", href: PAGES.games },
   { label: "About", href: PAGES.about },
