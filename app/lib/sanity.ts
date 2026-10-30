@@ -333,12 +333,12 @@ export async function getArticle(slug: string) {
 }
 
 // Articles with no parent issue — permanent standalone pieces (founding
-// notes, editorials) that live outside the issue cadence. Listed on /about.
-export async function getStandaloneArticles() {
+// notes, editorials) that live outside the issue cadence. Listed on /about and /articles.
+export async function getStandaloneArticles(direction: "asc" | "desc" = "desc") {
   return client.fetch(
     `
     *[_type == "article" && !defined(issue)]
-      | order(featured desc, publishedAt asc){
+      | order(featured desc, coalesce(publishedAt, _createdAt) ${direction}){
       ${ARTICLE_CARD_FIELDS}
     }
     `,

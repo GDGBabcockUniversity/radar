@@ -13,6 +13,7 @@ export const PAGES = {
   series: "/series",
   about: "/about",
   issues: "/issues",
+  articles: "/articles",
   games: "/games",
   search: "/search",
   post: (slug: string) => `/posts/${slug}`,
