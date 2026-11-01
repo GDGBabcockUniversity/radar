@@ -6,7 +6,8 @@ const EMAIL_SERVICE_URL = "https://email-service-kappa-eosin.vercel.app";
 export async function POST(request: NextRequest) {
   try {
     const projectId = CREDENTIALS.email_service_project_id;
-    if (!projectId)
+    const adminKey = CREDENTIALS.email_service_admin_key;
+    if (!projectId || !adminKey)
       return NextResponse.json({ error: "Not configured" }, { status: 500 });
 
     const { email } = await request.json();
@@ -18,7 +19,10 @@ export async function POST(request: NextRequest) {
       `${EMAIL_SERVICE_URL}/api/projects/${projectId}/audience`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Key": adminKey,
+        },
         body: JSON.stringify({ audiences: [{ email }] }),
       },
     );
