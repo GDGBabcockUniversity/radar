@@ -4,7 +4,7 @@ import { z } from "zod";
 const credentialsSchema = z.object({
   sanity_project_id: z.string().min(1).optional(),
   sanity_dataset: z.string().min(1).optional(),
-  resend_api_key: z.string().min(1).optional(),
+  email_service_project_id: z.string().min(1).optional(),
   qstash_url: z.string().min(1).optional(),
   qstash_token: z.string().min(1).optional(),
   qstash_current_signing_key: z.string().min(1).optional(),
@@ -19,7 +19,7 @@ const credentialsSchema = z.object({
 export const CREDENTIALS = credentialsSchema.parse({
   sanity_project_id: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   sanity_dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-  resend_api_key: process.env.RESEND_API_KEY,
+  email_service_project_id: process.env.EMAIL_SERVICE_PROJECT_ID,
   qstash_url: process.env.QSTASH_URL,
   qstash_token: process.env.QSTASH_TOKEN,
   qstash_current_signing_key: process.env.QSTASH_CURRENT_SIGNING_KEY,

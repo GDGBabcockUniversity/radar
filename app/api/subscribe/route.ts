@@ -1,35 +1,39 @@
-import { BASE_URL } from "@/app/lib/constants";
 import { CREDENTIALS } from "@/app/lib/credentials";
-import { Client } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
 
-const qstash = new Client({ token: CREDENTIALS.qstash_token });
+const EMAIL_SERVICE_URL = "https://email-service-kappa-eosin.vercel.app";
 
 export async function POST(request: NextRequest) {
   try {
+    const projectId = CREDENTIALS.email_service_project_id;
+    if (!projectId)
+      return NextResponse.json({ error: "Not configured" }, { status: 500 });
+
     const { email } = await request.json();
 
-    if (!email)
+    if (!email || typeof email !== "string")
       return NextResponse.json({ error: "Email required" }, { status: 400 });
 
-    // Publish to QStash
-    await qstash.publishJSON({
-      url: BASE_URL + "/api/worker/subscribe",
-      body: { email },
-      retries: 3, // QStash will try up to 3 times if it fails
-      flowControl: {
-        key: "resend-limit", // Global key for all subscribe requests
-        parallelism: 1, // Process one job at a time
+    const res = await fetch(
+      `${EMAIL_SERVICE_URL}/api/projects/${projectId}/audience`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ audiences: [{ email }] }),
       },
-    });
-
-    return NextResponse.json(
-      { message: "Subscription pending" },
-      { status: 202 },
     );
-  } catch (error) {
-    console.log(error);
 
-    return NextResponse.json({ error: "Queue failed" }, { status: 500 });
+    if (!res.ok) {
+      console.error("Email service error:", res.status, await res.text());
+      return NextResponse.json(
+        { error: "Failed to subscribe" },
+        { status: res.status === 409 ? 409 : 502 },
+      );
+    }
+
+    return NextResponse.json({ message: "Subscribed" }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Subscribe failed" }, { status: 500 });
   }
 }
