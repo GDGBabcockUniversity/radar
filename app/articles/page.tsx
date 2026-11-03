@@ -5,6 +5,7 @@ import { getStandaloneArticles, urlFor } from "@/app/lib/sanity";
 import { buildOgMetadata } from "@/app/lib/metadata";
 import { PAGES } from "@/app/lib/constants";
 import { SECTION_TITLES, type SectionValue } from "@/app/lib/sections";
+import { Metadata } from "next";
 
 interface StandaloneArticleEntry {
   _id: string;
@@ -80,7 +81,7 @@ export default async function ArticlesPage() {
   );
 }
 
-export function generateMetadata() {
+export function generateMetadata(): Metadata {
   return buildOgMetadata({
     title: "Articles",
     description:
