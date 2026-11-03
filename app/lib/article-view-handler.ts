@@ -14,6 +14,7 @@ interface Dependencies {
     key: string,
     id: string,
     event: "open" | "engaged" | "completion",
+    reader: string,
   ): Promise<unknown>;
 }
 const reply = (status: number, body?: object) =>
@@ -107,7 +108,7 @@ export function createArticleViewHandler(deps: Dependencies) {
       const identity =
         event === "open" ? `${visitor.id}:${body.visitId}` : visitor.id;
       const key = signer.hash(JSON.stringify([id, identity, event]));
-      await deps.record(key, id, event);
+      await deps.record(key, id, event, signer.hash(visitor.id));
       if (event !== "open") return reply(204);
       const response = reply(200, {
         token: signer.issue(visitor.id, id, body.visitId as string),

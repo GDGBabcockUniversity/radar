@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 interface ViewCounterProps {
   articleId: string;
   initialViews: number | null;
+  unit?: string;
 }
 
 export default function ViewCounter({
   articleId,
   initialViews,
+  unit = "view",
 }: ViewCounterProps) {
   const [views, setViews] = useState<number | null>(initialViews);
 
@@ -38,7 +40,7 @@ export default function ViewCounter({
 
   return (
     <span
-      title="Views include historical views; new views require 10 active seconds and 25% article progress"
+      title={`${unit[0].toUpperCase()}${unit.slice(1)}s include historical ${unit}s; new ${unit}s require 10 active seconds and 25% article progress`}
       className="text-content-muted text-sm flex items-center gap-1.5"
     >
       <svg
@@ -56,7 +58,7 @@ export default function ViewCounter({
         <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
         <circle cx="12" cy="12" r="3" />
       </svg>
-      {views} {views === 1 ? "view" : "views"}
+      {views} {views === 1 ? unit : `${unit}s`}
     </span>
   );
 }

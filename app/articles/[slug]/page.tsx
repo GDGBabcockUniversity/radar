@@ -112,6 +112,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 key={article._id}
                 articleId={article._id}
                 initialViews={views}
+                unit="read"
               />
             <SignalCount count={signals.length} />
           </div>

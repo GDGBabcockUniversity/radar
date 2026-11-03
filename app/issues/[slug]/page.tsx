@@ -3,6 +3,9 @@ export const revalidate = 60;
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getIssue, urlFor } from "@/app/lib/sanity";
+import { redis } from "@/app/lib/redis";
+import { issueReadersKey } from "@/app/lib/issue-readers";
+import IssueViewPing from "@/app/components/IssueViewPing";
 import { buildOgMetadata } from "@/app/lib/metadata";
 import { PAGES } from "@/app/lib/constants";
 import { SECTION_TITLES, type SectionValue } from "@/app/lib/sections";
@@ -20,6 +23,15 @@ interface IssuePageProps {
   params: Promise<{ slug: string }>;
 }
 
+// Unique visitors who entered this issue page or any of its articles.
+async function getIssueViews(issueId: string) {
+  try {
+    return await redis.pfcount(issueReadersKey(issueId));
+  } catch {
+    return null; // analytics must not break the issue page
+  }
+}
+
 function bySection(articles: IssueArticle[], section: SectionValue) {
   return articles.filter((a) => a.section === section);
 }
@@ -34,6 +46,7 @@ export default async function IssuePage({ params }: IssuePageProps) {
 
   const articles: IssueArticle[] = issue.articles || [];
   const path = PAGES.issue(issue.slug.current);
+  const views = await getIssueViews(issue._id);
   const date = issue.publishedAt
     ? new Date(issue.publishedAt).toLocaleDateString("en-US", {
         year: "numeric",
@@ -162,6 +175,12 @@ export default async function IssuePage({ params }: IssuePageProps) {
 
         <div className="container flex flex-wrap items-center justify-between gap-4 pt-6">
           <ShareButtons path={path} title={issue.title} />
+          <IssueViewPing issueId={issue._id} />
+          {views !== null && (
+            <span className="text-content-muted text-sm">
+              {views.toLocaleString()} {views === 1 ? "view" : "views"}
+            </span>
+          )}
         </div>
 
         {/* In this issue — contents */}

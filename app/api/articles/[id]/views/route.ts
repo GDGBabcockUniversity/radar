@@ -10,6 +10,7 @@ import { recordEngagedMetric } from "@/app/lib/engaged-view-service";
 import { incrementArticleMetric } from "@/app/lib/engaged-view-db";
 import { validArticleId } from "@/app/lib/article-visit";
 import { createArticleViewHandler } from "@/app/lib/article-view-handler";
+import { issueReadersKey } from "@/app/lib/issue-readers";
 
 export const POST = createArticleViewHandler({
   secret: () => process.env.ARTICLE_VIEW_SECRET ?? "",
@@ -27,10 +28,10 @@ export const POST = createArticleViewHandler({
       { id },
       { cache: "no-store" },
     ),
-  record: async (key, id, event) => {
+  record: async (key, id, event, reader) => {
     const db = getRadarDB();
     if (!db) throw new Error("RADAR database unavailable");
-    return recordEngagedMetric(key, {
+    const counted = await recordEngagedMetric(key, {
       reserve: async (key, token) =>
         (await redis.set(`radar:engaged:${key}`, token, {
           nx: true,
@@ -45,6 +46,21 @@ export const POST = createArticleViewHandler({
       },
       increment: (key) => incrementArticleMetric(db, key, id, event),
     });
+    // Issue views = unique visitors who opened any of the issue's articles.
+    // PFADD is idempotent, so repeat visits by the same visitor never inflate it.
+    if (event === "open") {
+      try {
+        const issueId = await client.fetch<string | null>(
+          "*[_id == $id][0].issue._ref",
+          { id },
+          { cache: "no-store" },
+        );
+        if (issueId) await redis.pfadd(issueReadersKey(issueId), reader);
+      } catch {
+        console.error("Issue reader recording unavailable");
+      }
+    }
+    return counted;
   },
 });
 
