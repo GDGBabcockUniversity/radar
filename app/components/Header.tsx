@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "./Button";
 import SearchModal from "./SearchModal";
-import { IMAGES, PAGES, LINKS } from "../lib/constants";
+import { IMAGES, PAGES } from "../lib/constants";
 import {
   IoMoonOutline,
   IoSunnyOutline,
@@ -24,7 +24,6 @@ const NAV_LINKS = [
   { label: "Games", href: PAGES.games },
   { label: "About", href: PAGES.about },
   { label: "Team", href: PAGES.team },
-  { label: "Submit a Signal", href: LINKS.contactEmail },
 ];
 
 export default function Header() {
