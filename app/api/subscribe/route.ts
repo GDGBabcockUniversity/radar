@@ -1,7 +1,7 @@
 import { CREDENTIALS } from "@/app/lib/credentials";
 import { NextRequest, NextResponse } from "next/server";
 
-const EMAIL_SERVICE_URL = "https://email-service-kappa-eosin.vercel.app";
+const EMAIL_SERVICE_URL = "https://email-service.pxxl.pro";
 
 export async function POST(request: NextRequest) {
   try {
